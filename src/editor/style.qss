@@ -1,0 +1,272 @@
+QWidget
+{
+	background-color: rgb(80, 80, 80);
+}
+
+QLabel
+{
+	color: rgb(200, 200, 200);
+}
+
+QLineEdit
+{
+	background-color: rgb(40, 40, 40);
+	selection-background-color: rgb(0, 180, 250);
+	selection-color: rgb(40, 40, 40);
+	color: rgb(200, 200, 200);
+	border: 1px solid rgb(200, 200, 200);
+}
+
+QLineEdit:read-only
+{
+	background-color: rgb(80, 80, 80);
+}
+
+QMainWindow::separator
+{
+	background: rgb(80, 80, 80);
+}
+
+QMainWindow::separator:vertical
+{
+	width: 2px;
+}
+
+QMainWindow::separator:horizontal
+{
+	height: 2px;
+}
+
+QMainWindow::separator:hover
+{
+	background: rgb(200, 200, 200);
+}
+
+QMenuBar
+{
+	background: rgb(255, 255, 255);
+}
+
+QMenuBar::item
+{
+	background: rgb(255, 255, 255);
+	color: rgb(40, 40, 40);
+}
+
+QMenuBar::item:selected
+{
+	background: rgb(0, 180, 250);
+	color: rgb(40, 40, 80);
+}
+
+QMenuBar::item:pressed
+{
+	background: rgb(0, 180, 250);
+	color: rgb(40, 40, 80);
+}
+
+QMenu
+{
+	background: rgb(40, 40, 40);
+	margin: 0px;
+}
+
+QMenu::separator
+{
+	background: rgb(200, 200, 200);
+	height: 1px;
+	margin-left: 5px;
+	margin-right: 5px;
+}
+
+QMenu::item
+{
+	background: rgb(40, 40, 40);
+	color: rgb(200, 200, 200);
+}
+
+QMenu::item:selected
+{
+	background: rgb(0, 180, 250);
+	color: rgb(40, 40, 80);
+}
+
+QMenu::item:pressed
+{
+	background: rgb(0, 180, 250);
+	color: rgb(40, 40, 80);
+}
+
+QDockWidget
+{
+	color: rgb(200, 200, 200);
+}
+
+QDockWidget::title
+{
+	background:  qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+													stop: 0 rgb(100, 100, 100),
+													stop: 1.0 rgb(80, 80, 80));
+	text-align: center;
+}
+
+QTabBar
+{
+	background: rgb(40, 40, 40);
+}
+
+QTabBar::tab:top, QTabBar::tab:bottom
+{
+	background: transparent;
+	color: rgb(200, 200, 200);
+	min-width: 20ex;
+	min-height: 5ex;
+}
+
+QTabBar::tab:top:selected, QTabBar::tab:top:selected
+{
+	border-left: 1px solid rgb(200, 200, 200);
+	border-right: 1px solid rgb(200, 200, 200);
+}
+
+QTabBar::tab:top:selected
+{
+	background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+													stop: 0 rgb(100, 100, 100),
+													stop: 1.0 rgb(80, 80, 80));
+	border-top: 1px solid rgb(200, 200, 200);
+	border-top-left-radius: 4px;
+	border-top-right-radius: 4px;
+}
+
+QTabBar::tab:bottom:selected
+{
+	background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+													stop: 0 rgb(80, 80, 80),
+													stop: 1.0 rgb(100, 100, 100));
+	border-bottom: 1px solid rgb(200, 200, 200);
+	border-bottom-left-radius: 4px;
+	border-bottom-right-radius: 4px;
+}
+
+QToolBar, QStatusBar
+{
+	background: rgb(40, 40, 40);
+	border-top: 1px solid rgb(80, 80, 80);
+}
+
+QToolBar::separator:horizontal
+{
+	background: rgb(200, 200, 200);
+	width: 1px;
+	margin-top: 2px;
+	margin-bottom: 2px;
+}
+
+QToolBar::separator:vertical
+{
+	background: rgb(200, 200, 200);
+	height: 1px;
+	margin-left: 2px;
+	margin-right: 2px;
+}
+
+QToolButton
+{
+	background: transparent;
+	color: rgb(200, 200, 200);
+}
+
+QToolButton:hover
+{
+	background: rgb(0, 180, 250);
+	color: rgb(40, 40, 80);
+}
+
+QListView, QTreeView
+{
+	background: rgb(80, 80, 80);
+	color: rgb(200, 200, 200);
+	margin: 0 0 0 0;
+}
+
+QListView::item, QTreeView:item
+{
+	background: rgb(80, 80, 80);
+	color: rgb(200, 200, 200);
+}
+
+QListView::item:hover, QListView::item:selected,
+QTreeView::item:hover, QTreeView::item:selected
+{
+	background: rgb(0, 180, 250);
+	color: rgb(40, 40, 80);
+}
+
+QComboBox, QPushButton
+{
+    min-height: 24;
+	background:  qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+													stop: 0 rgb(100, 100, 100),
+													stop: 1.0 rgb(80, 80, 80));
+	color: rgb(200, 200, 200);
+	border: 1px solid rgb(200, 200, 200);
+	border-radius: 4px;
+	text-align: center;
+}
+
+QComboBox:hover, QPushButton:hover
+{
+	background:  qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+													stop: 0 rgb(110, 110, 110),
+													stop: 1.0 rgb(90, 90, 90));
+}
+
+QComboBox:pressed, QPushButton:pressed
+{
+	background:  qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+													stop: 0 rgb(80, 80, 80),
+													stop: 1.0 rgb(40, 40, 40));
+}
+
+QPushButton:flat
+{
+	border: none;
+	border-radius: 0px;
+	background:   rgb(80, 80, 80);
+}
+
+QPushButton:checked
+{
+	background:  qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+													stop: 0 rgb(0, 180, 250),
+													stop: 1.0 rgb(0, 90, 125));
+}
+
+QPushButton:flat, checked
+{
+	border: none;
+	border-radius: 0px;
+	background:   rgb(80, 80, 80);
+}
+
+QPushButton:default
+{
+	border-color:  rgb(0, 180, 250);
+}
+
+QComboBox::drop-down
+{
+	background:  qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+													stop: 0 rgb(100, 100, 100),
+													stop: 1.0 rgb(80, 80, 80));
+	border-radius: 4px;
+}
+
+QComboBox QAbstractItemView
+{
+	background: rgb(40, 40, 40);
+	color: rgb(200, 200, 200);
+	selection-background-color: rgb(80, 80, 80);
+	selection-color: rgb(200, 200, 200);
+}

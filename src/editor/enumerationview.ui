@@ -1,0 +1,23 @@
+<UI version="4.0" >
+ <class>EnumerationView</class>
+ <widget class="QWidget" name="EnumerationView" >
+  <property name="objectName" >
+   <string notr="true">EnumerationView</string>
+  </property>
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>400</width>
+    <height>300</height>
+   </rect>
+  </property>
+  <property name="windowTitle" >
+   <string>EnumerationView</string>
+  </property>  
+ </widget>
+ <layoutDefault spacing="6" margin="11" />
+ <pixmapfunction></pixmapfunction>
+ <resources/>
+ <connections/>
+</UI>

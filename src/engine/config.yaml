@@ -1,0 +1,26 @@
+---
+OpenGL context:
+  api: Desktop
+  profile: Core
+  strategy: NotRobust
+  version: [4, 3]
+  debug: true
+  forward: false
+Frame buffer:
+  bits: [8, 8, 8, 8, 24, 8]
+  accum: [0, 0, 0, 0]
+  aux: 0
+  samples: 8
+  refresh: 0
+  stereo: false
+  srgb: false
+Window options:
+  visible: true
+  resizable: false
+  decorated: true
+  width: 800
+  height: 600
+  title: WarHog engine
+  fullscreen: false
+  monitor: 0
+...
