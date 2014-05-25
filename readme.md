@@ -21,6 +21,9 @@ Projects also depends on [yaml-cpp](https://code.google.com/p/yaml-cpp/). It can
 ### GLEW
 Download latest release of [GLEW](http://sourceforge.net/projects/glew/files/glew/) with binaries. Define environment variable ```GLEW_ROOT``` to build project.
 
+### Lua
+Download and install [lua](https://github.com/LuaDist/lua). Define variable LUA_ROOT.
+
 Name | Link
 -----|------
 boost | https://github.com/boostorg/boost
