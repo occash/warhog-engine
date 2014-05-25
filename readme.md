@@ -19,7 +19,7 @@ Create environment viriable ```BOOST_ROOT``` to make boost visible to premake5.
 Projects also depends on [yaml-cpp](https://code.google.com/p/yaml-cpp/). It can be installed by cloning repositary and running cmake utility. Create environment variable ```YAML_ROOT``` to make it visible to premake5.
 
 ### GLEW
-Download latest release of GLEW with binaries. Define environment variable ```GLEW_ROOT``` to build project.
+Download latest release of [GLEW](http://sourceforge.net/projects/glew/files/glew/) with binaries. Define environment variable ```GLEW_ROOT``` to build project.
 
 Name | Link
 -----|------
