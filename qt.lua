@@ -27,6 +27,10 @@ premake.extensions.qt = {
 		widgets = {
 			name = "Widgets",
 			include = "QtWidgets"
+		},
+		concurrent = {
+			name = "Concurrent",
+			include = "QtConcurrent"
 		}
 	},
 	
@@ -125,8 +129,8 @@ function premake.extensions.qt.getGeneratedDir(cfg)
 	end
 
 	local dir = path.join(cfg.project.location, "obj")
-	dir = path.join(dir, cfg.buildcfg)
-	dir = path.join(dir, cfg.platform)
+	--dir = path.join(dir, cfg.buildcfg)
+	--dir = path.join(dir, cfg.platform)
 
 	return path.getabsolute(dir)
 
