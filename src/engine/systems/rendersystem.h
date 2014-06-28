@@ -39,16 +39,16 @@ public:
     RenderSystem(Ptr<Window> window);
     ~RenderSystem();
 
-    void configure(ptr<EventManager> events);
-    void update(ptr<EntityManager> entities, ptr<EventManager> events, double dt) override;
+    void configure(EventManager &events) override;
+    void update(EntityManager &entities, EventManager &events, double dt) override;
 
 private:
     Ptr<Window> _window;
     GBuffer _gbuffer;
 
 private:
-    void geometryPass(ptr<EntityManager> entities, MatrixBlock& m_);
-    void lightPass(ptr<EntityManager> entities, MatrixBlock& m);
+    void geometryPass(Ptr<EntityManager> entities, MatrixBlock& m_);
+    void lightPass(Ptr<EntityManager> entities, MatrixBlock& m);
 
 };
 

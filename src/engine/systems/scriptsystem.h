@@ -1,7 +1,7 @@
 #ifndef SCRIPTSYSTEM_H
 #define SCRIPTSYSTEM_H
 
-#include "entityx/System.h"
+#include <entityx/System.h>
 #include "../global.h"
 #include "../components/scriptcomponent.h"
 
@@ -19,13 +19,13 @@ public:
     ScriptSystem();
     ~ScriptSystem();
 
-    void configure(ptr<EventManager> events);
-    void update(ptr<EntityManager> entities, ptr<EventManager> events, double dt) override;
+    void configure(EventManager &events) override;
+    void update(EntityManager &entities, EventManager &events, double dt) override;
 
     template<class Engine>
     void registerEngine();
 
-    ptr<ScriptComponent> assign(Entity entity, Ptr<Script> script);
+    bool assign(Entity entity, Ptr<Script> script);
 
 private:
     void registerEngine(ScriptEngine *engine);

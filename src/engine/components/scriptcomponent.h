@@ -14,32 +14,38 @@ class MeshFilterComponent;
 class RendererComponent;
 class TransformComponent;
 
+class ENGINE_EXPORT BaseScript
+{
+public:
+	BaseScript();
+	~BaseScript();
+
+	virtual void start() {}
+	virtual void update() {}
+	virtual void stop() {}
+
+	CameraComponent *getCamera();
+	LightComponent *getLight();
+	MaterialComponent *getMaterial();
+	MeshFilterComponent *getMeshFilter();
+	RendererComponent *getRenderer();
+	TransformComponent *getTransform();
+
+public:
+	Entity entity;
+
+protected:
+	virtual void proxyObject() const {}
+
+};
+
 class ENGINE_EXPORT ScriptComponent : public Component<ScriptComponent>
 {
 public:
     ScriptComponent();
     ~ScriptComponent();
 
-    virtual void start() {}
-    virtual void update() {}
-    virtual void stop() {}
-
-    static Family maxComponents();
-
-    CameraComponent *getCamera();
-    LightComponent *getLight();
-    MaterialComponent *getMaterial();
-    MeshFilterComponent *getMeshFilter();
-    RendererComponent *getRenderer();
-    TransformComponent *getTransform();
-
-public:
-    Entity entity;
-
-    virtual void proxyObject() const {}
-
-private:
-    static Family _family;
+	std::vector<BaseScript *> scripts;
 
 };
 

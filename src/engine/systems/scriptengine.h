@@ -5,6 +5,8 @@
 
 #include "../components/scriptcomponent.h"
 
+class BaseScript;
+
 class ScriptEngine
 {
 public:
@@ -18,8 +20,8 @@ public:
     virtual bool shutdown() = 0;
 
     virtual bool load(const std::string& name, const std::string& source) = 0;
-    virtual ptr<ScriptComponent> instance(const std::string& name) = 0;
-    virtual void collect(ptr<ScriptComponent> script) = 0;
+	virtual BaseScript *instance(const std::string& name) = 0;
+    virtual void collect(Ptr<ScriptComponent> script) = 0;
 
 };
 

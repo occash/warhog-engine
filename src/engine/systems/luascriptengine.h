@@ -20,8 +20,8 @@ public:
     bool shutdown();
 
     bool load(const std::string& name, const std::string& source);
-    ptr<ScriptComponent> instance(const std::string& name);
-    void collect(ptr<ScriptComponent> script);
+	BaseScript *instance(const std::string& name);
+    void collect(Ptr<ScriptComponent> script);
 
 private:
     lua_State *_state;

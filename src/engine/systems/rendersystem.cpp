@@ -27,14 +27,14 @@ RenderSystem::~RenderSystem()
 {
 }
 
-void RenderSystem::configure(ptr<EventManager> events)
+void RenderSystem::configure(EventManager &events)
 {
     //glEnable(GL_DEPTH_TEST);
 }
 
-void RenderSystem::update(ptr<EntityManager> entities, ptr<EventManager> events, double dt)
+void RenderSystem::update(EntityManager &entities, EventManager &events, double dt)
 {
-	auto cameras = entities->entities_with_components<TransformComponent, CameraComponent>();
+	auto cameras = entities.entities_with_components<TransformComponent, CameraComponent>();
 	auto cameraObject = cameras.begin();
 	if (cameraObject == cameras.end())
 		return;
@@ -73,7 +73,7 @@ void RenderSystem::update(ptr<EntityManager> entities, ptr<EventManager> events,
 
 	glClearColor(color.x, color.y, color.z, 1.0f);
 
-    auto lights = entities->entities_with_components<TransformComponent, LightComponent>();
+    auto lights = entities.entities_with_components<TransformComponent, LightComponent>();
     auto lightObject = lights.begin();
 
     auto lightTransform = (*lightObject).component<TransformComponent>();
@@ -103,7 +103,7 @@ void RenderSystem::update(ptr<EntityManager> entities, ptr<EventManager> events,
     glClearDepth(1.0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    auto gameObjects = entities->entities_with_components<TransformComponent, MeshFilterComponent, MaterialComponent, RendererComponent>();
+    auto gameObjects = entities.entities_with_components<TransformComponent, MeshFilterComponent, MaterialComponent, RendererComponent>();
     for (auto gameObject : gameObjects)
     {
         auto transform = gameObject.component<TransformComponent>();
@@ -128,7 +128,7 @@ void RenderSystem::update(ptr<EntityManager> entities, ptr<EventManager> events,
 	_window->render();
 }
 
-void RenderSystem::geometryPass(ptr<EntityManager> entities, MatrixBlock& m)
+void RenderSystem::geometryPass(Ptr<EntityManager> entities, MatrixBlock& m)
 {
     /*_gbuffer.bind(GBuffer::Write);
 
@@ -190,7 +190,7 @@ void RenderSystem::geometryPass(ptr<EntityManager> entities, MatrixBlock& m)
     glDisable(GL_DEPTH_TEST);*/
 }
 
-void RenderSystem::lightPass(ptr<EntityManager> entities, MatrixBlock& m)
+void RenderSystem::lightPass(Ptr<EntityManager> entities, MatrixBlock& m)
 {
 
 }

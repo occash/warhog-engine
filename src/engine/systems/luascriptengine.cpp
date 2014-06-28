@@ -18,16 +18,16 @@
 
 using namespace luabind;
 
-struct ScriptComponentWrapper : ScriptComponent, luabind::wrap_base
+struct ScriptComponentWrapper : BaseScript, luabind::wrap_base
 {
     void start()
     {
         call<void>("start");
     }
 
-    void default_start(ScriptComponent *ptr)
+	void default_start(BaseScript *ptr)
     {
-        ptr->ScriptComponent::start();
+		ptr->BaseScript::start();
     }
 
     void update()
@@ -35,9 +35,9 @@ struct ScriptComponentWrapper : ScriptComponent, luabind::wrap_base
         call<void>("update");
     }
 
-    void default_update(ScriptComponent *ptr)
+	void default_update(BaseScript *ptr)
     {
-        ptr->ScriptComponent::update();
+		ptr->BaseScript::update();
     }
 
     void stop()
@@ -45,9 +45,9 @@ struct ScriptComponentWrapper : ScriptComponent, luabind::wrap_base
         call<void>("stop");
     }
 
-    void default_stop(ScriptComponent *ptr)
+	void default_stop(BaseScript *ptr)
     {
-        ptr->ScriptComponent::stop();
+		ptr->BaseScript::stop();
     }
 
     void proxyObject() const
@@ -59,7 +59,7 @@ struct ScriptComponentWrapper : ScriptComponent, luabind::wrap_base
         luabind::object selfObj(luabind::from_stack(l, -1));
         selfObj.push(l);
         //int res = lua_getmetatable(l, -1);
-        lua_getfenv(l, -1);
+        lua_getuservalue(l, -1);
         if (lua_istable(l, -1))
         {
             lua_pushnil(l);  // first key
@@ -141,20 +141,20 @@ bool LuaScriptEngine::bind()
     //in order to use it in scripts
     module(_state)
     [
-        class_<ScriptComponent, ScriptComponentWrapper>("BaseComponent")
+        class_<BaseScript, ScriptComponentWrapper>("BaseComponent")
         .def(constructor<>())
-        .def("start", &ScriptComponent::start, 
+		.def("start", &BaseScript::start,
         &ScriptComponentWrapper::default_start)
-        .def("update", &ScriptComponent::update, 
+		.def("update", &BaseScript::update,
         &ScriptComponentWrapper::default_update)
-        .def("stop", &ScriptComponent::stop, 
+		.def("stop", &BaseScript::stop,
         &ScriptComponentWrapper::default_stop)
-        .property("camera", &ScriptComponent::getCamera)
-        .property("light", &ScriptComponent::getLight)
-        .property("material", &ScriptComponent::getMaterial)
-        .property("meshFilter", &ScriptComponent::getMeshFilter)
-        .property("renderer", &ScriptComponent::getRenderer)
-        .property("transform", &ScriptComponent::getTransform),
+		.property("camera", &BaseScript::getCamera)
+		.property("light", &BaseScript::getLight)
+		.property("material", &BaseScript::getMaterial)
+		.property("meshFilter", &BaseScript::getMeshFilter)
+		.property("renderer", &BaseScript::getRenderer)
+		.property("transform", &BaseScript::getTransform),
 
         class_<Input>("Input")
         .scope
@@ -286,30 +286,30 @@ bool LuaScriptEngine::load(const std::string& name, const std::string& source)
     return result == 0;
 }
 
-ptr<ScriptComponent> LuaScriptEngine::instance(const std::string& name)
+BaseScript *LuaScriptEngine::instance(const std::string& name)
 {
     object obj;
+	BaseScript *script;
     try 
     {
         obj = call_function<object>(_state, name.c_str());
-        ScriptComponent *scr = object_cast<ScriptComponent *>(obj);
-        scr->proxyObject();
+		script = object_cast<BaseScript *>(obj);
+        /*scr->proxyObject();
         object tmpObj = obj["lol"];
         double val = object_cast<double>(tmpObj);
-        std::cout << "Test.lol = " << val << std::endl;
+        std::cout << "Test.lol = " << val << std::endl;*/
     }
     catch (const error& e)
     {
         object error_message(from_stack(e.state(), -1));
         std::cout << error_message << std::endl;
-        return false;
+        return nullptr;
     }
-    ptr<ScriptComponent> script(object_cast<ScriptComponent *>(obj));
 
     return script;
 }
 
-void LuaScriptEngine::collect(ptr<ScriptComponent> script)
+void LuaScriptEngine::collect(Ptr<ScriptComponent> script)
 {
     script.reset();
     lua_gc(_state, LUA_GCCOLLECT, 0);

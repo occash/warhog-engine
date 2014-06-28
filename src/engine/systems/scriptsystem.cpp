@@ -23,7 +23,7 @@ ScriptSystem::~ScriptSystem()
     }
 }
 
-void ScriptSystem::configure(ptr<EventManager> events)
+void ScriptSystem::configure(EventManager &events)
 {
     auto _state = _engines.begin();
     for (; _state != _engines.end(); ++_state) {
@@ -34,27 +34,16 @@ void ScriptSystem::configure(ptr<EventManager> events)
     }
 }
 
-void ScriptSystem::update(ptr<EntityManager> manager, ptr<EventManager> events, double dt)
+void ScriptSystem::update(EntityManager &manager, EventManager &events, double dt)
 {
-    for (BaseComponent::Family f = ScriptComponent::maxComponents();
-        f < ENTITYX_MAX_COMPONENTS; ++f)
-    {
-        auto mask = manager->component_mask(f);
-        auto entities = manager->entities_with_mask(mask);
+	auto entities = manager.entities_with_components<ScriptComponent>();
 
-        for (auto i = entities.begin(); i != entities.end(); ++i)
-        {
-            auto script = (*i).component<ScriptComponent>(f);
-            try
-            {
-                script->update();
-            }
-            catch (luabind::error e)
-            {
-                std::cout << e.what() << std::endl;
-            }
-        }
-    }
+	for (auto i = entities.begin(); i != entities.end(); ++i)
+	{
+		auto script = (*i).component<ScriptComponent>();
+		for (BaseScript *base : script->scripts)
+			base->update();
+	}
 }
 
 void ScriptSystem::registerEngine(ScriptEngine *engine)
@@ -63,32 +52,26 @@ void ScriptSystem::registerEngine(ScriptEngine *engine)
     _engines.insert(std::make_pair(engine->name(), enginePtr));
 }
 
-ptr<ScriptComponent> ScriptSystem::assign(Entity entity, Ptr<Script> script)
+bool ScriptSystem::assign(Entity entity, Ptr<Script> script)
 {
     auto enginePair = _engines.find(script->engine);
-    if (enginePair == _engines.end())
-        return ptr<ScriptComponent>();
+	if (enginePair == _engines.end())
+		return false;
 
     auto engine = enginePair->second;
+	if (!entity.has_component<ScriptComponent>())
+		entity.assign<ScriptComponent>();
 
-    auto mask = entity.component_mask();
-    for (BaseComponent::Family i = ScriptComponent::maxComponents();
-        i < ENTITYX_MAX_COMPONENTS; ++i)
-    {
-        if (!mask[i])
-        {
-            if (!engine->load(script->name, script->source))
-                return ptr<ScriptComponent>();
+	if (!engine->load(script->name, script->source))
+		return false;
 
-            auto component = engine->instance(script->name);
-            if (component)
-            {
-                component->entity = entity;
-                entity.set<ScriptComponent>(component, i);
-            }
-            return component;
-        }
-    }
+	auto component = entity.component<ScriptComponent>();
+	auto scriptObject = engine->instance(script->name);
+	if (!scriptObject)
+		return false;
 
-    return ptr<ScriptComponent>();
+	scriptObject->entity = entity;
+	component->scripts.push_back(scriptObject);
+
+	return true;
 }
