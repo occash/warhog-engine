@@ -18,6 +18,12 @@ Create environment viriable ```BOOST_ROOT``` to make boost visible to premake5.
 ### Yaml-cpp
 Projects also depends on [yaml-cpp](https://code.google.com/p/yaml-cpp/). It can be installed by cloning repositary and running cmake utility. Create environment variable ```YAML_ROOT``` to make it visible to premake5.
 
+### GLEW
+Download latest release of [GLEW](http://sourceforge.net/projects/glew/files/glew/) with binaries. Define environment variable ```GLEW_ROOT``` to build project.
+
+### Lua
+Download and install [lua](https://github.com/LuaDist/lua). Define variable LUA_ROOT.
+
 Name | Link
 -----|------
 boost | https://github.com/boostorg/boost
