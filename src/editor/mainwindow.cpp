@@ -9,6 +9,10 @@
 #include <QMenuBar>
 #include <QToolBar>
 #include <QStatusBar>
+#include <QSessionManager>
+#include <QCoreApplication>
+#include <QMessageBox>
+#include <QKeyEvent>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent),
@@ -17,9 +21,12 @@ MainWindow::MainWindow(QWidget *parent)
     _inspector(new InspectorWidget(this)),
     _resources(new ResourceWidget(this))
 {
-    installActions();
+	readSettings();
 
-    setCentralWidget(new RenderWidget(this));
+    installUi();
+
+	RenderWidget *renderer = new RenderWidget(this);
+    setCentralWidget(renderer);
     
     QDockWidget *leftDock = new QDockWidget("Project tree", this);
     _tree->setHeaderHidden(true);
@@ -37,19 +44,28 @@ MainWindow::MainWindow(QWidget *parent)
 
     connect(_tree, SIGNAL(activated(const QModelIndex&)),
         _inspector, SLOT(inspectEntity(const QModelIndex&)));
+
+	connect(qApp, SIGNAL(commitDataRequest(QSessionManager *)), this, SLOT(commitData(QSessionManager *)));
 }
 
 MainWindow::~MainWindow()
 {
-
+	writeSettings();
 }
 
-void MainWindow::installActions()
+void MainWindow::installUi()
 {
-    QMenu *fileMenu = new QMenu("FILE", this);
-    QMenu *entityMenu = new QMenu("ENTITY", this);
-    QMenu *componentMenu = new QMenu("COMPONENT", this);
-    QMenu *aboutMenu = new QMenu("ABOUT", this);
+    QMenu *fileMenu = new QMenu(tr("FILE"), this);
+    QMenu *entityMenu = new QMenu(tr("ENTITY"), this);
+    QMenu *componentMenu = new QMenu(tr("COMPONENT"), this);
+    QMenu *aboutMenu = new QMenu(tr("ABOUT"), this);
+
+	QAction *newAction = new QAction(tr("New project"), fileMenu);
+	QAction *openAction = new QAction(tr("Open project"), fileMenu);
+	QAction *closeAction = new QAction(tr("Close project"), fileMenu);
+	QAction *saveAction = new QAction(tr("Save project"), fileMenu);
+	QMenu *recentMenu = new QMenu(tr("Recent projects"), fileMenu);
+	QAction *newAction = new QAction(tr("Quit"), fileMenu);
 
     _menubar = new QMenuBar(this);
     _menubar->addMenu(fileMenu);
@@ -63,4 +79,65 @@ void MainWindow::installActions()
 
     _statusBar = new QStatusBar(this);
     setStatusBar(_statusBar);
+}
+
+void MainWindow::commitData(QSessionManager *manager)
+{
+	if (manager->allowsInteraction())
+	{
+		int ret = QMessageBox::warning(
+			this,
+			tr("Session end"),
+			tr("Save changes to disk?"),
+			QMessageBox::Save | QMessageBox::Discard, QMessageBox::Cancel
+			);
+		switch (ret)
+		{
+		case QMessageBox::Save:
+			manager->release();
+			/*if (!saveAll())
+				manager->cancel();*/
+			break;
+		case QMessageBox::Discard:
+			break;
+		case QMessageBox::Cancel:
+		default:
+			manager->cancel();
+			break;
+		}
+	}
+	//We can't interact with user so just quit
+}
+
+void MainWindow::readSettings()
+{
+	bool fullscreen = _settings.value("editor/fullscreen", false).toBool();
+	bool maximized = _settings.value("editor/maximized", false).toBool();
+	int width = _settings.value("editor/width", 800).toInt();
+	int height = _settings.value("editor/height", 600).toInt();
+	
+	resize(width, height);
+	Qt::WindowStates states = windowState();
+	if (fullscreen)
+		states |= Qt::WindowFullScreen;
+	if (maximized)
+		states |= Qt::WindowMaximized;
+	setWindowState(states);
+}
+
+void MainWindow::writeSettings()
+{
+	_settings.setValue("editor/fullscreen", isFullScreen());
+	_settings.setValue("editor/maximized", isMaximized());
+	if (!isMaximized() && !isFullScreen())
+	{
+		_settings.setValue("editor/width", width());
+		_settings.setValue("editor/height", height());
+	}
+}
+
+void MainWindow::keyReleaseEvent(QKeyEvent *event)
+{
+	if (event->key() == Qt::Key_F11)
+		setWindowState(windowState() ^ Qt::WindowFullScreen);
 }

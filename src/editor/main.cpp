@@ -1,40 +1,49 @@
-#include "resourcewidget.h"
+/*#include "resourcewidget.h"
 #include "resourcemanager.h"
 #include "meshresource.h"
-#include "scriptresource.h"
+#include "scriptresource.h"*/
 //#include "renderwidget.h"
-/*#include "scenemodel.h"
+#include "scenemodel.h"
 #include "inspectorwidget.h"
-#include "mainwindow.h"*/
-#include "textureviewer.h"
-#include "moduleinspector.h"
+#include "mainwindow.h"
+/*#include "textureviewer.h"
+#include "moduleinspector.h"*/
 
 
-#include "moduleitem.h"
+/*#include "moduleitem.h"
 #include "basemodule.h"
 #include "modulescene.h"
 #include "perlinmodule.h"
-#include "clampmodule.h"
+#include "clampmodule.h"*/
 
 #include <QtWidgets/QApplication>
-#include <QGraphicsView>
-//#include <QFile>
+//#include <QGraphicsView>
+#include <QFile>
+#include <QStandardPaths>
 
 int main(int argc, char *argv[])
 {
+	QApplication::setApplicationDisplayName("WarHog Editor");
+	QApplication::setApplicationName("WarHog Editor");
+	QApplication::setApplicationVersion("0.1");
+	QApplication::setOrganizationDomain("warhog.com");
+	QApplication::setOrganizationName("Shal Ind");
+
     QApplication a(argc, argv);
 
-    /*QFile styleFile(":/style/main");
+	QString configDir = QStandardPaths::writableLocation(QStandardPaths::ConfigLocation);
+
+    QFile styleFile(":/style/main");
     styleFile.open(QIODevice::ReadOnly);
     a.setStyleSheet(styleFile.readAll());
 
     MainWindow w;
-    w.show();*/
+    w.show();
 
-    ResourceManager::base = "C:\\projects\\ModernGL\\Win32\\Debug\\Assets\\";
+    /*ResourceManager::base = "C:\\projects\\ModernGL\\Win32\\Debug\\Assets\\";
     ResourceManager::add<MeshResource>();
     ResourceManager::add<ScriptResource>();
-
+	*/
     /*std::shared_ptr<Script> script1(new Script());
     script1->engine = "lua";
     script1->name = "script1";
@@ -62,14 +71,11 @@ int main(int argc, char *argv[])
     perlinItem.setPos(0, 0);
     clampItem.setPos(250, 0);*/
 
-    ModuleScene scene;
+    /*ModuleScene scene;
     QGraphicsView view(&scene);
     view.resize(640, 480);
     view.setBackgroundBrush(QBrush(QColor(40, 40, 40)));
 
-    /*scene.addItem(&perlinItem);
-    scene.addItem(&clampItem);
-    */
     TextureViewer v(scene.output(), 512, 512);
     ModuleInspector inspector;
 
@@ -79,7 +85,7 @@ int main(int argc, char *argv[])
 
     QObject::connect(&scene, SIGNAL(generate()), &v, SLOT(generate()));
     QObject::connect(&scene, SIGNAL(needInspect(QObject *)), 
-        &inspector, SLOT(inspectModule(QObject *)));
+        &inspector, SLOT(inspectModule(QObject *)));*/
 
     return a.exec();
 }

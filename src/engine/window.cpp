@@ -86,3 +86,23 @@ int Window::height() const
     glfwGetWindowSize(_handle, nullptr, &height);
     return height;
 }
+
+void Window::show()
+{
+	glfwWindowHint(GLFW_VISIBLE, GL_TRUE);
+}
+
+void Window::hide()
+{
+	glfwWindowHint(GLFW_VISIBLE, GL_FALSE);
+}
+
+void Window::setResizable(bool arg)
+{
+	glfwWindowHint(GLFW_RESIZABLE, arg ? GL_TRUE : GL_FALSE);
+}
+
+void Window::setDecorated(bool arg)
+{
+	glfwWindowHint(GLFW_DECORATED, arg ? GL_TRUE : GL_FALSE);
+}

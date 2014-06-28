@@ -22,6 +22,11 @@ public:
     int width() const;
     int height() const;
 
+	void show();
+	void hide();
+	void setResizable(bool arg);
+	void setDecorated(bool arg);
+
 private:
     void setWindow(const GLWindowHints& hints);
 

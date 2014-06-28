@@ -198,7 +198,7 @@ void operator>>(const YAML::Node& doc, GLFramebufferHints& hints)
 }
 
 GLWindowHints::GLWindowHints()
-    : visible(true),
+    : visible(false),
     resizable(false),
     decorated(true),
     width(640),
