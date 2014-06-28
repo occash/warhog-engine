@@ -2,7 +2,7 @@
 #include "systems/inputsystem.h"
 #include "systems/scriptsystem.h"
 
-#include <entityx/Manager.h>
+#include <entityx/quick.h>
 #include <entityx/deps/Dependencies.h>
 #include <GLFW/glfw3.h>
 
@@ -25,6 +25,7 @@
 
 #include <boost/any.hpp>
 #include "tree.h"
+#include <ctime>
 
 using namespace entityx;
 
@@ -53,14 +54,14 @@ private:
     tree<Entity> _tree;
 };*/
 
-class GameManager : public Manager {
-protected:
+class GameManager : public EntityX {
+public:
 	void configure() {
         GLContextHints contextHints;
         GLFramebufferHints frameHints;
         GLWindowHints windowHints;
 
-        YAML::Node doc = YAML::LoadFile("config.yaml");
+        YAML::Node doc = YAML::LoadFile("D:\\projects\\warhog-engine\\src\\engine\\config.yaml");
         /*auto iter = doc.begin();
         for (; iter != doc.end(); ++iter)
         {
@@ -88,19 +89,21 @@ protected:
         if (!result)
             exit(2);
 
-        system_manager->add<InputSystem>(_window, keyMap);
-        ptr<ScriptSystem> scripting = system_manager->add<ScriptSystem>();
+        systems.add<InputSystem>(_window, keyMap);
+		Ptr<ScriptSystem> scripting = systems.add<ScriptSystem>();
         scripting->registerEngine<LuaScriptEngine>();
-        system_manager->add<RenderSystem>(_window);
+		systems.add<RenderSystem>(_window);
+
+		_window->show();
 	}
 
 	void initialize() {
-        tree<Entity> entities;
+        tree<Entity> entitieTree;
 
-		Entity cameraId = entity_manager->create();
+		Entity cameraId = entities.create();
 		auto cameraPos = cameraId.assign<TransformComponent>();
         auto camera = cameraId.assign<CameraComponent>();
-        entities.insert(entities.end(), cameraId);
+        entitieTree.insert(entitieTree.end(), cameraId);
 
 		camera->setClearColor(glm::vec3(0.0f, 0.0f, 0.0f));
 		camera->setFarPlane(1000.0f);
@@ -109,10 +112,10 @@ protected:
         cameraPos->setPosition(glm::vec3(-1.0f, 1.0f, 1.0f));
         cameraPos->setRotation(glm::vec3(45.0f, 45.0f, 0.0f));
 
-        Entity lightId = entity_manager->create();
+		Entity lightId = entities.create();
         auto lightPos = lightId.assign<TransformComponent>();
         auto light = lightId.assign<LightComponent>();
-        auto lightNode = entities.insert(entities.end(), lightId);
+        auto lightNode = entitieTree.insert(entitieTree.end(), lightId);
 
         light->setType(LightComponent::Directional);
         light->setColor(glm::vec4(1.0f, 0.5f, 0.5f, 0.0f));
@@ -129,12 +132,12 @@ protected:
         script->name = "Test";
         Mesh *cube = mesh.get();
 
-		Entity modelId = entity_manager->create();
+		Entity modelId = entities.create();
 		modelId.assign<TransformComponent>();
         auto meshFilter = modelId.assign<MeshFilterComponent>();
         auto material = modelId.assign<MaterialComponent>();
         auto renderer = modelId.assign<RendererComponent>();
-        entities.append_child(lightNode, modelId);
+        entitieTree.append_child(lightNode, modelId);
 
         //TODO: remake mesh loading
 		meshFilter->setMesh(cube);
@@ -142,14 +145,8 @@ protected:
 		renderer->loadData(cube);
 
         //Entity scriptId = entity_manager->create();
-        auto sysptr = system_manager->system<ScriptSystem>();
-        ptr<ScriptSystem> scriptSystem(static_pointer_cast<ScriptSystem>(sysptr));
-        scriptSystem->assign(cameraId, script);
-
-        /*for (auto entity : entities)
-        {
-            std::cout << entity.id() << std::endl;
-        }*/
+		auto scriptSystem = systems.system<ScriptSystem>();
+		scriptSystem->assign(cameraId, script);
 	}
 
 	void update(double dt) {
@@ -158,15 +155,41 @@ protected:
             stop();
             return;
         }
-        system_manager->update<InputSystem>(dt);
-        system_manager->update<ScriptSystem>(dt);
-		system_manager->update<RenderSystem>(dt);
+        systems.update<InputSystem>(dt);
+		systems.update<ScriptSystem>(dt);
+		systems.update<RenderSystem>(dt);
+	}
+
+	void start() {
+		configure();
+		systems.configure();
+		initialize();
+	}
+
+	void run() {
+		_running = true;
+		while (_running) {
+			std::clock_t ticks = std::clock();
+			update(double(ticks - _timer) / CLOCKS_PER_SEC);
+			_timer = ticks;
+		}
+	}
+
+	void step(double dt) {
+		update(dt);
+	}
+
+
+	void stop() {
+		_running = false;
 	}
 
 private:
     Ptr<GLContext> _context;
     Ptr<Window> _window;
     Ptr<Input> _input;
+	std::clock_t _timer;
+	bool _running = false;
 
 };
 
