@@ -1,5 +1,7 @@
 #include "meshresource.h"
 
+#include <iostream>
+
 bool MeshResource::loadData(std::istream& in, void **data)
 {
     Mesh *mesh = new Mesh();

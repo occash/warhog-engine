@@ -1,6 +1,6 @@
 #include "meshimporter.h"
 #include "mesh.h"
-#include "meshresource.h"
+#include "resource/meshresource.h"
 #include "resourcemanager.h"
 
 #include <QDir>

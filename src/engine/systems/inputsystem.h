@@ -17,8 +17,8 @@ public:
     InputSystem(Ptr<Window> window, const KeyMap& keyMap);
     ~InputSystem();
 
-    void configure(ptr<EventManager> events);
-    void update(ptr<EntityManager> entities, ptr<EventManager> events, double dt) override;
+    void configure(EventManager &events) override;
+    void update(EntityManager &entities, EventManager &events, double dt) override;
 
 private:
     double _horizontal;

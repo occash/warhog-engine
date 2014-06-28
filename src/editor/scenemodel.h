@@ -25,8 +25,8 @@ public:
     int columnCount(const QModelIndex &parent = QModelIndex()) const;
 
 private:
-    entityx::ptr<entityx::EventManager> _events;
-    entityx::ptr<entityx::EntityManager> _entities;
+    entityx::EventManager _events;
+    entityx::EntityManager _entities;
     tree<entityx::Entity> _tree;
     tree<entityx::Entity>::iterator _root;
 };

@@ -16,12 +16,12 @@ InputSystem::~InputSystem()
 {
 }
 
-void InputSystem::configure(ptr<EventManager> events)
+void InputSystem::configure(EventManager &events)
 {
 
 }
 
-void InputSystem::update(ptr<EntityManager> entities, ptr<EventManager> events, double dt)
+void InputSystem::update(EntityManager &entities, EventManager &events, double dt)
 {
     double horizontal, vertical;
     glfwGetCursorPos(Input::_window->_handle,

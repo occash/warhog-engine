@@ -2,7 +2,7 @@
 #include "propertyview.h"
 #include "floateditor.h"
 
-#include <cameracomponent.h>
+#include <components/cameracomponent.h>
 #include <QVBoxLayout>
 
 CameraView::CameraView(QWidget *parent)
@@ -34,10 +34,9 @@ CameraView::~CameraView()
 
 }
 
-void CameraView::inspectComponent(entityx::ptr<entityx::BaseComponent> component)
+void CameraView::inspectComponent(entityx::BaseComponent *component)
 {
-    entityx::ptr<CameraComponent> camera = 
-        std::static_pointer_cast<CameraComponent>(component);
+	CameraComponent *camera = static_cast<CameraComponent *>(component);
 
     _fovView->setValue(camera->fieldOfView());
     _aspectView->setValue(camera->aspect());

@@ -1,6 +1,7 @@
 #include "textureresource.h"
 
 #include <png.h>
+#include <iostream>
 
 #define PNGSIGSIZE 8
 

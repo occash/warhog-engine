@@ -1,12 +1,12 @@
 #include "inspectorwidget.h"
 
-#include <cameracomponent.h>
-#include <lightcomponent.h>
-#include <materialcomponent.h>
-#include <meshfiltercomponent.h>
-#include <renderercomponent.h>
-#include <scriptcomponent.h>
-#include <transformcomponent.h>
+#include <components/cameracomponent.h>
+#include <components/lightcomponent.h>
+#include <components/materialcomponent.h>
+#include <components/meshfiltercomponent.h>
+#include <components/renderercomponent.h>
+#include <components/scriptcomponent.h>
+#include <components/transformcomponent.h>
 
 #include "cameraview.h"
 
@@ -45,13 +45,13 @@ void InspectorWidget::inspectEntity(const QModelIndex &index)
 
     if (checkComponent<CameraComponent>(entity))
     {
-        entityx::ptr<CameraComponent> camera = 
+		entityx::ComponentHandle<CameraComponent> camera =
             entity.component<CameraComponent>();
-        _cameraView->inspectComponent(camera);
+        _cameraView->inspectComponent(camera.get());
     }
 
-    std::bitset<entityx::MAX_COMPONENTS> componentMask = entity.component_mask();
-    int scriptOffset = ScriptComponent::maxComponents();
+    /*std::bitset<entityx::MAX_COMPONENTS> componentMask = entity.component_mask();
+    int scriptOffset = ScriptComponent::maxComponents();*/
 }
 
 void InspectorWidget::showComponents(entityx::Entity entity)

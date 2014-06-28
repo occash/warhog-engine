@@ -1,7 +1,7 @@
 #include "textureimporter.h"
-#include "texture.h"
-#include "textureresource.h"
-#include "resourcemanager.h"
+#include <texture.h>
+#include <resource/textureresource.h>
+#include <resourcemanager.h>
 
 #include <memory>
 #include <Freeimage.h>

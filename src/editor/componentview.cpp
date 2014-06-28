@@ -25,7 +25,7 @@ ComponentView::~ComponentView()
 
 }
 
-void ComponentView::inspectComponent(std::shared_ptr<entityx::BaseComponent> component)
+void ComponentView::inspectComponent(entityx::BaseComponent *component)
 {
 
 }

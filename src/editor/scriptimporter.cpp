@@ -1,7 +1,7 @@
 #include "scriptimporter.h"
-#include "script.h"
-#include "scriptresource.h"
-#include "resourcemanager.h"
+#include <script.h>
+#include <resource/scriptresource.h>
+#include <resourcemanager.h>
 
 #include <QFile>
 

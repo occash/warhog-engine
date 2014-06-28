@@ -12,7 +12,7 @@
 ResourceWidget::ResourceWidget(QWidget *parent)
     : QWidget(parent)
 {
-    ui.setupUi(this);
+    //ui.setupUi(this);
 
     _importers.append(new MeshImporter());
     _importers.append(new ScriptImporter());

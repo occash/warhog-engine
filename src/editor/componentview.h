@@ -23,7 +23,7 @@ public:
 
     void setBody(QWidget *body);
 
-    virtual void inspectComponent(entityx::ptr<entityx::BaseComponent> component);
+    virtual void inspectComponent(entityx::BaseComponent *component);
 
 private:
     QVBoxLayout *_layout;

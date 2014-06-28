@@ -1,20 +1,20 @@
 #include "scenemodel.h"
-#include <cameracomponent.h>
-#include <infocomponent.h>
+#include <components/cameracomponent.h>
+#include <components/infocomponent.h>
 
 SceneModel::SceneModel(QObject *parent)
     : QAbstractItemModel(parent),
-    _events(entityx::EventManager::make()),
-    _entities(entityx::EntityManager::make(_events))
+    _events(),
+    _entities(_events)
 {
-    _root = _tree.insert(_tree.end(), entityx::Entity(_entities, entityx::Entity::INVALID));
+    _root = _tree.insert(_tree.end(), entityx::Entity(&_entities, entityx::Entity::INVALID));
 
-    entityx::Entity id1 = _entities->create();
+    entityx::Entity id1 = _entities.create();
     id1.assign<InfoComponent>("Main camera");
     id1.assign<CameraComponent>();
-    entityx::Entity id2 = _entities->create();
+    entityx::Entity id2 = _entities.create();
     id2.assign<InfoComponent>("New Object");
-    entityx::Entity id3 = _entities->create();
+    entityx::Entity id3 = _entities.create();
     id3.assign<InfoComponent>("Trololo");
 
     _tree.append_child(_root, id1);
@@ -43,7 +43,10 @@ QVariant SceneModel::data(const QModelIndex &index, int role) const
         return QVariant();
 
     auto info = node->data.component<InfoComponent>();
-    return QString::fromStdString(info->name);
+	std::string name = info->name;
+	QString qname = QString::fromStdString(name);
+	QVariant res = QVariant(qname);
+    return res;
 }
 
 Qt::ItemFlags SceneModel::flags(const QModelIndex &index) const

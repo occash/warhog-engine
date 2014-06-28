@@ -2,7 +2,7 @@
 #define RESOURCEWIDGET_H
 
 #include <QtWidgets/QWidget>
-#include "ui_resourcewidget.h"
+//#include "ui_resourcewidget.h"
 
 class Importer;
 
@@ -21,7 +21,7 @@ protected:
     void dropEvent(QDropEvent *event);
 
 private:
-    Ui::ResourceWidgetClass ui;
+    //Ui::ResourceWidgetClass ui;
     QList<Importer *> _importers;
 
 };
