@@ -1,7 +1,7 @@
 #ifndef MESHIMPORTER_H
 #define MESHIMPORTER_H
 
-#include <string>
+/*#include <string>
 
 class Mesh;
 
@@ -15,6 +15,6 @@ public:
 
     Mesh *load(const std::string& name);
     void save(const std::string& name, Mesh *mesh);
-};
+};*/
 
 #endif

@@ -1,5 +1,5 @@
 #include "meshimporter.h"
-#include "mesh.h"
+/*#include "mesh.h"
 
 #include <tiny_obj_loader.h>
 #include <iostream>
@@ -17,7 +17,7 @@ MeshImporter::~MeshImporter()
 Mesh *MeshImporter::import(const std::string& name)
 {
     return nullptr;
-	/*std::vector<tinyobj::shape_t> shapes;
+	std::vector<tinyobj::shape_t> shapes;
 	std::string error = tinyobj::LoadObj(shapes, name.c_str(), "models/");
 	if (error.length() > 0)
 	{
@@ -29,13 +29,13 @@ Mesh *MeshImporter::import(const std::string& name)
 		Mesh *mesh = new Mesh();
 		mesh->_mesh = shapes[0].mesh;
 		return mesh;
-	}*/
+	}
 }
 
 Mesh * MeshImporter::load(const std::string& name)
 {
     return nullptr;
-    /*std::ifstream file(name, std::ios::binary);
+    std::ifstream file(name, std::ios::binary);
     Mesh *mesh = new Mesh();
 	std::vector<float>::size_type posSize = 0, normSize = 0, texSize = 0;
 	std::vector<unsigned int>::size_type indSize = 0;
@@ -63,12 +63,12 @@ Mesh * MeshImporter::load(const std::string& name)
         file.read((char *)mesh->_mesh.indices.data(),
         mesh->_mesh.indices.size() * sizeof(unsigned int));
 
-    return mesh;*/
+    return mesh;
 }
 
 void MeshImporter::save(const std::string& name, Mesh *mesh)
 {
-    /*std::ofstream file(name, std::ios::binary);
+    std::ofstream file(name, std::ios::binary);
     std::vector<float>::size_type posSize = mesh->_mesh.positions.size(), 
         normSize = mesh->_mesh.normals.size(), 
         texSize = mesh->_mesh.texcoords.size();
@@ -90,5 +90,5 @@ void MeshImporter::save(const std::string& name, Mesh *mesh)
     file.write((char *)mesh->_mesh.texcoords.data(),
         mesh->_mesh.texcoords.size() * sizeof(float));
     file.write((char *)mesh->_mesh.indices.data(),
-        mesh->_mesh.indices.size() * sizeof(unsigned int));*/
-}
+        mesh->_mesh.indices.size() * sizeof(unsigned int));
+}*/
