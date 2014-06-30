@@ -10,6 +10,7 @@ class QSessionManager;
 class SceneModel;
 class InspectorWidget;
 class ResourceWidget;
+class ViewManager;
 
 class MainWindow : public QMainWindow
 {
@@ -31,10 +32,14 @@ private slots:
 	void commitData(QSessionManager *);
 
 private:
+	//Common
 	QSettings _settings;
     QMenuBar *_menubar;
     QToolBar *_toolBar;
     QStatusBar *_statusBar;
+
+	ViewManager *_viewManager;
+
     QTreeView *_tree;
     SceneModel *_model;
     InspectorWidget *_inspector;
