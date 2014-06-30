@@ -4,32 +4,43 @@
 #include <map>
 #include <fstream>
 
+#include "tree.h"
 #include "resource.h"
+
+class ENGINE_EXPORT ResourceIO
+{
+public:
+	virtual Resource::Type type(const std::string& id) const = 0;
+	virtual std::shared_ptr<std::istream> get(const std::string& id) = 0;
+	virtual std::shared_ptr<std::ostream> set(const std::string& id) = 0;
+
+	std::string basePath;
+	tree<std::string> paths;
+
+};
 
 class ENGINE_EXPORT ResourceManager
 {
 public:
-    template<class R>
-    static void add();
+	ResourceManager(std::shared_ptr<ResourceIO> io);
+	~ResourceManager();
 
-    template<class T>
-    static std::shared_ptr<T> load(const std::string& id);
+    void addLoader(std::shared_ptr<ResourceLoader> loader);
 
-    template<class T>
-    static void save(const std::string& id, std::shared_ptr<T>);
-
-    static std::string base;
+    std::shared_ptr<Resource> load(const std::string& id);
+    void save(const std::string& id, std::shared_ptr<Resource>);
 
 private:
-    template<class T>
-    static Resource<T> *findLoader();
+    typedef std::map<Resource::Type, std::shared_ptr<ResourceLoader>> LoaderMap;
+	typedef std::map<std::string, std::shared_ptr<Resource>> ResourceCache;
 
-private:
-    typedef std::map<BaseResource::ResourceType, std::shared_ptr<BaseResource> > ResourceMap;
-    static ResourceMap _loaders;
+	std::shared_ptr<ResourceIO> _io;
+    LoaderMap _loaders;
+	ResourceCache _cache;
+	//tree<std::shared_ptr<Resource>> _resourceTree;
 };
 
-template<class T>
+/*template<class T>
 Resource<T> *ResourceManager::findLoader()
 {
     auto loaderIter = _loaders.find(Resource<T>::type());
@@ -78,6 +89,6 @@ void ResourceManager::save(const std::string& id, std::shared_ptr<T> res)
     std::ofstream file(base + id, std::ios::binary);
     if (file)
         loader->save(file, res);
-}
+}*/
 
 #endif
