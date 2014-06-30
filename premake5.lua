@@ -85,6 +85,7 @@ solution "warhog"
 		targetname "editor"
 		language "C++"
 		kind "WindowedApp"
+		defines { "FREEIMAGE_LIB" }
 		includedirs {
 			"D:/third-party/boost/include",
 			"D:/third-party/entityx",
