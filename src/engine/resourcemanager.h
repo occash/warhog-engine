@@ -7,17 +7,7 @@
 #include "tree.h"
 #include "resource.h"
 
-class ENGINE_EXPORT ResourceIO
-{
-public:
-	virtual Resource::Type type(const std::string& id) const = 0;
-	virtual std::shared_ptr<std::istream> get(const std::string& id) = 0;
-	virtual std::shared_ptr<std::ostream> set(const std::string& id) = 0;
-
-	std::string basePath;
-	tree<std::string> paths;
-
-};
+class ResourceIO;
 
 class ENGINE_EXPORT ResourceManager
 {
