@@ -37,7 +37,7 @@ void ScriptImporter::import(const QString& filename)
     script->name = nameBytes.constData();
     script->source = sourceBytes.constData();
 
-    ResourceManager::save(std::string("Scripts\\") + nameBytes.constData() + ".script", script);
+    //ResourceManager::save(std::string("Scripts\\") + nameBytes.constData() + ".script", script);
 }
 
 QStringList ScriptImporter::suffixes()

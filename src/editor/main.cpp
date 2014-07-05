@@ -21,8 +21,19 @@
 #include <QFile>
 #include <QStandardPaths>
 
+#include "resourcemanager.h"
+#include "fileresourceio.h"
+
 int main(int argc, char *argv[])
 {
+	std::shared_ptr<ResourceIO> io = 
+		std::make_shared<FileResourceIO>(
+		"D:/projects/warhog-engine/test/project1/resources"
+		);
+	ResourceManager manager(io);
+	manager.createGroup("textures");
+	manager.createGroup("textures/diffuse");
+
 	QApplication::setApplicationDisplayName("WarHog Editor");
 	QApplication::setApplicationName("WarHog Editor");
 	QApplication::setApplicationVersion("0.1");

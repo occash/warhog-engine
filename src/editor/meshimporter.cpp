@@ -44,7 +44,7 @@ void MeshImporter::import(const QString& filename)
         shortName = shortName.mid(0, pnt);
         QByteArray shortBytes = shortName.toLocal8Bit();
 
-        ResourceManager::save(std::string("Meshes\\") + shortBytes.constData() + ".mesh", mesh);
+        //ResourceManager::save(std::string("Meshes\\") + shortBytes.constData() + ".mesh", mesh);
 
         emit progress(100);
     }
