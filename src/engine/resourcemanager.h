@@ -8,77 +8,94 @@
 #include "resource.h"
 
 class ResourceIO;
+class ResourceGroup;
 
+/*! \breif The ResourceManager class allows engine to manage assests
+*/
 class ENGINE_EXPORT ResourceManager
 {
 public:
 	ResourceManager(std::shared_ptr<ResourceIO> io);
 	~ResourceManager();
 
-    void addLoader(std::shared_ptr<ResourceLoader> loader);
+	/*! \breif Add resource loader to manager
+		Use addLoader(Args... args) for convinience. It will create
+		loader automatically.
+		\param loader Pointer to existing resource loader
+		\sa addLoader(Args... args)
+		\sa BaseResource
+		\sa Reource
+	*/
+	void addLoader(std::shared_ptr<BaseResource> loader);
 
-    std::shared_ptr<Resource> load(const std::string& id);
-    void save(const std::string& id, std::shared_ptr<Resource>);
+	/*! \breif Load resource with given id
+	*/
+	std::shared_ptr<Object> load(const std::string& id, BaseResource::Type type = 0);
+
+	/*! \breif Save resource to abstract storage
+		Use this function to store the resource. 
+		You should explicitly set resource type.
+		If you want the manager to guess the type
+		use save(const std::string& id, std::shared_ptr<T> object) for convinience.
+		Warning: groups not created automatically
+		\param id Resource identificator
+		\param type Resource type
+		\sa load
+		\sa ResourceIO
+	*/
+	bool save(const std::string& id, std::shared_ptr<Object> object, BaseResource::Type type);
+
+	/*! \breif Returns resource group by id
+		If id is empty method will return root group.
+		\param id Resource group id
+		\sa root()
+	*/
+	const ResourceGroup *group(const std::string& id = std::string()) const;
+
+	/*! \breif Returns root resource group
+		Same as group("").
+		\sa group()
+	*/
+	const ResourceGroup *root() const;
+
+	/*! \breif Creates new group
+		It also creates all subgroups if required.
+		\param id Full path for group
+		\sa group()
+	*/
+	bool createGroup(const std::string& id);
+
+	/*! \breif Removes group and all resources assotiated with it
+		\param id Full path for group
+		\sa group()
+	*/
+	bool deleteGroup(const std::string& id);
+
+	template<typename T, typename... Args>
+	void addLoader(Args... args)
+	{
+		addLoader(std::make_shared<T>(args...));
+	}
+	
+	template<typename T>
+	std::shared_ptr<T> load(const std::string& id)
+	{
+		return std::dynamic_pointer_cast<T>(load(id));
+	}
+	template<typename T>
+	bool save(const std::string& id, std::shared_ptr<T> object)
+	{
+		return save(id, object, Resource<T>::staticType());
+	}
 
 private:
-    typedef std::map<Resource::Type, std::shared_ptr<ResourceLoader>> LoaderMap;
-	typedef std::map<std::string, std::shared_ptr<Resource>> ResourceCache;
+	typedef std::map<BaseResource::Type, std::shared_ptr<BaseResource>> LoaderMap;
+	//typedef std::map<std::string, std::shared_ptr<BaseResource>> ResourceCache;
 
 	std::shared_ptr<ResourceIO> _io;
-    LoaderMap _loaders;
-	ResourceCache _cache;
+	LoaderMap _loaders;
+	//ResourceCache _cache;
 	//tree<std::shared_ptr<Resource>> _resourceTree;
 };
-
-/*template<class T>
-Resource<T> *ResourceManager::findLoader()
-{
-    auto loaderIter = _loaders.find(Resource<T>::type());
-    if (loaderIter == _loaders.end())
-        return nullptr;
-
-    auto baseLoader = loaderIter->second;
-    Resource<T> *loader = dynamic_cast<Resource<T> *>(baseLoader.get());
-
-    return loader;
-}
-
-template<class R>
-void ResourceManager::add()
-{
-    //Check if already exists
-    auto loader = _loaders.find(R::type());
-    if (loader != _loaders.end())
-        return;
-
-    auto val = std::make_pair(R::type(), std::shared_ptr<BaseResource>(new R()));
-    _loaders.insert(val);
-}
-
-template<class T>
-std::shared_ptr<T> ResourceManager::load(const std::string& id)
-{
-    Resource<T> *loader = findLoader<T>();
-    if (nullptr == loader)
-        return std::shared_ptr<T>();
-
-    std::ifstream file(base + id, std::ios::binary);
-    if (file)
-        return loader->load(file);
-
-    return std::shared_ptr<T>();
-}
-
-template<class T>
-void ResourceManager::save(const std::string& id, std::shared_ptr<T> res)
-{
-    Resource<T> *loader = findLoader<T>();
-    if (nullptr == loader)
-        return;
-
-    std::ofstream file(base + id, std::ios::binary);
-    if (file)
-        loader->save(file, res);
-}*/
 
 #endif

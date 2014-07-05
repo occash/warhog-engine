@@ -1,59 +1,43 @@
 #ifndef RESOURCEIO_H
 #define RESOURCEIO_H
 
+#include "global.h"
 #include "resource.h"
 
-#include <fstream>
-#include <unordered_map>
+#include <memory>
 
-class ENGINE_EXPORT ResourceGroup
-{
-public:
-	ResourceGroup(ResourceGroup &&other) :
-		name(std::move(other.name)),
-		types(std::move(other.types))
-	{}
+class ResourceGroup;
 
-	std::string name;
-	std::unordered_map<std::string, Resource::Type> types;
-
-};
-
+/*! \breif This class Handle input/output operations of resources
+	ResourceIO stores tree-like group structure 
+	(You can store it internally as you like).
+	It also keep track the types of resources in bundle
+	and must provide resource loaders with input and output
+	streams.
+*/
 class ENGINE_EXPORT ResourceIO
 {
 public:
-	virtual std::shared_ptr<std::istream> get(const std::string& id) = 0;
-	virtual std::shared_ptr<std::ostream> set(const std::string& id) = 0;
+	ResourceIO(const std::string& basePath);
+	~ResourceIO();
 
-	std::string basePath;
-	tree<ResourceGroup> paths;
+	std::string basePath() const;
 
-};
+	/*! Defines if model is read only
+		You should provide pack() funcion to create read-only bundle.
+	*/
+	virtual bool isReadOnly() const = 0;
 
-class ENGINE_EXPORT FileResourceIO : public ResourceIO
-{
-public:
-	FileResourceIO(const std::string& config) 
-		: configFile(config) 
-	{
-	}
-	~FileResourceIO() {}
+	//! Return root resource group
+	virtual ResourceGroup *rootGroup() const = 0;
+	virtual bool createSubGroup(ResourceGroup *baseGroup, const std::string& groupName) = 0;
+	virtual bool removeSubGroup(ResourceGroup *baseGroup) = 0;
 
-	std::shared_ptr<std::istream> get(const std::string& id) override
-	{
-		std::shared_ptr<std::istream> in =
-			std::make_shared<std::ifstream>(basePath + '/' + id, std::ios::in | std::ios::binary);
-		return in;
-	}
+	virtual bool read(std::shared_ptr<BaseResource> loader, const std::string& id, Object *& object) = 0;
+	virtual bool write(std::shared_ptr<BaseResource> loader, const std::string& id, Object *object) = 0;
 
-	std::shared_ptr<std::ostream> set(const std::string& id) override
-	{
-		std::shared_ptr<std::ostream> out =
-			std::make_shared<std::ofstream>(basePath + '/' + id, std::ios::out | std::ios::binary);
-		return out;
-	}
-
-	std::string configFile;
+private:
+	std::string _basePath;
 
 };
 

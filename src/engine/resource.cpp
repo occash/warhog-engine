@@ -1,3 +1,3 @@
 #include "resource.h"
 
-Resource::Type Resource::typeCounter = 0;
+BaseResource::Type BaseResource::typeCounter = 0;

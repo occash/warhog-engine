@@ -122,12 +122,12 @@ public:
         light->setIntensity(1.0f);
         lightPos->setRotation(glm::vec3(0.0f, 135.0f, 0.0f));
 
-        ResourceManager manager;
+        /*ResourceManager manager;
         manager.add<MeshResource>();
-        manager.add<ScriptResource>();
+        manager.add<ScriptResource>();*/
 
-        Ptr<Mesh> mesh = manager.load<Mesh>("dragon.bmf");
-        Ptr<Script> script = manager.load<Script>("Test.lua");
+		Ptr<Mesh> mesh;// = manager.load<Mesh>("dragon.bmf");
+		Ptr<Script> script;// = manager.load<Script>("Test.lua");
         script->engine = "lua";
         script->name = "Test";
         Mesh *cube = mesh.get();
