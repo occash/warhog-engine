@@ -33,6 +33,16 @@ int main(int argc, char *argv[])
 	ResourceManager manager(io);
 	manager.createGroup("textures");
 	manager.createGroup("textures/diffuse");
+	manager.createGroup("textures/specular");
+	manager.createGroup("models");
+	manager.createGroup("models/maya");
+	manager.createGroup("scripts");
+	manager.createGroup("scripts/algo");
+	manager.createGroup("scripts/algo/astar");
+	manager.createGroup("scripts/weather");
+	manager.createGroup("levels");
+	/*manager.deleteGroup("textures/diffuse");
+	manager.deleteGroup("textures");
 
 	QApplication::setApplicationDisplayName("WarHog Editor");
 	QApplication::setApplicationName("WarHog Editor");
@@ -49,7 +59,7 @@ int main(int argc, char *argv[])
     a.setStyleSheet(styleFile.readAll());
 
     MainWindow w;
-    w.show();
+    w.show();*/
 
     /*ResourceManager::base = "C:\\projects\\ModernGL\\Win32\\Debug\\Assets\\";
     ResourceManager::add<MeshResource>();
@@ -98,5 +108,6 @@ int main(int argc, char *argv[])
     QObject::connect(&scene, SIGNAL(needInspect(QObject *)), 
         &inspector, SLOT(inspectModule(QObject *)));*/
 
-    return a.exec();
+    //return a.exec();
+	return 0;
 }
