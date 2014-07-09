@@ -3,10 +3,9 @@
 
 #include <QObject>
 
-#include "global.h"
 #include "resourceio.h"
 
-class ResourceGroup;
+class ResourceNode;
 
 class FileResourceIO : public QObject, public ResourceIO
 {
@@ -16,17 +15,20 @@ public:
 	FileResourceIO(const std::string& basePath, const std::string& config = "resources.meta");
 	~FileResourceIO();
 
-	bool isReadOnly() const { return false; }
+	bool readOnly() const override;
 
-	ResourceGroup *rootGroup() const override;
-	bool createSubGroup(ResourceGroup *baseGroup, const std::string& groupName) override;
-	bool removeSubGroup(ResourceGroup *baseGroup) override;
+	bool createTree(const std::string& path, ResourceNode *& root) override;
+	bool removeTree(ResourceNode *root) override;
 
-	bool read(std::shared_ptr<BaseResource> loader, const std::string& id, Object *& object) override;
-	bool write(std::shared_ptr<BaseResource> loader, const std::string& id, Object *object) override;
+	bool createGroup(ResourceNode *baseNode, const std::string& id) override;
+	bool createHandle(ResourceNode *baseNode, BaseResource::Type type, const std::string& id) override;
+	bool removeNode(ResourceNode *baseNode) override;
+
+	bool read(ResourceNode *node, std::shared_ptr<BaseResource> loader, Object *& object) override;
+	bool write(ResourceNode *node, std::shared_ptr<BaseResource> loader, Object *object) override;
 
 private:
-	ResourceGroup *_root;
+	ResourceNode *_root;
 	std::string _configFile;
 
 };

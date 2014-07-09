@@ -4,9 +4,10 @@
 #include <QtWidgets/QWidget>
 //#include "ui_resourcewidget.h"
 
-class Importer;
-class QFileSystemModel;
+class QAbstractItemModel;
 class QTreeView;
+class Importer;
+class ResourceManager;
 
 class ResourceWidget : public QWidget
 {
@@ -27,7 +28,8 @@ protected:
 private:
     //Ui::ResourceWidgetClass ui;
     QList<Importer *> _importers;
-	QFileSystemModel *_model;
+	ResourceManager *_manager;
+	QAbstractItemModel *_model;
 	QTreeView *_view;
 
 };

@@ -2,6 +2,10 @@
 #include "meshimporter.h"
 #include "scriptimporter.h"
 #include "textureimporter.h"
+#include "fileresourceio.h"
+#include "resourcemodel.h"
+
+#include <resourcemanager.h>
 
 #include <QDragEnterEvent>
 #include <QDropEvent>
@@ -13,12 +17,17 @@
 #include <QVBoxLayout>
 
 ResourceWidget::ResourceWidget(QWidget *parent)
-    : QWidget(parent)
+    : QWidget(parent),
+	_manager(nullptr)
 {
     //ui.setupUi(this);
 
-	_model = new QFileSystemModel(this);
-	_model->setNameFilterDisables(false);
+	std::shared_ptr<ResourceIO> io =
+		std::make_shared<FileResourceIO>(
+		"D:/projects/warhog-engine/test/project1/resources"
+		);
+	_manager = new ResourceManager(io);
+	_model = new ResourceModel(_manager, this);
 
 	_view = new QTreeView(this);
 	_view->setModel(_model);
@@ -37,7 +46,7 @@ ResourceWidget::ResourceWidget(QWidget *parent)
 
 ResourceWidget::~ResourceWidget()
 {
-
+	delete _manager;
 }
 
 void ResourceWidget::dragEnterEvent(QDragEnterEvent *event)
@@ -99,13 +108,13 @@ void ResourceWidget::addImporter(Importer *importer)
 		return;
 
 	_importers.append(importer);
-	QStringList exts = importer->suffixes();
+	/*QStringList exts = importer->suffixes();
 	QStringList filters = _model->nameFilters();
 	foreach(const QString& ext, exts)
 	{
 		filters.append(QString("*.%1").arg(ext));
 	}
-	_model->setNameFilters(filters);
+	_model->setNameFilters(filters);*/
 }
 
 Importer *ResourceWidget::findImporter(const QString& ext) const
@@ -125,6 +134,6 @@ Importer *ResourceWidget::findImporter(const QString& ext) const
 
 void ResourceWidget::setResourceFolder(const QString& folder)
 {
-	_model->setRootPath(folder);
-	_view->setRootIndex(_model->index(_model->rootPath()));
+	//_model->setRootPath(folder);
+	//_view->setRootIndex(_model->index(_model->rootPath()));
 }

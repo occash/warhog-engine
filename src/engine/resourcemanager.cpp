@@ -33,56 +33,81 @@ void ResourceManager::addLoader(std::shared_ptr<BaseResource> loader)
 	_loaders.insert(std::make_pair(loader->type(), loader));
 }
 
-std::shared_ptr<Object> ResourceManager::load(const std::string& id, BaseResource::Type type)
+std::shared_ptr<Object> ResourceManager::load(const std::string& id)
 {
-	//Guess the type
-	if (type == 0)
+	//No id provided
+	if (id.empty())
 		return std::shared_ptr<Object>();
 
-	LoaderMap::iterator loader = _loaders.find(type);
+	//Split path to node names
+	//Last string interpreted as object id
+	std::list<std::string> groupNames = split(id, '/');
+
+	//Fetch groups
+	ResourceNode *node = _io->rootNode();
+	for (std::string groupName : groupNames)
+	{
+		node = node->child(groupName);
+		if (!group)
+			return std::shared_ptr<Object>();
+	}
+
+	if (node->nodeType() != ResourceNode::NodeType::Handle)
+		return std::shared_ptr<Object>();
+
+	ResourceHandle *handle = dynamic_cast<ResourceHandle *>(node);
+	if (!handle)
+		return std::shared_ptr<Object>();
+
+	LoaderMap::iterator loader = _loaders.find(handle->type());
 	if (loader == _loaders.end())
-		return false;
+		return std::shared_ptr<Object>();
 
 	std::shared_ptr<BaseResource> resource = loader->second;
-	Object *object;
-	bool res = _io->read(resource, id, object);
-	if (!res)
+
+	Object *object = nullptr;
+	bool result = _io->read(node, resource, object);
+	if (!result)
 		return std::shared_ptr<Object>();
 
 	return std::shared_ptr<Object>(object);
 }
 
-bool ResourceManager::save(const std::string& id, std::shared_ptr<Object> object, BaseResource::Type type)
+bool ResourceManager::save(const std::string& id, std::shared_ptr<Object> object)
 {
 	//No id provided
 	if (id.empty())
 		return false;
 
-	//Split path to group names
+	//Split path to node names
 	//Last string interpreted as object id
 	std::list<std::string> groupNames = split(id, '/');
-	auto idIter = --groupNames.end();
-	std::string objectId = *idIter;
-	groupNames.erase(idIter);
 
 	//Fetch groups
-	ResourceGroup *group = _io->rootGroup();
+	ResourceNode *node = _io->rootNode();
 	for (std::string groupName : groupNames)
 	{
-		group = group->group(groupName);
+		node = node->child(groupName);
 		if (!group)
 			return false;
 	}
 
-	LoaderMap::iterator loader = _loaders.find(type);
+	if (node->nodeType() != ResourceNode::NodeType::Handle)
+		return false;
+
+	ResourceHandle *handle = dynamic_cast<ResourceHandle *>(node);
+	if (!handle)
+		return false;
+
+	LoaderMap::iterator loader = _loaders.find(handle->type());
 	if (loader == _loaders.end())
 		return false;
 
 	std::shared_ptr<BaseResource> resource = loader->second;
-	return _io->write(resource, id, object.get());
+	return _io->write(node, resource, object.get());
 }
 
-const ResourceGroup *ResourceManager::group(const std::string& id) const
+/*const ResourceGroup *ResourceManager::group(const std::string& id) const
 {
 	std::list<std::string> groupNames = split(id, '/');
 
@@ -95,16 +120,16 @@ const ResourceGroup *ResourceManager::group(const std::string& id) const
 	}
 
 	return group;
-}
+}*/
 
-const ResourceGroup *ResourceManager::root() const
+const ResourceNode *ResourceManager::root() const
 {
-	return group();
+	return _io->rootNode();
 }
 
 bool ResourceManager::createGroup(const std::string& id)
 {
-	if (_io->isReadOnly())
+	if (_io->readOnly())
 		return false;
 
 	std::list<std::string> groupNames = split(id, '/');
@@ -123,9 +148,9 @@ bool ResourceManager::createGroup(const std::string& id)
 	return _io->createSubGroup(group, newGroupId);
 }
 
-bool ResourceManager::deleteGroup(const std::string& id)
+bool ResourceManager::deleteNode(const std::string& id)
 {
-	if (_io->isReadOnly())
+	if (_io->readOnly())
 		return false;
 
 	std::list<std::string> groupNames = split(id, '/');

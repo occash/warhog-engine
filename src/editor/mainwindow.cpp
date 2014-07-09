@@ -42,6 +42,7 @@ MainWindow::MainWindow(QWidget *parent)
 	RenderWidget *renderer = new RenderWidget(this);
     setCentralWidget(renderer);
 
+	_tree->setModel(_model);
     connect(_tree, SIGNAL(activated(const QModelIndex&)),
         _inspector, SLOT(inspectEntity(const QModelIndex&)));
 
@@ -97,7 +98,7 @@ void MainWindow::installUi()
 
 	QDockWidget *bottomDock = new QDockWidget("Resources", this);
 	bottomDock->setWidget(_resources);
-	addDockWidget(Qt::BottomDockWidgetArea, bottomDock);
+	addDockWidget(Qt::LeftDockWidgetArea, bottomDock);
 
 	//Install menus
     _menubar = new QMenuBar(this);

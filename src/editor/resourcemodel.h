@@ -1,11 +1,14 @@
 #include <QAbstractItemModel>
 
+class ResourceManager;
+class ResourceGroup;
+
 class ResourceModel : public QAbstractItemModel
 {
     Q_OBJECT
 
 public:
-    ResourceModel(QObject *parent = nullptr);
+    ResourceModel(ResourceManager *manager, QObject *parent = nullptr);
     ~ResourceModel();
 
     QVariant data(const QModelIndex &index, int role) const;
@@ -19,6 +22,7 @@ public:
     int columnCount(const QModelIndex &parent = QModelIndex()) const;
 	
 private:
-
+	ResourceManager *_manager;
+	const ResourceGroup *_root;
 
 };

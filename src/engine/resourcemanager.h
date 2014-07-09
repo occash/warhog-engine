@@ -30,7 +30,7 @@ public:
 
 	/*! \breif Load resource with given id
 	*/
-	std::shared_ptr<Object> load(const std::string& id, BaseResource::Type type = 0);
+	std::shared_ptr<Object> load(const std::string& id);
 
 	/*! \breif Save resource to abstract storage
 		Use this function to store the resource. 
@@ -43,20 +43,20 @@ public:
 		\sa load
 		\sa ResourceIO
 	*/
-	bool save(const std::string& id, std::shared_ptr<Object> object, BaseResource::Type type);
+	bool save(const std::string& id, std::shared_ptr<Object> object);
 
 	/*! \breif Returns resource group by id
 		If id is empty method will return root group.
 		\param id Resource group id
 		\sa root()
 	*/
-	const ResourceGroup *group(const std::string& id = std::string()) const;
+	//const ResourceGroup *group(const std::string& id = std::string()) const;
 
 	/*! \breif Returns root resource group
 		Same as group("").
 		\sa group()
 	*/
-	const ResourceGroup *root() const;
+	const ResourceNode *root() const;
 
 	/*! \breif Creates new group
 		It also creates all subgroups if required.
@@ -65,11 +65,13 @@ public:
 	*/
 	bool createGroup(const std::string& id);
 
+	bool createHandle(const std::string& id);
+
 	/*! \breif Removes group and all resources assotiated with it
 		\param id Full path for group
 		\sa group()
 	*/
-	bool deleteGroup(const std::string& id);
+	bool deleteNode(const std::string& id);
 
 	template<typename T, typename... Args>
 	void addLoader(Args... args)

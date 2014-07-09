@@ -26,7 +26,7 @@
 
 int main(int argc, char *argv[])
 {
-	std::shared_ptr<ResourceIO> io = 
+	/*std::shared_ptr<ResourceIO> io = 
 		std::make_shared<FileResourceIO>(
 		"D:/projects/warhog-engine/test/project1/resources"
 		);
@@ -41,8 +41,8 @@ int main(int argc, char *argv[])
 	manager.createGroup("scripts/algo/astar");
 	manager.createGroup("scripts/weather");
 	manager.createGroup("levels");
-	/*manager.deleteGroup("textures/diffuse");
-	manager.deleteGroup("textures");
+	manager.deleteGroup("textures/diffuse");
+	manager.deleteGroup("textures");*/
 
 	QApplication::setApplicationDisplayName("WarHog Editor");
 	QApplication::setApplicationName("WarHog Editor");
@@ -59,7 +59,7 @@ int main(int argc, char *argv[])
     a.setStyleSheet(styleFile.readAll());
 
     MainWindow w;
-    w.show();*/
+    w.show();
 
     /*ResourceManager::base = "C:\\projects\\ModernGL\\Win32\\Debug\\Assets\\";
     ResourceManager::add<MeshResource>();
@@ -108,6 +108,6 @@ int main(int argc, char *argv[])
     QObject::connect(&scene, SIGNAL(needInspect(QObject *)), 
         &inspector, SLOT(inspectModule(QObject *)));*/
 
-    //return a.exec();
-	return 0;
+    return a.exec();
+	//return 0;
 }

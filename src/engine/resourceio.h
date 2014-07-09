@@ -6,7 +6,7 @@
 
 #include <memory>
 
-class ResourceGroup;
+class ResourceNode;
 
 /*! \breif This class Handle input/output operations of resources
 	ResourceIO stores tree-like group structure 
@@ -18,26 +18,32 @@ class ResourceGroup;
 class ENGINE_EXPORT ResourceIO
 {
 public:
-	ResourceIO(const std::string& basePath);
+	ResourceIO();
 	~ResourceIO();
 
 	std::string basePath() const;
+	bool setBasePath(const std::string& path);
 
 	/*! Defines if model is read only
 		You should provide pack() funcion to create read-only bundle.
 	*/
-	virtual bool isReadOnly() const = 0;
+	virtual bool readOnly() const = 0;
+
+	virtual bool createTree(const std::string& path, ResourceNode *& root) = 0;
+	virtual bool removeTree(ResourceNode *root) = 0;
 
 	//! Return root resource group
-	virtual ResourceGroup *rootGroup() const = 0;
-	virtual bool createSubGroup(ResourceGroup *baseGroup, const std::string& groupName) = 0;
-	virtual bool removeSubGroup(ResourceGroup *baseGroup) = 0;
+	virtual ResourceNode *rootNode() const;
+	virtual bool createGroup(ResourceNode *baseNode, const std::string& id) = 0;
+	virtual bool createHandle(ResourceNode *baseNode, BaseResource::Type type, const std::string& id) = 0;
+	virtual bool removeNode(ResourceNode *baseNode) = 0;
 
-	virtual bool read(std::shared_ptr<BaseResource> loader, const std::string& id, Object *& object) = 0;
-	virtual bool write(std::shared_ptr<BaseResource> loader, const std::string& id, Object *object) = 0;
+	virtual bool read(ResourceNode *node, std::shared_ptr<BaseResource> loader, Object *&object) = 0;
+	virtual bool write(ResourceNode *node, std::shared_ptr<BaseResource> loader, Object *object) = 0;
 
 private:
 	std::string _basePath;
+	ResourceNode *_rootNode;
 
 };
 
