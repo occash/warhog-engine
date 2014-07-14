@@ -12,7 +12,7 @@ class FileResourceIO : public QObject, public ResourceIO
 	Q_OBJECT
 	
 public:
-	FileResourceIO(const std::string& basePath, const std::string& config = "resources.meta");
+	FileResourceIO();
 	~FileResourceIO();
 
 	bool readOnly() const override;
@@ -26,10 +26,6 @@ public:
 
 	bool read(ResourceNode *node, std::shared_ptr<BaseResource> loader, Object *& object) override;
 	bool write(ResourceNode *node, std::shared_ptr<BaseResource> loader, Object *object) override;
-
-private:
-	ResourceNode *_root;
-	std::string _configFile;
 
 };
 

@@ -1,6 +1,7 @@
 QWidget
 {
 	background-color: rgb(80, 80, 80);
+	font: "Consolas"
 }
 
 QLabel

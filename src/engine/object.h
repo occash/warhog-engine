@@ -9,6 +9,10 @@
 class ENGINE_EXPORT Object
 {
 public:
+	Object() {}
+	virtual ~Object() {}
+
+public:
 	std::string name;
 
 };

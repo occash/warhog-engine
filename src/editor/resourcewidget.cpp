@@ -23,20 +23,20 @@ ResourceWidget::ResourceWidget(QWidget *parent)
     //ui.setupUi(this);
 
 	std::shared_ptr<ResourceIO> io =
-		std::make_shared<FileResourceIO>(
-		"D:/projects/warhog-engine/test/project1/resources"
-		);
+		std::make_shared<FileResourceIO>();
 	_manager = new ResourceManager(io);
+
+	setResourceFolder("D:/projects/warhog-engine/test/project1/resources");
 	_model = new ResourceModel(_manager, this);
 
 	_view = new QTreeView(this);
 	_view->setModel(_model);
 
 	QVBoxLayout *layout = new QVBoxLayout(this);
+	layout->setMargin(0);
 	layout->addWidget(_view);
 	setLayout(layout);
 
-	setResourceFolder("D:/third-party");
 	addImporter(new MeshImporter());
 	addImporter(new ScriptImporter());
 	addImporter(new TextureImporter());
@@ -134,6 +134,7 @@ Importer *ResourceWidget::findImporter(const QString& ext) const
 
 void ResourceWidget::setResourceFolder(const QString& folder)
 {
+	_manager->setBasePath(folder.toStdString());
 	//_model->setRootPath(folder);
 	//_view->setRootIndex(_model->index(_model->rootPath()));
 }

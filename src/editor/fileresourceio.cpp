@@ -7,20 +7,19 @@
 #include <QMap>
 #include <QList>
 #include <QStack>
+#include <QUrl>
 #include <yaml-cpp/yaml.h>
 
 #include <map>
 #include <fstream>
 #include <iostream>
 
-class FileResourceGroup;
-
 class FileResourceHandle : public ResourceHandle
 {
 public:
 	FileResourceHandle(BaseResource::Type type,
 		const QString& path,
-		FileResourceGroup *parent = nullptr) :
+		ResourceNode *parent = nullptr) :
 		_path(path), _parent(parent), _type(type) {}
 	~FileResourceHandle() {}
 
@@ -61,7 +60,7 @@ public:
 	}
 
 public:
-	FileResourceGroup *_parent;
+	ResourceNode *_parent;
 	QString _path;
 	BaseResource::Type _type;
 
@@ -71,7 +70,7 @@ class FileResourceGroup : public ResourceGroup
 {
 public:
 	FileResourceGroup(const QString& path,
-		FileResourceGroup *parent = nullptr) :
+		ResourceNode *parent = nullptr) :
 		_path(path), _parent(parent) {}
 	~FileResourceGroup() 
 	{
@@ -90,9 +89,9 @@ public:
 		return QDir(_path).exists();
 	}
 
-	ResourceGroup *parent() const override
+	ResourceNode *parent() const override
 	{
-		return _parent;
+		return static_cast<ResourceNode *>(_parent);
 	}
 
 	int childCount() const override
@@ -156,93 +155,19 @@ public:
 	}
 
 public:
-	FileResourceGroup *_parent;
+	ResourceNode *_parent;
 	QString _path;
 	QMap<QString, ResourceNode *> _subfolders;
 
 };
 
-FileResourceIO::FileResourceIO(const std::string& basePath, const std::string& config) :
-	ResourceIO(basePath),
-	_root(nullptr),
-	_configFile(config)
+FileResourceIO::FileResourceIO() :
+	ResourceIO()
 {
-	YAML::Node rootNode = YAML::LoadFile("config.yaml");
-	YAML::Node parentNode = rootNode["bundle"];
-	QStack<YAML::Node> parents;
-	parents.push(parentNode);
-
-	QStack<FileResourceGroup *> groups;
-	groups.push(nullptr);
-	while (!parents.isEmpty())
-	{
-		YAML::Node current = parents.pop();
-		FileResourceGroup *parent = groups.pop();
-		FileResourceGroup *newGroup =
-			new FileResourceGroup(
-			QString::fromStdString(current["path"].as<std::string>()),
-			parent);
-		if (parent)
-			parent->_subfolders[QString::fromStdString(newGroup->name())] = newGroup;
-		else
-			_root = newGroup;
-
-		YAML::Node subfolders = current["subfolders"];
-		if (subfolders && subfolders.IsMap())
-		{
-			auto i = subfolders.begin();
-			for (; i != subfolders.end(); ++i)
-			{
-				parents.push(subfolders[i->first.as<std::string>()]);
-				groups.push(newGroup);
-			}
-		}
-	}
 }
 
 FileResourceIO::~FileResourceIO()
 {
-	/*FileResourceGroup *root = 
-		dynamic_cast<FileResourceGroup *>(_root);
-	if (root->_subfolders.isEmpty())
-		return;
-
-	YAML::Node rootNode;
-	rootNode["version"] = 1.0;
-	YAML::Node parentNode = rootNode["bundle"];
-	QStack<YAML::Node> parents;
-	parents.push(parentNode);
-
-	QStack<FileResourceGroup *> groups;
-	groups.push(root);
-
-	while (!groups.isEmpty())
-	{
-		FileResourceGroup *current = groups.pop();
-		YAML::Node currentParent = parents.pop();
-
-		YAML::Node node;
-		node["name"] = current->name();
-		node["path"] = current->_path.toStdString();
-		if (current->_parent)
-			currentParent["subfolders"][current->name()] = node;
-		else
-			parentNode = node;
-
-		if (current->_subfolders.size())
-		{
-			node["subfolders"] = YAML::Node(YAML::NodeType::Map);
-			for (auto i = current->_subfolders.begin();
-				i != current->_subfolders.end(); ++i)
-			{
-				groups.push(i.value());
-				parents.push(node);
-			}
-		}
-	}
-
-	std::ofstream fout("config.yaml");
-	fout << rootNode;*/
 }
 
 bool FileResourceIO::readOnly() const
@@ -252,13 +177,143 @@ bool FileResourceIO::readOnly() const
 
 bool FileResourceIO::createTree(const std::string& path, ResourceNode *& root)
 {
-	root = new FileResourceGroup(QString::fromStdString(path), nullptr);
+	QString qPath = QString::fromStdString(path);
+	qPath = QDir(qPath).absoluteFilePath("resources.meta");
+
+	if (!QFileInfo(qPath).exists())
+	{
+		root = new FileResourceGroup(qPath);
+		return true;
+	}
+
+	YAML::Node rootNode = YAML::LoadFile(qPath.toStdString());
+	YAML::Node parentNode = rootNode["bundle"];
+	QStack<YAML::Node> parents;
+	parents.push(parentNode);
+
+	QStack<ResourceNode *> groups;
+	groups.push(nullptr);
+	while (!parents.isEmpty())
+	{
+		YAML::Node current = parents.pop();
+		ResourceNode *parent = groups.pop();
+		FileResourceGroup *parentGroup = dynamic_cast<FileResourceGroup *>(parent);
+		ResourceNode *currentNode = nullptr;
+
+		ResourceNode::NodeType nodeType =
+			static_cast<ResourceNode::NodeType>(current["node"].as<int>());
+		if (nodeType == ResourceNode::NodeType::Group)
+		{
+			FileResourceGroup *newGroup =
+				new FileResourceGroup(
+				QString::fromStdString(current["path"].as<std::string>()),
+				parentGroup
+				);
+			if (parentGroup)
+				parentGroup->_subfolders[QString::fromStdString(newGroup->name())] = newGroup;
+			else
+				root = newGroup;
+
+			currentNode = newGroup;
+		}
+		else if (nodeType == ResourceNode::NodeType::Handle)
+		{
+			if (!parentGroup)
+				continue;
+
+			FileResourceHandle *newHandle =
+				new FileResourceHandle(
+				static_cast<BaseResource::Type>(current["type"].as<int>()),
+				QString::fromStdString(current["path"].as<std::string>()),
+				parentGroup
+				);
+			parentGroup->_subfolders[QString::fromStdString(newHandle->name())] = newHandle;
+
+			currentNode = newHandle;
+		}
+
+		YAML::Node subfolders = current["children"];
+		if (subfolders && subfolders.IsMap())
+		{
+			auto i = subfolders.begin();
+			for (; i != subfolders.end(); ++i)
+			{
+				parents.push(subfolders[i->first.as<std::string>()]);
+				groups.push(currentNode);
+			}
+		}
+	}
+
 	return true;
 }
 
 bool FileResourceIO::removeTree(ResourceNode *root)
 {
+	if (root->childCount() <= 0)
+	{
+		delete root;
+		return true;
+	}
+
+	YAML::Node rootNode;
+	rootNode["version"] = 2;
+	YAML::Node parentNode = rootNode["bundle"];
+	QStack<YAML::Node> parents;
+	parents.push(parentNode);
+
+	QStack<ResourceNode *> groups;
+	groups.push(root);
+
+	while (!groups.isEmpty())
+	{
+		ResourceNode *current = groups.pop();
+		YAML::Node currentParent = parents.pop();
+
+		YAML::Node node;
+		node["name"] = current->name();
+		node["node"] = static_cast<int>(current->nodeType());
+
+		if (current->nodeType() == ResourceNode::NodeType::Group)
+		{
+			FileResourceGroup *group = 
+				dynamic_cast<FileResourceGroup *>(current);
+			node["path"] = group->_path.toStdString();
+		}
+		else if (current->nodeType() == ResourceNode::NodeType::Handle)
+		{
+			FileResourceHandle *handle =
+				dynamic_cast<FileResourceHandle *>(current);
+			node["path"] = handle->_path.toStdString();
+			node["type"] = static_cast<int>(handle->type());
+		}
+
+		if (current->parent())
+			currentParent["children"][current->name()] = node;
+		else
+			parentNode = node;
+
+		if (current->childCount() > 0)
+		{
+			node["children"] = YAML::Node(YAML::NodeType::Map);
+			for (int i = 0; i < current->childCount(); ++i)
+			{
+				groups.push(current->child(i));
+				parents.push(node);
+			}
+		}
+	}
+
+	std::string outPath = basePath() + "/" + "resources.meta";
+	std::ofstream fout(outPath);
+	if (!fout)
+	{
+		delete root;
+		return false;
+	}
+
+	fout << rootNode;
 	delete root;
+	return true;
 }
 
 bool FileResourceIO::createGroup(ResourceNode *baseNode, const std::string& id)
@@ -292,7 +347,7 @@ bool FileResourceIO::createGroup(ResourceNode *baseNode, const std::string& id)
 	return false;
 }
 
-bool createHandle(ResourceNode *baseNode, BaseResource::Type type, const std::string& id)
+bool FileResourceIO::createHandle(ResourceNode *baseNode, BaseResource::Type type, const std::string& id)
 {
 	//Can create only in group
 	if (baseNode->nodeType() != ResourceNode::NodeType::Group)
@@ -311,8 +366,9 @@ bool createHandle(ResourceNode *baseNode, BaseResource::Type type, const std::st
 		return true;
 
 	//Try to create new file
-	if (QFile(group->_path + "/" + qGroupName).exists() ||
-		QFile(group->_path + "/" + qGroupName).open(QIODevice::ReadOnly))
+	QString filePath = group->_path + "/" + qGroupName;
+	if (QFile(filePath).exists() ||
+		QFile(filePath).open(QIODevice::WriteOnly))
 	{
 		subGroup = new FileResourceHandle(type, group->_path + "/" + qGroupName, group);
 		group->_subfolders.insert(qGroupName, subGroup);

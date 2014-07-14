@@ -7,6 +7,7 @@
 #include <memory>
 
 class ResourceNode;
+class ResourceManager;
 
 /*! \breif This class Handle input/output operations of resources
 	ResourceIO stores tree-like group structure 
@@ -40,6 +41,11 @@ public:
 
 	virtual bool read(ResourceNode *node, std::shared_ptr<BaseResource> loader, Object *&object) = 0;
 	virtual bool write(ResourceNode *node, std::shared_ptr<BaseResource> loader, Object *object) = 0;
+
+protected:
+	friend class ResourceManager;
+
+	void clear();
 
 private:
 	std::string _basePath;

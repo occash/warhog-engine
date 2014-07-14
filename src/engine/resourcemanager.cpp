@@ -26,6 +26,17 @@ ResourceManager::ResourceManager(std::shared_ptr<ResourceIO> io)
 
 ResourceManager::~ResourceManager()
 {
+	_io->clear();
+}
+
+void ResourceManager::setBasePath(const std::string& path)
+{
+	_io->setBasePath(path);
+}
+
+std::string ResourceManager::basePath() const
+{
+	return _io->basePath();
 }
 
 void ResourceManager::addLoader(std::shared_ptr<BaseResource> loader)
@@ -48,7 +59,7 @@ std::shared_ptr<Object> ResourceManager::load(const std::string& id)
 	for (std::string groupName : groupNames)
 	{
 		node = node->child(groupName);
-		if (!group)
+		if (!node)
 			return std::shared_ptr<Object>();
 	}
 
@@ -88,7 +99,7 @@ bool ResourceManager::save(const std::string& id, std::shared_ptr<Object> object
 	for (std::string groupName : groupNames)
 	{
 		node = node->child(groupName);
-		if (!group)
+		if (!node)
 			return false;
 	}
 
@@ -137,15 +148,36 @@ bool ResourceManager::createGroup(const std::string& id)
 	std::string newGroupId = *idIter;
 	groupNames.erase(idIter);
 
-	ResourceGroup *group = _io->rootGroup();
+	ResourceNode *node = _io->rootNode();
 	for (std::string groupName : groupNames)
 	{
-		group = group->group(groupName);
-		if (!group)
+		node = node->child(groupName);
+		if (!node)
 			return false;
 	}
 
-	return _io->createSubGroup(group, newGroupId);
+	return _io->createGroup(node, newGroupId);
+}
+
+bool ResourceManager::createHandle(BaseResource::Type type, const std::string& id)
+{
+	if (_io->readOnly())
+		return false;
+
+	std::list<std::string> groupNames = split(id, '/');
+	auto idIter = --groupNames.end();
+	std::string handleId = *idIter;
+	groupNames.erase(idIter);
+
+	ResourceNode *node = _io->rootNode();
+	for (std::string groupName : groupNames)
+	{
+		node = node->child(groupName);
+		if (!node)
+			return false;
+	}
+
+	return _io->createHandle(node, type, handleId);
 }
 
 bool ResourceManager::deleteNode(const std::string& id)
@@ -155,13 +187,13 @@ bool ResourceManager::deleteNode(const std::string& id)
 
 	std::list<std::string> groupNames = split(id, '/');
 
-	ResourceGroup *group = _io->rootGroup();
+	ResourceNode *node = _io->rootNode();
 	for (std::string groupName : groupNames)
 	{
-		group = group->group(groupName);
-		if (!group)
-			break;
+		node = node->child(groupName);
+		if (!node)
+			return false;
 	}
 
-	return _io->removeSubGroup(group);
+	return _io->removeNode(node);
 }

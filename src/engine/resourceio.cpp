@@ -8,8 +8,6 @@ ResourceIO::ResourceIO() :
 
 ResourceIO::~ResourceIO()
 {
-	if (_rootNode)
-		removeTree(_rootNode);
 }
 
 std::string ResourceIO::basePath() const
@@ -24,12 +22,21 @@ bool ResourceIO::setBasePath(const std::string& path)
 		result = removeTree(_rootNode);
 
 	if (result)
-		return createTree(path, _rootNode);
+		result &= createTree(path, _rootNode);
 
-	return false;
+	if (result)
+		_basePath = path;
+
+	return result;
 }
 
 ResourceNode *ResourceIO::rootNode() const
 {
 	return _rootNode;
+}
+
+void ResourceIO::clear()
+{
+	if (_rootNode)
+		removeTree(_rootNode);
 }

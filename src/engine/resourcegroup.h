@@ -47,7 +47,7 @@ class ResourceGroup : public ResourceNode
 public:
 	NodeType nodeType() const final override
 	{
-		return ResourceNode::NodeType::Handle;
+		return ResourceNode::NodeType::Group;
 	}
 
 public:

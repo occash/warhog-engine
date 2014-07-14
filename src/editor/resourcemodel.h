@@ -1,7 +1,7 @@
 #include <QAbstractItemModel>
 
 class ResourceManager;
-class ResourceGroup;
+class ResourceNode;
 
 class ResourceModel : public QAbstractItemModel
 {
@@ -23,6 +23,6 @@ public:
 	
 private:
 	ResourceManager *_manager;
-	const ResourceGroup *_root;
+	const ResourceNode *_root;
 
 };

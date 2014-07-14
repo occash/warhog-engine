@@ -8,7 +8,7 @@
 #include "resource.h"
 
 class ResourceIO;
-class ResourceGroup;
+class ResourceNode;
 
 /*! \breif The ResourceManager class allows engine to manage assests
 */
@@ -17,6 +17,9 @@ class ENGINE_EXPORT ResourceManager
 public:
 	ResourceManager(std::shared_ptr<ResourceIO> io);
 	~ResourceManager();
+
+	void setBasePath(const std::string& path);
+	std::string basePath() const;
 
 	/*! \breif Add resource loader to manager
 		Use addLoader(Args... args) for convinience. It will create
@@ -65,7 +68,7 @@ public:
 	*/
 	bool createGroup(const std::string& id);
 
-	bool createHandle(const std::string& id);
+	bool createHandle(BaseResource::Type type, const std::string& id);
 
 	/*! \breif Removes group and all resources assotiated with it
 		\param id Full path for group

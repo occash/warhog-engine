@@ -23,14 +23,15 @@
 
 #include "resourcemanager.h"
 #include "fileresourceio.h"
+#include <resource/scriptresource.h>
 
 int main(int argc, char *argv[])
 {
 	/*std::shared_ptr<ResourceIO> io = 
-		std::make_shared<FileResourceIO>(
-		"D:/projects/warhog-engine/test/project1/resources"
-		);
+		std::make_shared<FileResourceIO>();
 	ResourceManager manager(io);
+	manager.setBasePath("D:/projects/warhog-engine/test/project1/resources");
+
 	manager.createGroup("textures");
 	manager.createGroup("textures/diffuse");
 	manager.createGroup("textures/specular");
@@ -41,8 +42,8 @@ int main(int argc, char *argv[])
 	manager.createGroup("scripts/algo/astar");
 	manager.createGroup("scripts/weather");
 	manager.createGroup("levels");
-	manager.deleteGroup("textures/diffuse");
-	manager.deleteGroup("textures");*/
+	manager.createHandle(ScriptResource::staticType(), "textures/lalka");
+	manager.createHandle(ScriptResource::staticType(), "textures/diffuse/lalka2");*/
 
 	QApplication::setApplicationDisplayName("WarHog Editor");
 	QApplication::setApplicationName("WarHog Editor");
