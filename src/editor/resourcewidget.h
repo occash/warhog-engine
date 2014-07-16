@@ -2,11 +2,13 @@
 #define RESOURCEWIDGET_H
 
 #include <QtWidgets/QWidget>
+#include <memory>
 //#include "ui_resourcewidget.h"
 
 class QAbstractItemModel;
 class QTreeView;
 class Importer;
+class ResourceIO;
 class ResourceManager;
 
 class ResourceWidget : public QWidget
@@ -28,7 +30,8 @@ protected:
 private:
     //Ui::ResourceWidgetClass ui;
     QList<Importer *> _importers;
-	ResourceManager *_manager;
+	std::shared_ptr<ResourceIO> _io;
+	std::shared_ptr<ResourceManager> _manager;
 	QAbstractItemModel *_model;
 	QTreeView *_view;
 

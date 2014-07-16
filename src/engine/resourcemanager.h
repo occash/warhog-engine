@@ -76,6 +76,8 @@ public:
 	*/
 	bool deleteNode(const std::string& id);
 
+	bool renameNode(const std::string& id, const std::string& name);
+
 	template<typename T, typename... Args>
 	void addLoader(Args... args)
 	{

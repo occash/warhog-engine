@@ -38,6 +38,7 @@ public:
 	virtual bool createGroup(ResourceNode *baseNode, const std::string& id) = 0;
 	virtual bool createHandle(ResourceNode *baseNode, BaseResource::Type type, const std::string& id) = 0;
 	virtual bool removeNode(ResourceNode *baseNode) = 0;
+	virtual bool renameNode(ResourceNode *node, const std::string& id) = 0;
 
 	virtual bool read(ResourceNode *node, std::shared_ptr<BaseResource> loader, Object *&object) = 0;
 	virtual bool write(ResourceNode *node, std::shared_ptr<BaseResource> loader, Object *object) = 0;

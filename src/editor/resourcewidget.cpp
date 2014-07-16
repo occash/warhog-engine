@@ -18,16 +18,13 @@
 
 ResourceWidget::ResourceWidget(QWidget *parent)
     : QWidget(parent),
-	_manager(nullptr)
+	_io(std::make_shared<FileResourceIO>()),
+	_manager(std::make_shared<ResourceManager>(_io))
 {
     //ui.setupUi(this);
 
-	std::shared_ptr<ResourceIO> io =
-		std::make_shared<FileResourceIO>();
-	_manager = new ResourceManager(io);
-
 	setResourceFolder("D:/projects/warhog-engine/test/project1/resources");
-	_model = new ResourceModel(_manager, this);
+	_model = new ResourceModel(_io, this);
 
 	_view = new QTreeView(this);
 	_view->setModel(_model);
@@ -46,7 +43,6 @@ ResourceWidget::ResourceWidget(QWidget *parent)
 
 ResourceWidget::~ResourceWidget()
 {
-	delete _manager;
 }
 
 void ResourceWidget::dragEnterEvent(QDragEnterEvent *event)

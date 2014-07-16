@@ -110,24 +110,6 @@ public:
 		return _subfolders.value(QString::fromStdString(id), nullptr);
 	}
 
-	/*int groupCount() const override
-	{
-		return _subfolders.size();
-	}
-
-	std::list<std::string> groupNames() const override
-	{
-		QStringList keys = _subfolders.keys();
-		std::list<std::string> result;
-		std::transform(
-			keys.begin(), 
-			keys.end(), 
-			result.begin(),
-			[](const QString& in) { return in.toStdString(); }
-			);
-		return result;
-	}*/
-
 	ResourceGroup *group(const std::string& id) const override
 	{
 		ResourceNode *node = _subfolders.value(QString::fromStdString(id), nullptr);
@@ -135,16 +117,6 @@ public:
 			return nullptr;
 		return static_cast<ResourceGroup *>(node);
 	}
-
-	/*virtual int resourceCount() const override
-	{
-		return 0;
-	}
-
-	std::list<std::string> resourceNames() const override
-	{
-		return std::list<std::string>();
-	}*/
 
 	ResourceHandle *resource(const std::string& id) const override
 	{
@@ -425,6 +397,49 @@ bool FileResourceIO::removeNode(ResourceNode *baseNode)
 
 		return true;
 	}
+}
+
+bool FileResourceIO::renameNode(ResourceNode *node, const std::string& id)
+{
+	if (!node->valid())
+		return false;
+
+	if (node->nodeType() == ResourceNode::NodeType::Group)
+	{
+		FileResourceGroup *group =
+			dynamic_cast<FileResourceGroup *>(node);
+		if (!group)
+			return false;
+
+		QDir dir(group->_path);
+		QString dirName = dir.dirName();
+		QString dirPath = dir.absolutePath();
+		dirPath.chop(dirName.size());
+		dirPath.append(QString::fromStdString(id));
+		if (dir.rename(group->_path, dirPath))
+		{
+			group->_path = dirPath;
+			return true;
+		}
+	}
+	else if (node->nodeType() == ResourceNode::NodeType::Handle)
+	{
+		FileResourceHandle *handle =
+			dynamic_cast<FileResourceHandle *>(node);
+		if (!handle)
+			return false;
+
+		QString newPath = QFileInfo(handle->_path).dir().absolutePath();
+		newPath.append("/");
+		newPath.append(QString::fromStdString(id));
+		if (QDir().rename(handle->_path, newPath))
+		{
+			handle->_path = newPath;
+			return true;
+		}
+	}
+
+	return false;
 }
 
 bool FileResourceIO::read(ResourceNode *node, std::shared_ptr<BaseResource> loader, Object *& object)

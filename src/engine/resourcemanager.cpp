@@ -118,21 +118,6 @@ bool ResourceManager::save(const std::string& id, std::shared_ptr<Object> object
 	return _io->write(node, resource, object.get());
 }
 
-/*const ResourceGroup *ResourceManager::group(const std::string& id) const
-{
-	std::list<std::string> groupNames = split(id, '/');
-
-	ResourceGroup *group = _io->rootGroup();
-	for (std::string groupName : groupNames)
-	{
-		group = group->group(groupName);
-		if (!group)
-			break;
-	}
-
-	return group;
-}*/
-
 const ResourceNode *ResourceManager::root() const
 {
 	return _io->rootNode();
@@ -196,4 +181,22 @@ bool ResourceManager::deleteNode(const std::string& id)
 	}
 
 	return _io->removeNode(node);
+}
+
+bool ResourceManager::renameNode(const std::string& id, const std::string& name)
+{
+	if (_io->readOnly())
+		return false;
+
+	std::list<std::string> groupNames = split(id, '/');
+
+	ResourceNode *node = _io->rootNode();
+	for (std::string groupName : groupNames)
+	{
+		node = node->child(groupName);
+		if (!node)
+			return false;
+	}
+
+	return _io->renameNode(node, name);
 }

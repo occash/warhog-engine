@@ -22,7 +22,8 @@ public:
 
 	bool createGroup(ResourceNode *baseNode, const std::string& id) override;
 	bool createHandle(ResourceNode *baseNode, BaseResource::Type type, const std::string& id) override;
-	bool removeNode(ResourceNode *baseNode) override;
+	bool removeNode(ResourceNode *node) override;
+	bool renameNode(ResourceNode *node, const std::string& id) override;
 
 	bool read(ResourceNode *node, std::shared_ptr<BaseResource> loader, Object *& object) override;
 	bool write(ResourceNode *node, std::shared_ptr<BaseResource> loader, Object *object) override;

@@ -1,14 +1,14 @@
 #include "resourcemodel.h"
 
-#include <resourcemanager.h>
+#include <resourceio.h>
 #include <resourcegroup.h>
 #include <resource/scriptresource.h>
 
 #include <QIcon>
 
-ResourceModel::ResourceModel(ResourceManager *manager, QObject *parent) :
-	_manager(manager),
-	_root(manager->root())
+ResourceModel::ResourceModel(std::shared_ptr<ResourceIO> io, QObject *parent) :
+	_io(io),
+	_root(io->rootNode())
 {
 }
 
@@ -28,6 +28,7 @@ QVariant ResourceModel::data(const QModelIndex &index, int role) const
 	switch (role)
 	{
 	case Qt::DisplayRole:
+	case Qt::EditRole:
 	{
 		if (node == _root)
 			return QVariant();
@@ -58,7 +59,7 @@ Qt::ItemFlags ResourceModel::flags(const QModelIndex &index) const
 	if (!index.isValid())
 		return 0;
 
-	return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
+	return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable;
 }
 
 QVariant ResourceModel::headerData(int section, Qt::Orientation orientation, int role) const
@@ -116,7 +117,47 @@ int ResourceModel::rowCount(const QModelIndex &parent) const
 	return parentItem->childCount();
 }
 
-int ResourceModel::columnCount(const QModelIndex &parent /*= QModelIndex()*/) const
+int ResourceModel::columnCount(const QModelIndex &parent) const
 {
 	return 1;
+}
+
+bool ResourceModel::setData(const QModelIndex &index, const QVariant &value, int role)
+{
+	if (!index.isValid())
+		return false;
+
+	if (role == Qt::EditRole)
+	{
+		const ResourceNode *item = 
+			static_cast<const ResourceNode *>(index.internalPointer());
+		return _io->renameNode(const_cast<ResourceNode *>(item), value.toString().toStdString());
+	}
+
+	return false;
+}
+
+bool ResourceModel::setHeaderData(int section, Qt::Orientation orientation, const QVariant &value, int role)
+{
+	return false;
+}
+
+bool ResourceModel::insertColumns(int position, int columns, const QModelIndex &parent)
+{
+	return false;
+}
+
+bool ResourceModel::removeColumns(int position, int columns, const QModelIndex &parent)
+{
+	return false;
+}
+
+bool ResourceModel::insertRows(int position, int rows, const QModelIndex &parent)
+{
+	return false;
+}
+
+bool ResourceModel::removeRows(int position, int rows, const QModelIndex &parent)
+{
+	return false;
 }
