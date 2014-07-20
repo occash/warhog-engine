@@ -3,6 +3,10 @@
 
 #include <QObject>
 #include <QStringList>
+#include <QVariantMap>
+
+#include <memory>
+#include <object.h>
 
 class Importer : public QObject
 {
@@ -12,7 +16,7 @@ public:
     Importer(QObject *parent = nullptr);
     ~Importer();
 
-    virtual void import(const QString& filename) = 0;
+    virtual std::shared_ptr<Object> import(const QString& filename, const QVariantMap& config = QVariantMap()) = 0;
     virtual QStringList suffixes() = 0;
     virtual QStringList signatures() = 0;
 

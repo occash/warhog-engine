@@ -30,6 +30,7 @@ public:
 		\sa Reource
 	*/
 	void addLoader(std::shared_ptr<BaseResource> loader);
+	void removeLoader(std::shared_ptr<BaseResource> loader);
 
 	/*! \breif Load resource with given id
 	*/

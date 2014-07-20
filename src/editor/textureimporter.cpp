@@ -16,7 +16,7 @@ TextureImporter::~TextureImporter()
 
 }
 
-void TextureImporter::import(const QString& filename)
+std::shared_ptr<Object> TextureImporter::import(const QString& filename, const QVariantMap& config /*= QVariantMap()*/)
 {
     int sep = filename.lastIndexOf('/');
     QString shortName = filename.mid(sep + 1);
@@ -34,6 +34,8 @@ void TextureImporter::import(const QString& filename)
     //texture->_channels;
     texture->_data = FreeImage_GetBits(image);
     //texture->_rowPtrs;
+
+	return texture;
 }
 
 QStringList TextureImporter::suffixes()

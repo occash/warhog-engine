@@ -195,7 +195,7 @@ bool FileResourceIO::createTree(const std::string& path, ResourceNode *& root)
 
 			FileResourceHandle *newHandle =
 				new FileResourceHandle(
-				static_cast<BaseResource::Type>(current["type"].as<int>()),
+				current["type"].as<std::string>(),
 				QString::fromStdString(current["path"].as<std::string>()),
 				parentGroup
 				);
@@ -256,7 +256,7 @@ bool FileResourceIO::removeTree(ResourceNode *root)
 			FileResourceHandle *handle =
 				dynamic_cast<FileResourceHandle *>(current);
 			node["path"] = handle->_path.toStdString();
-			node["type"] = static_cast<int>(handle->type());
+			node["type"] = handle->type();
 		}
 
 		if (current->parent())
@@ -288,23 +288,23 @@ bool FileResourceIO::removeTree(ResourceNode *root)
 	return true;
 }
 
-bool FileResourceIO::createGroup(ResourceNode *baseNode, const std::string& id)
+ResourceNode *FileResourceIO::createGroup(ResourceNode *baseNode, const std::string& id)
 {
 	//Can create only in group
 	if (baseNode->nodeType() != ResourceNode::NodeType::Group)
-		return false;
+		return nullptr;
 
 	//TODO: create full path
 	FileResourceGroup *group = dynamic_cast<FileResourceGroup *>(baseNode);
 	if (!group)
-		return false;
+		return nullptr;
 
 	QString qGroupName = QString::fromStdString(id);
 	ResourceNode *subGroup = 
 		group->_subfolders.value(qGroupName, nullptr);
 	//Already exist
 	if (subGroup)
-		return true;
+		return subGroup;
 
 	//Try to create new sub folder
 	if (QDir(group->_path + "/" + qGroupName).exists() ||
@@ -313,29 +313,29 @@ bool FileResourceIO::createGroup(ResourceNode *baseNode, const std::string& id)
 		subGroup = new FileResourceGroup(group->_path + "/" + qGroupName, group);
 		group->_subfolders.insert(qGroupName, subGroup);
 
-		return true;
+		return subGroup;
 	}
 	
-	return false;
+	return nullptr;
 }
 
-bool FileResourceIO::createHandle(ResourceNode *baseNode, BaseResource::Type type, const std::string& id)
+ResourceNode *FileResourceIO::createHandle(ResourceNode *baseNode, BaseResource::Type type, const std::string& id)
 {
 	//Can create only in group
 	if (baseNode->nodeType() != ResourceNode::NodeType::Group)
-		return false;
+		return nullptr;
 
 	//TODO: create full path
 	FileResourceGroup *group = dynamic_cast<FileResourceGroup *>(baseNode);
 	if (!group)
-		return false;
+		return nullptr;
 
 	QString qGroupName = QString::fromStdString(id);
 	ResourceNode *subGroup =
 		group->_subfolders.value(qGroupName, nullptr);
 	//Already exist
 	if (subGroup)
-		return true;
+		return subGroup;
 
 	//Try to create new file
 	QString filePath = group->_path + "/" + qGroupName;
@@ -345,10 +345,10 @@ bool FileResourceIO::createHandle(ResourceNode *baseNode, BaseResource::Type typ
 		subGroup = new FileResourceHandle(type, group->_path + "/" + qGroupName, group);
 		group->_subfolders.insert(qGroupName, subGroup);
 
-		return true;
+		return subGroup;
 	}
 
-	return false;
+	return nullptr;
 }
 
 bool FileResourceIO::removeNode(ResourceNode *baseNode)
@@ -397,6 +397,8 @@ bool FileResourceIO::removeNode(ResourceNode *baseNode)
 
 		return true;
 	}
+
+	return false;
 }
 
 bool FileResourceIO::renameNode(ResourceNode *node, const std::string& id)
@@ -471,7 +473,7 @@ bool FileResourceIO::write(ResourceNode *node, std::shared_ptr<BaseResource> loa
 	if (!handle)
 		return false;
 
-	if (QFileInfo(handle->_path).exists())
+	if (!QFileInfo(handle->_path).exists())
 		return false;
 
 	std::string id = handle->_path.toStdString();

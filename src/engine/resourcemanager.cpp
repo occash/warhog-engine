@@ -41,7 +41,12 @@ std::string ResourceManager::basePath() const
 
 void ResourceManager::addLoader(std::shared_ptr<BaseResource> loader)
 {
-	_loaders.insert(std::make_pair(loader->type(), loader));
+	_io->addLoader(loader);
+}
+
+void ResourceManager::removeLoader(std::shared_ptr<BaseResource> loader)
+{
+	_io->removeLoader(loader);
 }
 
 std::shared_ptr<Object> ResourceManager::load(const std::string& id)
@@ -76,12 +81,11 @@ std::shared_ptr<Object> ResourceManager::load(const std::string& id)
 
 	std::shared_ptr<BaseResource> resource = loader->second;
 
-	Object *object = nullptr;
-	bool result = _io->read(node, resource, object);
-	if (!result)
-		return std::shared_ptr<Object>();
+	std::shared_ptr<Object> object;
+	if (_io->load(node, object))
+		return object;
 
-	return std::shared_ptr<Object>(object);
+	return std::shared_ptr<Object>();
 }
 
 bool ResourceManager::save(const std::string& id, std::shared_ptr<Object> object)
@@ -115,7 +119,7 @@ bool ResourceManager::save(const std::string& id, std::shared_ptr<Object> object
 		return false;
 
 	std::shared_ptr<BaseResource> resource = loader->second;
-	return _io->write(node, resource, object.get());
+	return _io->save(node, object);
 }
 
 const ResourceNode *ResourceManager::root() const
@@ -141,7 +145,8 @@ bool ResourceManager::createGroup(const std::string& id)
 			return false;
 	}
 
-	return _io->createGroup(node, newGroupId);
+	ResourceNode *group = _io->createGroup(node, newGroupId);
+	return group != nullptr;
 }
 
 bool ResourceManager::createHandle(BaseResource::Type type, const std::string& id)
@@ -162,7 +167,8 @@ bool ResourceManager::createHandle(BaseResource::Type type, const std::string& i
 			return false;
 	}
 
-	return _io->createHandle(node, type, handleId);
+	ResourceNode *handle = _io->createHandle(node, type, handleId);
+	return handle != nullptr;
 }
 
 bool ResourceManager::deleteNode(const std::string& id)

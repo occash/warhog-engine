@@ -13,7 +13,7 @@ public:
     ScriptImporter(QObject *parent = nullptr);
     ~ScriptImporter();
 
-    void import(const QString& filename);
+    std::shared_ptr<Object> import(const QString& filename, const QVariantMap& config = QVariantMap());
     QStringList suffixes();
     QStringList signatures();
 

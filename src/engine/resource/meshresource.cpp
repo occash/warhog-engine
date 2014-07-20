@@ -2,7 +2,7 @@
 
 #include <iostream>
 
-bool MeshResource::loadData(std::istream& in, void **data)
+bool MeshResource::load(std::istream& in, Object *&resource) const
 {
     Mesh *mesh = new Mesh();
     std::vector<float>::size_type posSize = 0, normSize = 0, texSize = 0;
@@ -31,14 +31,14 @@ bool MeshResource::loadData(std::istream& in, void **data)
         in.read((char *)mesh->indices.data(),
         mesh->indices.size() * sizeof(unsigned int));
 
-    *data = mesh;
+    resource = mesh;
 
     return true;
 }
 
-bool MeshResource::saveData(std::ostream& out, const void *data)
+bool MeshResource::save(std::ostream& out, Object *resource) const
 {
-    const Mesh *mesh = reinterpret_cast<const Mesh *>(data);
+    const Mesh *mesh = reinterpret_cast<const Mesh *>(resource);
 
     std::vector<float>::size_type posSize = mesh->positions.size(),
         normSize = mesh->normals.size(),

@@ -2,12 +2,14 @@
 #define MESH_H
 
 #include "global.h"
+#include "object.h"
 
 #include <vector>
 #include <glm/glm.hpp>
 
-class ENGINE_EXPORT Mesh
+class ENGINE_EXPORT Mesh : public Object
 {
+	OBJECT(Mesh, Object)
 public:
 	Mesh();
 	virtual ~Mesh();

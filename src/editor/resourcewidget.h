@@ -5,7 +5,7 @@
 #include <memory>
 //#include "ui_resourcewidget.h"
 
-class QAbstractItemModel;
+class ResourceModel;
 class QTreeView;
 class Importer;
 class ResourceIO;
@@ -21,18 +21,16 @@ public:
 
 	void setResourceFolder(const QString& folder);
 	void addImporter(Importer *importer);
-    Importer *findImporter(const QString& ext) const;
 
 protected:
-    void dragEnterEvent(QDragEnterEvent *event);
-    void dropEvent(QDropEvent *event);
+    //void dragEnterEvent(QDragEnterEvent *event);
+    //void dropEvent(QDropEvent *event);
 
 private:
     //Ui::ResourceWidgetClass ui;
-    QList<Importer *> _importers;
 	std::shared_ptr<ResourceIO> _io;
 	std::shared_ptr<ResourceManager> _manager;
-	QAbstractItemModel *_model;
+	ResourceModel *_model;
 	QTreeView *_view;
 
 };

@@ -2,7 +2,7 @@
 #define RESOURCE_H
 
 #include <cstdint>
-#include <memory>
+#include <string>
 
 #include "global.h"
 #include "object.h"
@@ -10,14 +10,11 @@
 class BaseResource
 {
 public:
-	typedef std::uint64_t Type;
+	typedef std::string Type;
 
 	virtual Type type() const = 0;
 	virtual bool load(std::istream& in, Object *&resource) const = 0;
 	virtual bool save(std::ostream& out, Object *resource) const = 0;
-
-protected:
-	static Type typeCounter;
 
 };
 
@@ -27,8 +24,7 @@ class Resource : public BaseResource
 public:
 	static Type staticType()
 	{
-		const static Type t = ++typeCounter;
-		return t;
+		return T::classApi()->name();
 	}
 
 	Type type() const override

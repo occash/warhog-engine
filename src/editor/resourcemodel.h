@@ -7,6 +7,8 @@
 class ResourceIO;
 class ResourceNode;
 
+class Importer;
+
 class ResourceModel : public QAbstractItemModel
 {
     Q_OBJECT
@@ -14,6 +16,8 @@ class ResourceModel : public QAbstractItemModel
 public:
 	ResourceModel(std::shared_ptr<ResourceIO> io, QObject *parent = nullptr);
     ~ResourceModel();
+
+	void addImporter(Importer *importer);
 
     QVariant data(const QModelIndex &index, int role) const;
     Qt::ItemFlags flags(const QModelIndex &index) const;
@@ -27,12 +31,20 @@ public:
 
 	bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole);
 	bool setHeaderData(int section, Qt::Orientation orientation, const QVariant &value, int role = Qt::EditRole);
-	bool insertColumns(int position, int columns, const QModelIndex &parent = QModelIndex());
-	bool removeColumns(int position, int columns, const QModelIndex &parent = QModelIndex());
-	bool insertRows(int position, int rows,	const QModelIndex &parent = QModelIndex());
+	bool insertRows(int position, int rows, const QModelIndex &parent = QModelIndex());
 	bool removeRows(int position, int rows,	const QModelIndex &parent = QModelIndex());
+
+	bool canDropMimeData(const QMimeData * data, Qt::DropAction action, int row, int column, const QModelIndex & parent) const override;
+	QStringList mimeTypes() const;
+	bool dropMimeData(const QMimeData *data, Qt::DropAction action,	int row, int column, const QModelIndex &parent);
+	Qt::DropActions supportedDropActions() const;
+	QMimeData *mimeData(const QModelIndexList &indexes) const;
 	
 private:
+	Importer *findImporter(const QString& ext) const;
+
+private:
+	QList<Importer *> _importers;
 	std::shared_ptr<ResourceIO> _io;
 	const ResourceNode *_root;
 

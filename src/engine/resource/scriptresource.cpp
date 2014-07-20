@@ -2,7 +2,7 @@
 
 #include <sstream>
 
-bool ScriptResource::loadData(std::istream& in, void **data)
+bool ScriptResource::load(std::istream& in, Object *&resource) const
 {
     Script *script = new Script();
 
@@ -20,14 +20,14 @@ bool ScriptResource::loadData(std::istream& in, void **data)
     script->source.resize(sourceSize);
     in.read(const_cast<char *>(script->source.data()), script->source.size());
 
-    *data = script;
+    resource = script;
 
     return true;
 }
 
-bool ScriptResource::saveData(std::ostream& out, const void *data)
+bool ScriptResource::save(std::ostream& out, Object *resource) const
 {
-    const Script *script = reinterpret_cast<const Script *>(data);
+    const Script *script = reinterpret_cast<const Script *>(resource);
 
     unsigned int engineSize = script->engine.size(),
         nameSize = script->name.size(), 

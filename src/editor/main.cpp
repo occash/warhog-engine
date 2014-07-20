@@ -27,24 +27,6 @@
 
 int main(int argc, char *argv[])
 {
-	/*std::shared_ptr<ResourceIO> io = 
-		std::make_shared<FileResourceIO>();
-	ResourceManager manager(io);
-	manager.setBasePath("D:/projects/warhog-engine/test/project1/resources");
-
-	manager.createGroup("textures");
-	manager.createGroup("textures/diffuse");
-	manager.createGroup("textures/specular");
-	manager.createGroup("models");
-	manager.createGroup("models/maya");
-	manager.createGroup("scripts");
-	manager.createGroup("scripts/algo");
-	manager.createGroup("scripts/algo/astar");
-	manager.createGroup("scripts/weather");
-	manager.createGroup("levels");
-	manager.createHandle(ScriptResource::staticType(), "textures/lalka");
-	manager.createHandle(ScriptResource::staticType(), "textures/diffuse/lalka2");*/
-
 	QApplication::setApplicationDisplayName("WarHog Editor");
 	QApplication::setApplicationName("WarHog Editor");
 	QApplication::setApplicationVersion("0.1");
@@ -53,7 +35,7 @@ int main(int argc, char *argv[])
 
     QApplication a(argc, argv);
 
-	QString configDir = QStandardPaths::writableLocation(QStandardPaths::ConfigLocation);
+	//QString configDir = QStandardPaths::writableLocation(QStandardPaths::ConfigLocation);
 
     QFile styleFile(":/style/main");
     styleFile.open(QIODevice::ReadOnly);

@@ -2,11 +2,13 @@
 #define SCRIPT_H
 
 #include "global.h"
+#include "object.h"
 
 #include <string>
 
-class ENGINE_EXPORT Script
+class ENGINE_EXPORT Script : public Object
 {
+	OBJECT(Script, Object)
 public:
     Script();
     ~Script();

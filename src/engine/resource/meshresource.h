@@ -8,8 +8,8 @@
 class ENGINE_EXPORT MeshResource : public Resource<Mesh>
 {
 public:
-    bool loadData(std::istream& in, void **data);
-    bool saveData(std::ostream& out, const void *data);
+	bool load(std::istream& in, Object *&resource) const override;
+	bool save(std::ostream& out, Object *resource) const override;
 
 };
 

@@ -18,7 +18,7 @@ MeshImporter::~MeshImporter()
 
 }
 
-void MeshImporter::import(const QString& filename)
+std::shared_ptr<Object> MeshImporter::import(const QString& filename, const QVariantMap& config /*= QVariantMap()*/)
 {
     QByteArray namebytes = filename.toLocal8Bit();
     const char *name = namebytes.constData();
@@ -38,13 +38,7 @@ void MeshImporter::import(const QString& filename)
         mesh->texcoords = shapes[0].mesh.texcoords;
         mesh->indices = shapes[0].mesh.indices;
 
-        int sep = filename.lastIndexOf('/');
-        QString shortName = filename.mid(sep + 1);
-        int pnt = shortName.lastIndexOf('.');
-        shortName = shortName.mid(0, pnt);
-        QByteArray shortBytes = shortName.toLocal8Bit();
-
-        //ResourceManager::save(std::string("Meshes\\") + shortBytes.constData() + ".mesh", mesh);
+		return mesh;
 
         emit progress(100);
     }

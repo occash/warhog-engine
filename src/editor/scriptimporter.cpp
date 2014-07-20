@@ -17,14 +17,14 @@ ScriptImporter::~ScriptImporter()
 
 }
 
-void ScriptImporter::import(const QString& filename)
+std::shared_ptr<Object> ScriptImporter::import(const QString& filename, const QVariantMap& config /*= QVariantMap()*/)
 {
     int sep = filename.lastIndexOf('/');
     QString shortName = filename.mid(sep + 1);
     QStringList nameExt = shortName.split('.');
 
     if (!_engineMap.contains(nameExt[1]))
-        return;
+        return std::shared_ptr<Object>();
 
     QByteArray engineBytes = _engineMap[nameExt[1]].toLocal8Bit();
     QByteArray nameBytes = nameExt[0].toLocal8Bit();
@@ -37,7 +37,7 @@ void ScriptImporter::import(const QString& filename)
     script->name = nameBytes.constData();
     script->source = sourceBytes.constData();
 
-    //ResourceManager::save(std::string("Scripts\\") + nameBytes.constData() + ".script", script);
+	return script;
 }
 
 QStringList ScriptImporter::suffixes()

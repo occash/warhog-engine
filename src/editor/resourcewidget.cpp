@@ -28,6 +28,17 @@ ResourceWidget::ResourceWidget(QWidget *parent)
 
 	_view = new QTreeView(this);
 	_view->setModel(_model);
+	_view->setAcceptDrops(true);
+	_view->setDefaultDropAction(Qt::CopyAction);
+	_view->setDragDropMode(QAbstractItemView::DragDrop);
+	_view->setDragDropOverwriteMode(false);
+	_view->setDragEnabled(true);
+	_view->setDropIndicatorShown(true);
+	_view->setSelectionBehavior(QAbstractItemView::SelectItems);
+	_view->setSelectionMode(QAbstractItemView::SingleSelection);
+	//_view->setAnimated(true);
+	_view->setAutoExpandDelay(400);
+	_view->setHeaderHidden(true);
 
 	QVBoxLayout *layout = new QVBoxLayout(this);
 	layout->setMargin(0);
@@ -45,7 +56,7 @@ ResourceWidget::~ResourceWidget()
 {
 }
 
-void ResourceWidget::dragEnterEvent(QDragEnterEvent *event)
+/*void ResourceWidget::dragEnterEvent(QDragEnterEvent *event)
 {
 	const QMimeData *data = event->mimeData();
 	if (data->hasUrls())
@@ -96,36 +107,11 @@ void ResourceWidget::dropEvent(QDropEvent *event)
             }
         }
     }
-}
+}*/
 
 void ResourceWidget::addImporter(Importer *importer)
 {
-	if (!importer)
-		return;
-
-	_importers.append(importer);
-	/*QStringList exts = importer->suffixes();
-	QStringList filters = _model->nameFilters();
-	foreach(const QString& ext, exts)
-	{
-		filters.append(QString("*.%1").arg(ext));
-	}
-	_model->setNameFilters(filters);*/
-}
-
-Importer *ResourceWidget::findImporter(const QString& ext) const
-{
-    foreach(Importer *importer, _importers)
-    {
-        QStringList suffixes = importer->suffixes();
-        foreach(QString suffix, suffixes)
-        {
-            if (suffix == ext)
-                return importer;
-        }
-    }
-
-    return nullptr;
+	_model->addImporter(importer);
 }
 
 void ResourceWidget::setResourceFolder(const QString& folder)

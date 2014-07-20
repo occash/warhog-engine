@@ -121,7 +121,7 @@ void readData(std::istream& source, Texture *texture)
     png_destroy_read_struct(&pngPtr, &infoPtr, (png_infopp)0);
 }
 
-bool TextureResource::loadData(std::istream& in, void **data)
+bool TextureResource::load(std::istream& in, Object *&resource) const
 {
     if (!validate(in))
         return false;
@@ -129,11 +129,11 @@ bool TextureResource::loadData(std::istream& in, void **data)
     Texture *texture = new Texture();
     readData(in, texture);
 
-    *data = texture;
+    resource = texture;
     return true;
 }
 
-bool TextureResource::saveData(std::ostream& out, const void *data)
+bool TextureResource::save(std::ostream& out, Object *resource) const
 {
     return false;
 }

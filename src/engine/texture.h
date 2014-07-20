@@ -2,12 +2,14 @@
 #define TEXTURE_H
 
 #include "global.h"
+#include "object.h"
 
 #include <glm/glm.hpp>
 #include "image.h"
 
-class ENGINE_EXPORT Texture
+class ENGINE_EXPORT Texture : public Object
 {
+	OBJECT(Texture, Object)
 public:
     enum Type {
         Texture1D,
