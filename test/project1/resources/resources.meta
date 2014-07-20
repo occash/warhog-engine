@@ -1,0 +1,66 @@
+version: 2
+bundle:
+  node: 1
+  children:
+    textures:
+      children:
+        diffuse:
+          path: D:/projects/warhog-engine/test/project1/resources/textures/diffuse
+          name: diffuse
+          node: 1
+        specular:
+          name: specular
+          node: 1
+          path: D:/projects/warhog-engine/test/project1/resources/textures/specular
+        cube:
+          name: cube
+          node: 2
+          path: D:/projects/warhog-engine/test/project1/resources/textures/cube
+          type: Script
+      name: textures
+      node: 1
+      path: D:/projects/warhog-engine/test/project1/resources/textures
+    models:
+      path: D:/projects/warhog-engine/test/project1/resources/models
+      children:
+        maya:
+          name: maya
+          node: 1
+          path: D:/projects/warhog-engine/test/project1/resources/models/maya
+      name: models
+      node: 1
+    levels:
+      name: levels
+      node: 1
+      path: D:/projects/warhog-engine/test/project1/resources/levels
+    scripts:
+      path: D:/projects/warhog-engine/test/project1/resources/scripts
+      node: 1
+      name: scripts
+      children:
+        weather:
+          name: weather
+          node: 1
+          path: D:/projects/warhog-engine/test/project1/resources/scripts/weather
+          children:
+            new node:
+              name: new node
+              node: 2
+              type: Script
+              path: D:/projects/warhog-engine/test/project1/resources/scripts/weather/new node
+        algo:
+          name: algo
+          path: D:/projects/warhog-engine/test/project1/resources/scripts/algo
+          node: 1
+          children:
+            astar:
+              path: D:/projects/warhog-engine/test/project1/resources/scripts/algo/astar
+              name: astar
+              node: 1
+        Script1:
+          name: Script1
+          node: 2
+          type: Script
+          path: D:/projects/warhog-engine/test/project1/resources/scripts/Script1
+  path: D:/projects/warhog-engine/test/project1/resources
+  name: resources

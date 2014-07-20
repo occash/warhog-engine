@@ -5,6 +5,9 @@
     <qresource prefix="/icons">
         <file alias="folder">resources/folder.png</file>
         <file alias="folder_opened">resources/folder_opened.png</file>
-    <file alias="script">resources/script.png</file>
+        <file alias="mesh">resources/mesh.png</file>
+        <file alias="script">resources/script.png</file>
+        <file alias="texture">resources/texture.png</file>
+        <file alias="splash">resources/splash.png</file>
     </qresource>
 </RCC>

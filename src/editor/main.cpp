@@ -20,6 +20,7 @@
 //#include <QGraphicsView>
 #include <QFile>
 #include <QStandardPaths>
+#include <QSplashScreen>
 
 #include "resourcemanager.h"
 #include "fileresourceio.h"
@@ -41,7 +42,13 @@ int main(int argc, char *argv[])
     styleFile.open(QIODevice::ReadOnly);
     a.setStyleSheet(styleFile.readAll());
 
+	QSplashScreen splash(QPixmap(":/icons/splash"));
+	splash.showMessage("Loading resources...", Qt::AlignBottom, Qt::white);
+	splash.show();
+	a.processEvents();
+
     MainWindow w;
+	splash.finish(&w);
     w.show();
 
     /*ResourceManager::base = "C:\\projects\\ModernGL\\Win32\\Debug\\Assets\\";
