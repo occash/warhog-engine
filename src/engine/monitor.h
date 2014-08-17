@@ -1,7 +1,7 @@
 #ifndef MONITOR_H
 #define MONITOR_H
 
-#include "global.h"
+/*#include "global.h"
 
 #include <vector>
 #include <memory>
@@ -36,8 +36,8 @@ private:
     static MonitorArray _monitors;
 
     GLFWmonitor *_handle;
-    VideoMode mode;
+	VideoMode mode;
 
-};
+};*/
 
 #endif

@@ -1,6 +1,6 @@
 #include "monitor.h"
 
-#include <GLFW/glfw3.h>
+/*#include <GLFW/glfw3.h>
 
 Monitor::Monitor(GLFWmonitor *handle)
     : _handle(handle)
@@ -44,3 +44,4 @@ void Monitor::getMonitors()
 }
 
 Monitor::MonitorArray Monitor::_monitors;
+*/
