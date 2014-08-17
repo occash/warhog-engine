@@ -1,5 +1,5 @@
 #include "glcontext.h"
-#include "window.h"
+#include "../../window.h"
 
 //GL related
 #include <GL/glew.h>
@@ -40,11 +40,12 @@ GLContext::~GLContext()
 
 bool GLContext::makeCurrent(Ptr<Window> w)
 {
-    glfwMakeContextCurrent(w->_handle);
+    /*glfwMakeContextCurrent(w->_handle);
 
     glewExperimental = GL_TRUE;
     GLenum err = glewInit();
-    return (err == GLEW_OK);
+    return (err == GLEW_OK);*/
+	return false;
 }
 
 void GLContext::setContext(const GLContextHints& context)

@@ -6,7 +6,8 @@
 
 bool Input::key(const std::string& name)
 {
-    return glfwGetKey(_window->_handle, _keyMap.at(name)) == GLFW_PRESS;
+    //return glfwGetKey(_window->_handle, _keyMap.at(name)) == GLFW_PRESS;
+	return false;
 }
 
 glm::float_t Input::axis(Axis a)
@@ -24,7 +25,8 @@ glm::float_t Input::axis(Axis a)
 
 bool Input::button(Button b)
 {
-    return glfwGetMouseButton(_window->_handle, b) == GLFW_PRESS;
+    //return glfwGetMouseButton(_window->_handle, b) == GLFW_PRESS;
+	return false;
 }
 
 double Input::_deltav = 0.0;

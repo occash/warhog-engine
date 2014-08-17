@@ -3,6 +3,7 @@
 
 #include <entityx\System.h>
 #include <string>
+#include <map>
 
 #include "../global.h"
 #include "../window.h"

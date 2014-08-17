@@ -14,8 +14,7 @@
 #include "components/renderercomponent.h"
 #include "components/lightcomponent.h"
 
-#include "meshimporter.h"
-#include "glcontext.h"
+#include "render/opengl/glcontext.h"
 #include "input.h"
 #include "systems/luascriptengine.h"
 
@@ -75,7 +74,7 @@ public:
             contextHints,
             frameHints));
         _window = Ptr<Window>(new Window(
-            windowHints));
+			Window::Closable | Window::Resizable));
 
         //TODO: create key manager
         std::map<std::string, int> keyMap;
@@ -85,19 +84,19 @@ public:
         keyMap.insert(std::make_pair("right", GLFW_KEY_D));
 
         bool result = _context->makeCurrent(_window);
-        if (!result)
-            exit(2);
+        /*if (!result)
+            exit(2);*/
 
-        systems.add<InputSystem>(_window, keyMap);
-		Ptr<ScriptSystem> scripting = systems.add<ScriptSystem>();
-        scripting->registerEngine<LuaScriptEngine>();
-		systems.add<RenderSystem>(_window);
+        //systems.add<InputSystem>(_window, keyMap);
+		//Ptr<ScriptSystem> scripting = systems.add<ScriptSystem>();
+        //scripting->registerEngine<LuaScriptEngine>();
+		//systems.add<RenderSystem>(_window);
 
 		_window->show();
 	}
 
 	void initialize() {
-        tree<Entity> entitieTree;
+       /* tree<Entity> entitieTree;
 
 		Entity cameraId = entities.create();
 		auto cameraPos = cameraId.assign<TransformComponent>();
@@ -125,7 +124,7 @@ public:
         manager.add<MeshResource>();
         manager.add<ScriptResource>();*/
 
-		Ptr<Mesh> mesh;// = manager.load<Mesh>("dragon.bmf");
+		/*Ptr<Mesh> mesh;// = manager.load<Mesh>("dragon.bmf");
 		Ptr<Script> script;// = manager.load<Script>("Test.lua");
         script->engine = "lua";
         script->name = "Test";
@@ -145,18 +144,19 @@ public:
 
         //Entity scriptId = entity_manager->create();
 		auto scriptSystem = systems.system<ScriptSystem>();
-		scriptSystem->assign(cameraId, script);
+		scriptSystem->assign(cameraId, script);*/
 	}
 
 	void update(double dt) {
-        if (_window->isClosing())
+		_window->update();
+        /*if (_window->update())
         {
             stop();
             return;
-        }
-        systems.update<InputSystem>(dt);
-		systems.update<ScriptSystem>(dt);
-		systems.update<RenderSystem>(dt);
+        }*/
+        //systems.update<InputSystem>(dt);
+		//systems.update<ScriptSystem>(dt);
+		//systems.update<RenderSystem>(dt);
 	}
 
 	void start() {

@@ -1,5 +1,5 @@
 #include "uniform.h"
-#include "program.h"
+#include "../../program.h"
 
 #include <GL/glew.h>
 #include <glm/gtc/type_ptr.hpp>

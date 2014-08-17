@@ -23,7 +23,7 @@ void InputSystem::configure(EventManager &events)
 
 void InputSystem::update(EntityManager &entities, EventManager &events, double dt)
 {
-    double horizontal, vertical;
+    /*double horizontal, vertical;
     glfwGetCursorPos(Input::_window->_handle,
         &horizontal,
         &vertical);
@@ -31,5 +31,5 @@ void InputSystem::update(EntityManager &entities, EventManager &events, double d
     Input::_deltah = horizontal - _horizontal;
     Input::_deltav = vertical - _vertical;
     _horizontal = horizontal;
-    _vertical = vertical;
+    _vertical = vertical;*/
 }

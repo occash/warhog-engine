@@ -2,41 +2,56 @@
 #define WINDOW_H
 
 #include "global.h"
-#include "hints.h"
 
-struct GLFWwindow;
-
-class CameraComponent;
-class Model;
+struct WindowData;
 
 class ENGINE_EXPORT Window
 {
 public:
-    Window(const GLWindowHints& hints = GLWindowHints(), 
-        Ptr<Window> share = nullptr);
+	enum WindowStyle
+	{
+		Resizable,
+		Closable
+	};
+
+	enum Event
+	{
+		Move,
+		Resize,
+		Close,
+		Visible
+	};
+
+    Window(int style);
     virtual ~Window();
 
-    void render();
-    bool isClosing() const;
-    unsigned int handle() const;
-    int width() const;
-    int height() const;
+	int x() const;
+	int y() const;
+	int width() const;
+	int height() const;
 
+	void setPosition(int x, int y);
+	void setSize(int w, int h);
+
+	void setTitle(const char *title);
+	void setVisible(bool v);
 	void show();
 	void hide();
-	void setResizable(bool arg);
-	void setDecorated(bool arg);
+	void showFullscreen();
+	void close();
+	void update();
+	void event(Event);
+
+protected:
+	virtual void create(void *data);
+	virtual void destroy(void *data);
+	virtual void moveEvent();
+	virtual void resizeEvent();
+	virtual void closeEvent();
+	virtual void visibleEvent();
 
 private:
-    void setWindow(const GLWindowHints& hints);
-
-private:
-    friend class GLContext;
-    friend class Input;
-    friend class InputSystem;
-
-    GLWindowHints _hints;
-    GLFWwindow *_handle;
+	WindowData *_data;
 
 };
 

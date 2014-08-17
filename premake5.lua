@@ -1,6 +1,3 @@
-include "qt.lua"
-local qt = premake.extensions.qt
-
 solution "warhog"
 	platforms { "x64" }
 	configurations { "Release", "Debug" }
@@ -12,6 +9,7 @@ solution "warhog"
 		kind "SharedLib"
 		defines { "GLEW_STATIC", "ENGINE_LIB" }
 		includedirs {
+			"D:/third-party/boost",
 			"D:/third-party/entityx",
 			"D:/third-party/glew-1.10.0/include",
 			"D:/third-party/glfw/include",
@@ -35,12 +33,31 @@ solution "warhog"
 		
 		files
 		{
-			"src/engine/**.h",
-			"src/engine/**.cpp",
-			"src/engine/**.lua",
-			"src/engine/**.yaml",
-			"src/engine/shaders/*"
+			"src/engine/*.h",
+			"src/engine/*.cpp",
+			"src/engine/components/**.h",
+			"src/engine/components/**.cpp",
+			"src/engine/render/**.h",
+			"src/engine/render/**.cpp",
+			"src/engine/resource/**.h",
+			"src/engine/resource/**.cpp",
+			"src/engine/systems/**.h",
+			"src/engine/systems/**.cpp",
 		}
+		
+		if os.is('windows') then
+			files 
+			{ 
+				"src/engine/platforms/win32/**.h",
+				"src/engine/platforms/win32/**.cpp"
+			}
+		else
+			files 
+			{ 
+				"src/engine/platforms/null/**.h",
+				"src/engine/platforms/null/**.cpp"
+			}
+		end
 		
 		configuration "Debug"
 			targetdir "bin/debug"
@@ -115,6 +132,8 @@ solution "warhog"
 			"src/editor/**.qss"
 		}
 		
+		include "qt.lua"
+		local qt = premake.extensions.qt
 		qt.enable()
 		qtpath "D:/third-party/qt-everywhere-opensource-src-5.3.0/qtbase"
 		qtmodules { "core", "gui", "widgets", "opengl", "concurrent" }

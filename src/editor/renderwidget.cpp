@@ -5,9 +5,10 @@
 #include <QtGui/QWindow>
 
 RenderWidget::RenderWidget(QWidget *parent)
-    : QWidget(parent)
+    : QWidget(parent),
+	_window(0)
 {
-    WId handle = _window.handle();
+    /*WId handle = _window.handle();
     QWindow *win = QWindow::fromWinId(handle);
     QWidget *widget = QWidget::createWindowContainer(win);
 
@@ -16,7 +17,7 @@ RenderWidget::RenderWidget(QWidget *parent)
     layout->setMargin(0);
     setLayout(layout);
 
-    startTimer(0);
+    startTimer(0);*/
 }
 
 RenderWidget::~RenderWidget()
@@ -26,5 +27,5 @@ RenderWidget::~RenderWidget()
 
 void RenderWidget::timerEvent(QTimerEvent *)
 {
-    _window.render();
+    //_window.render();
 }

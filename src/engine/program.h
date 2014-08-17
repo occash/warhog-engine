@@ -2,8 +2,8 @@
 #define PROGRAM_H
 
 #include <glm/glm.hpp>
-#include "uniform.h"
-#include "uniformblock.h"
+#include "render/opengl/uniform.h"
+#include "render/opengl/uniformblock.h"
 
 class Shader;
 class Mesh;

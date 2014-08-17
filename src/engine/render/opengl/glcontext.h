@@ -1,8 +1,8 @@
 #ifndef GLCONTEXT_H
 #define GLCONTEXT_H
 
-#include "global.h"
-#include "hints.h"
+#include "../../global.h"
+#include "../../hints.h"
 
 class Window;
 

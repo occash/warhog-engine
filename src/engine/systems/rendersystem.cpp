@@ -125,7 +125,7 @@ void RenderSystem::update(EntityManager &entities, EventManager &events, double 
 
     //geometryPass(entities, m);
 
-	_window->render();
+	_window->update();
 }
 
 void RenderSystem::geometryPass(Ptr<EntityManager> entities, MatrixBlock& m)
