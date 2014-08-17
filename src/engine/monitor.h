@@ -1,8 +1,10 @@
 #ifndef MONITOR_H
 #define MONITOR_H
 
-#include <boost/shared_ptr.hpp>
+#include "global.h"
+
 #include <vector>
+#include <memory>
 
 class GLFWmonitor;
 
@@ -16,12 +18,11 @@ struct VideoMode
     int 	refreshRate;
 };
 
-class Monitor
+class ENGINE_EXPORT Monitor
 {
 public:
     virtual ~Monitor();
-
-    static boost::shared_ptr<Monitor> screen(int index);
+    static std::shared_ptr<Monitor> screen(int index);
 
 private:
     Monitor(GLFWmonitor *handle);
@@ -30,7 +31,7 @@ private:
 
 private:
     friend class Window;
-    typedef std::vector<boost::shared_ptr<Monitor>> MonitorArray;
+    typedef std::vector<std::shared_ptr<Monitor>> MonitorArray;
 
     static MonitorArray _monitors;
 

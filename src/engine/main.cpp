@@ -23,7 +23,6 @@
 #include "resource/meshresource.h"
 #include "resource/scriptresource.h"
 
-#include <boost/any.hpp>
 #include "tree.h"
 #include <ctime>
 

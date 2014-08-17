@@ -11,12 +11,12 @@ Monitor::~Monitor()
 {
 }
 
-boost::shared_ptr<Monitor> Monitor::screen(int index)
+std::shared_ptr<Monitor> Monitor::screen(int index)
 {
     if (index < 1)
     {
         GLFWmonitor *primary = glfwGetPrimaryMonitor();
-        return boost::shared_ptr<Monitor>(new Monitor(primary));
+        return std::shared_ptr<Monitor>(new Monitor(primary));
     }
     else
     {
@@ -39,7 +39,7 @@ void Monitor::getMonitors()
     _monitors.resize(count);
     for (int i = 0; i < count; +i)
         _monitors.push_back(
-        boost::shared_ptr<Monitor>(
+        std::shared_ptr<Monitor>(
         new Monitor(monitors[i])));
 }
 

@@ -1,7 +1,6 @@
 #ifndef RENDERSYSTEM_H
 #define RENDERSYSTEM_H
 
-//#include <boost/shared_ptr.hpp>
 #include "../gbuffer.h"
 #include "../window.h"
 
