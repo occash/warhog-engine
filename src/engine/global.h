@@ -1,6 +1,8 @@
 #ifndef GLOBAL_H
 #define GLOBAL_H
 
+#include <memory>
+
 template <typename T>
 using Ptr = std::shared_ptr<T>;
 

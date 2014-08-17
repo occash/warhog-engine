@@ -2,12 +2,11 @@
 #define SETTINGS_H
 
 #include <map>
-#include <boost/any.hpp>
 
 class Settings
 {
 public:
-    typedef std::map<std::string, boost::any> SettingsMap;
+    //typedef std::map<std::string, boost::any> SettingsMap;
 
     enum Format
     {
@@ -24,7 +23,7 @@ public:
 private:
     std::string _filename;
     Format _format;
-    SettingsMap _setmap;
+    //SettingsMap _setmap;
 
 };
 

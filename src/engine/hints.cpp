@@ -1,56 +1,90 @@
 #include "hints.h"
 
-#include <map>
-#include <boost/preprocessor.hpp>
-#include <boost/assign/list_of.hpp>
+inline std::string toString(GLContextHints::ClientApi api)
+{
+	switch (api)
+	{
+	case GLContextHints::Desktop:
+		return "Desktop";
+	case GLContextHints::Embedded:
+		return "Embedded";
+	default:
+		return "Desktop";
+	}
+}
 
-#define ENUM_TO_STRING_CASE(r, data, elem) \
-    case data::elem: return BOOST_PP_STRINGIZE(elem);
+inline std::string toString(GLContextHints::Profile profile)
+{
+	switch (profile)
+	{
+	case GLContextHints::Any:
+		return "Any";
+	case GLContextHints::Core:
+		return "Core";
+	case GLContextHints::Compat:
+		return "Compat";
+	default:
+		return "Any";
+	}
+}
 
-#define ENUM_TO_STRING(scope, name, enumerators) \
-\
-    inline std::string toString(scope::name v) \
-{ \
-    switch (v) \
-{ \
-    BOOST_PP_SEQ_FOR_EACH( \
-    ENUM_TO_STRING_CASE, \
-    scope, \
-    enumerators \
-    ) \
-    default: return ""; \
-} \
+inline std::string toString(GLContextHints::Strategy strategy)
+{
+	switch (strategy)
+	{
+	case GLContextHints::NotRobust:
+		return "NotRobust";
+	case GLContextHints::ResetNotify:
+		return "ResetNotify";
+	case GLContextHints::LoseOnReset:
+		return "LoseOnReset";
+	default:
+		return "NotRobust";
+	}
 }
 
 template<class T>
-T fromString(const std::string& c)
+inline T fromString(const std::string& c)
 {
     return T();
 }
 
-#define STRING_TO_ENUM_CASE(r, data, elem) \
-    (BOOST_PP_STRINGIZE(elem), data::elem)
+template<>
+inline GLContextHints::ClientApi fromString(const std::string& c)
+{
+	if (c == "Desktop")
+		return GLContextHints::Desktop;
+	else if (c == "Embedded")
+		return GLContextHints::Embedded;
 
-#define STRING_TO_ENUM(scope, name, enumerators) \
-    \
-    std::map<std::string, scope::name> name##_map = boost::assign::map_list_of \
-    BOOST_PP_SEQ_FOR_EACH(\
-    STRING_TO_ENUM_CASE, \
-    scope, \
-    enumerators \
-    ); \
-    template<>\
-    inline scope::name fromString<scope::name>(const std::string& c) \
-    { \
-    return name##_map[c]; \
-    }
+	return GLContextHints::Desktop;
+}
 
-ENUM_TO_STRING(GLContextHints, ClientApi, (Desktop)(Embedded))
-STRING_TO_ENUM(GLContextHints, ClientApi, (Desktop)(Embedded))
-ENUM_TO_STRING(GLContextHints, Profile, (Any)(Core)(Compat))
-STRING_TO_ENUM(GLContextHints, Profile, (Any)(Core)(Compat))
-ENUM_TO_STRING(GLContextHints, Strategy, (NotRobust)(ResetNotify)(LoseOnReset))
-STRING_TO_ENUM(GLContextHints, Strategy, (NotRobust)(ResetNotify)(LoseOnReset))
+template<>
+inline GLContextHints::Profile fromString(const std::string& c)
+{
+	if (c == "Any")
+		return GLContextHints::Any;
+	else if (c == "Core")
+		return GLContextHints::Core;
+	else if (c == "Compat")
+		return GLContextHints::Compat;
+
+	return GLContextHints::Any;
+}
+
+template<>
+inline GLContextHints::Strategy fromString(const std::string& c)
+{
+	if (c == "NotRobust")
+		return GLContextHints::NotRobust;
+	else if (c == "ResetNotify")
+		return GLContextHints::ResetNotify;
+	else if (c == "LoseOnReset")
+		return GLContextHints::LoseOnReset;
+
+	return GLContextHints::NotRobust;
+}
 
 GLContextHints::GLContextHints()
     : api(Desktop),

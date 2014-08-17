@@ -11,8 +11,7 @@ solution "warhog"
 		language "C++"
 		kind "SharedLib"
 		defines { "GLEW_STATIC", "ENGINE_LIB" }
-		includedirs { 
-			"D:/third-party/boost/include",
+		includedirs {
 			"D:/third-party/entityx",
 			"D:/third-party/glew-1.10.0/include",
 			"D:/third-party/glfw/include",
