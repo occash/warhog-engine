@@ -2,7 +2,7 @@
 #include "../shader.h"
 #include "../program.h"
 
-#include <GL/glew.h>
+#include "../render/opengl/glextensions.h"
 #include <fstream>
 
 std::string readFile(const std::string& fileName)

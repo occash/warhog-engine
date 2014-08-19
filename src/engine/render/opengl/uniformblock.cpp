@@ -1,6 +1,6 @@
 #include "uniformblock.h"
 
-#include <GL/glew.h>
+#include "glextensions.h"
 #include <memory.h>
 #include <iostream>
 

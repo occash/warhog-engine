@@ -1,6 +1,6 @@
 #include "shader.h"
 
-#include <GL/glew.h>
+#include "render/opengl/glextensions.h"
 #include <iostream>
 
 Shader::Shader(const std::string& source, GLenum type)

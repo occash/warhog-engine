@@ -1,6 +1,6 @@
 #include "texture.h"
 
-#include <GL/glew.h>
+#include "render/opengl/glextensions.h"
 
 Texture::Texture(/*Texture::Type type, GLuint unit*/)
 	: _type((Type)GL_TEXTURE_2D),

@@ -1,6 +1,7 @@
-#pragma once
+#ifndef GBUFFER_H
+#define GBUFFER_H
 
-#include <GL/glew.h>
+#include "glextensions.h"
 
 class GBuffer
 {
@@ -31,3 +32,4 @@ private:
     GLuint _depth;
 };
 
+#endif

@@ -17,8 +17,6 @@ solution 'warhog'
 		links
 		{ 
 			'opengl32',
-			'glew32s',
-			'glfw3',
 			'entityx',
 			'lua'
 		}

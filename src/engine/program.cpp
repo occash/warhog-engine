@@ -2,7 +2,7 @@
 #include "shader.h"
 #include "mesh.h"
 
-#include <GL/glew.h>
+#include "render/opengl/glextensions.h"
 #include <iostream>
 
 Program::Program(void)

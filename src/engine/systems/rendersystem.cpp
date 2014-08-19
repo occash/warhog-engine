@@ -11,7 +11,7 @@
 
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/rotate_vector.hpp>
-#include <GL/glew.h>
+#include "../render/opengl/glextensions.h"
 
 #include <yaml-cpp/yaml.h>
 #include <fstream>

@@ -1,7 +1,7 @@
 #include "renderercomponent.h"
 #include "../mesh.h"
 
-#include <GL/glew.h>
+#include "../render/opengl/glextensions.h"
 
 RendererComponent::RendererComponent()
 	: _faceNumber(0)

@@ -1,4 +1,5 @@
 #include "../../glwindow.h"
+#include "../../glextensions.h"
 
 #include <windows.h>
 #include "GL/GL.h"
@@ -26,6 +27,9 @@ void resolveWgl(HDC *hdc, HGLRC *context, PPIXELFORMATDESCRIPTOR pfd)
 	wglShareLists(old_context, *context);
 	wglMakeCurrent(*hdc, *context);
 	//TODO: handle errors
+
+	//resolve opengl functions
+	GLExt::init();
 
 	wglChoosePixelFormatARB = (PFNWGLCHOOSEPIXELFORMATARBPROC)wglGetProcAddress("wglChoosePixelFormatARB");
 	wglCreateContextAttribsARB = (PFNWGLCREATECONTEXTATTRIBSARBPROC)wglGetProcAddress("wglCreateContextAttribsARB");
@@ -142,5 +146,3 @@ void GLWindow::resizeEvent(int w, int h)
 {
 	glViewport(0, 0, w, h);
 }
-
-

@@ -2,8 +2,7 @@
 #include "../../window.h"
 
 //GL related
-#include <GL/glew.h>
-#include <GLFW/glfw3.h>
+#include "glextensions.h"
 
 //Standard library
 #include <iostream>
@@ -20,7 +19,7 @@ void error_callback(int error, const char* description)
 GLContext::GLContext(const GLContextHints& context, 
     const GLFramebufferHints& frame)
 {
-    //Set error handling before init
+    /*//Set error handling before init
     glfwSetErrorCallback(error_callback);
 
     //Initialize GLFW lib
@@ -30,12 +29,12 @@ GLContext::GLContext(const GLContextHints& context,
     setContext(context);
 
     _frame = frame;
-    setFrameBuffer(frame);
+    setFrameBuffer(frame);*/
 }
 
 GLContext::~GLContext()
 {
-    glfwTerminate();
+    //glfwTerminate();
 }
 
 bool GLContext::makeCurrent(Ptr<Window> w)
@@ -51,19 +50,19 @@ bool GLContext::makeCurrent(Ptr<Window> w)
 void GLContext::setContext(const GLContextHints& context)
 {
     //Set context hints
-    glfwWindowHint(GLFW_CLIENT_API, context.api);
+    /*glfwWindowHint(GLFW_CLIENT_API, context.api);
     glfwWindowHint(GLFW_OPENGL_PROFILE, context.profile);
     glfwWindowHint(GLFW_CONTEXT_ROBUSTNESS, context.strategy);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, context.major);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, context.minor);
     glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, context.debug ? GL_TRUE : GL_FALSE);
-    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, context.forward ? GL_TRUE : GL_FALSE);
+    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, context.forward ? GL_TRUE : GL_FALSE);*/
 }
 
 void GLContext::setFrameBuffer(const GLFramebufferHints& frame)
 {
     //Set context hints
-    glfwWindowHint(GLFW_RED_BITS, frame.redBits);
+    /*glfwWindowHint(GLFW_RED_BITS, frame.redBits);
     glfwWindowHint(GLFW_GREEN_BITS, frame.greenBits);
     glfwWindowHint(GLFW_BLUE_BITS, frame.blueBits);
     glfwWindowHint(GLFW_ALPHA_BITS, frame.alphaBits);
@@ -81,5 +80,5 @@ void GLContext::setFrameBuffer(const GLFramebufferHints& frame)
     glfwWindowHint(GLFW_REFRESH_RATE, frame.refreshRate);
 
     glfwWindowHint(GLFW_STEREO, frame.stereo ? GL_TRUE : GL_FALSE);
-    glfwWindowHint(GLFW_SRGB_CAPABLE, frame.srgb ? GL_TRUE : GL_FALSE);
+    glfwWindowHint(GLFW_SRGB_CAPABLE, frame.srgb ? GL_TRUE : GL_FALSE);*/
 }
