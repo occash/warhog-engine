@@ -83,45 +83,25 @@ static ATOM appWindowClass = registerWindowClass();
 Window::Window(int style, char *title, int width, int height) :
 	_data(new WindowData)
 {
-	ULONG windowStyle = WS_CAPTION | WS_MINIMIZEBOX;
-	if (style & WindowFlags::Closable) 
-		windowStyle |= WS_SYSMENU;
-	if (style & WindowFlags::Resizable) 
-		windowStyle |= WS_SYSMENU | WS_THICKFRAME | WS_MAXIMIZEBOX;
-
-	_data->handle = CreateWindow(
-		TEXT("WarhogWindow"),
-		title,
-		windowStyle,
-		0, 0, width, height,
-		NULL, NULL,
-		GetModuleHandle(NULL),
-		this
-		);
+	_data->handle = HWND();
 	_data->style = style;
 	strcpy(_data->title, title);
+	_data->x = 0;
+	_data->y = 0;
+	_data->width = width;
+	_data->height = height;
 	_data->closed = false;
 	_data->focused = true;
 	_data->minimized = false;
 	_data->mouse.show = true;
 	_data->mouse.grab = false;
-
-	// Initialize window properties
-	RECT rect;
-	GetWindowRect(_data->handle, &rect);
-	_data->x = rect.left;
-	_data->y = rect.top;
-
-	GetClientRect(_data->handle, &rect);
-	_data->width = rect.right - rect.left;
-	_data->height = rect.bottom - rect.top;
-
-	create(_data->handle);
+	_data->mouse.button = 0;
+	_data->mouse.x = 0;
+	_data->mouse.y = 0;
 }
 
 Window::~Window()
 {
-	destroy(_data->handle);
 	DestroyWindow(_data->handle);
 	delete _data;
 }
@@ -182,6 +162,34 @@ void Window::setTitle(const char *title)
 
 void Window::setVisible(bool v)
 {
+	if (!_data->handle)
+	{
+		ULONG windowStyle = WS_CAPTION | WS_MINIMIZEBOX;
+		if (_data->style & WindowFlags::Closable)
+			windowStyle |= WS_SYSMENU;
+		if (_data->style & WindowFlags::Resizable)
+			windowStyle |= WS_SYSMENU | WS_THICKFRAME | WS_MAXIMIZEBOX;
+
+		_data->handle = CreateWindow(
+			TEXT("WarhogWindow"),
+			_data->title,
+			windowStyle,
+			0, 0, _data->width, _data->height,
+			NULL, NULL,
+			GetModuleHandle(NULL),
+			this
+			);
+
+		// Initialize window properties
+		RECT rect;
+		GetWindowRect(_data->handle, &rect);
+		_data->x = rect.left;
+		_data->y = rect.top;
+
+		GetClientRect(_data->handle, &rect);
+		_data->width = rect.right - rect.left;
+		_data->height = rect.bottom - rect.top;
+	}
 	ShowWindow(_data->handle, v ? SW_SHOW : SW_HIDE);
 }
 
@@ -223,7 +231,10 @@ void Window::close()
 {
 	setVisible(false);
 	if (_data->style & Window::DestroyOnClose)
+	{
 		DestroyWindow(_data->handle);
+		_data->handle = HWND();
+	}
 }
 
 void Window::update()
@@ -235,15 +246,30 @@ void Window::update()
 		TranslateMessage(&message);
 		DispatchMessage(&message);
 	}
+	updateEvent();
 }
 
 bool Window::platformEvent(Window *window, void *msgPtr, long *result)
 {
 	WindowMsg *msg = reinterpret_cast<WindowMsg *>(msgPtr);
+	if (msg->uMsg == WM_NCCREATE)
+	{
+		Window *window = reinterpret_cast<Window *>(
+			((LPCREATESTRUCT)msg->lParam)->lpCreateParams
+			);
+		window->create(msg->hwnd);
+		SetWindowLongPtr(msg->hwnd, GWLP_USERDATA, LONG_PTR(window));
+		return false;
+	}
+
 	if (window)
 	{
 		switch (msg->uMsg)
 		{
+		case WM_DESTROY:
+			window->destroy(window->_data->handle);
+			*result = 1;
+			return true;
 		case WM_CLOSE:
 			window->closeEvent();
 			*result = 1;
@@ -361,17 +387,12 @@ void Window::hideEvent()
 {
 }
 
+void Window::updateEvent()
+{
+}
+
 LRESULT CALLBACK windowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
-	if (uMsg == WM_NCCREATE)
-	{
-		Window *window = reinterpret_cast<Window *>(
-			((LPCREATESTRUCT)lParam)->lpCreateParams
-			);
-		SetWindowLongPtr(hwnd, GWLP_USERDATA, LONG_PTR(window));
-		return DefWindowProc(hwnd, uMsg, wParam, lParam);
-	}
-
 	Window *window = reinterpret_cast<Window*>(GetWindowLongPtr(hwnd, GWLP_USERDATA));
 	WindowMsg msg = { hwnd, uMsg, wParam, lParam };
 	long result;

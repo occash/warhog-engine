@@ -51,8 +51,10 @@ protected:
 	virtual void focusOutEvent();
 	virtual void showEvent();
 	virtual void hideEvent();
+	virtual void updateEvent();
 
 private:
+	friend struct WindowData;
 	WindowData *_data;
 
 };

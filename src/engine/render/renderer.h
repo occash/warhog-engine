@@ -7,6 +7,7 @@ class Renderer
 {
 public:
 	virtual Window *createWindow();
+
 };
 
 #endif

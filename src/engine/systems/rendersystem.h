@@ -35,7 +35,7 @@ using namespace entityx;
 class RenderSystem : public System<RenderSystem>
 {
 public:
-    RenderSystem(Ptr<Window> window);
+    RenderSystem();
     ~RenderSystem();
 
     void configure(EventManager &events) override;
@@ -43,7 +43,7 @@ public:
 
 private:
     Ptr<Window> _window;
-    GBuffer _gbuffer;
+    //GBuffer _gbuffer;
 
 private:
     void geometryPass(Ptr<EntityManager> entities, MatrixBlock& m_);

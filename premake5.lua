@@ -31,9 +31,17 @@ solution 'warhog'
 		
 		-- Exclude extra platforms from build
 		if os.is('windows') then
-			excludes { 'src/engine/platforms/null/**' }
+			excludes
+			{ 
+				'src/engine/platforms/null/**',
+				'src/engine/render/opengl/platforms/null/**'
+			}
 		else
-			excludes { 'src/engine/platforms/win32/**' }
+			excludes
+			{
+				'src/engine/platforms/win32/**',
+				'src/engine/render/opengl/platforms/null/**'
+			}
 		end
 		
 		configuration 'Debug'

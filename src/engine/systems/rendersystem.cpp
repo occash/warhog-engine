@@ -17,9 +17,11 @@
 #include <fstream>
 #include <iostream>
 
-RenderSystem::RenderSystem(Ptr<Window> window)
-    : _window(window),
-    _gbuffer(window->width(), window->height())
+#include "../render/opengl/glrenderer.h"
+
+RenderSystem::RenderSystem()
+    //: _window(window),
+    //_gbuffer(window->width(), window->height())
 {
 }
 
@@ -29,12 +31,16 @@ RenderSystem::~RenderSystem()
 
 void RenderSystem::configure(EventManager &events)
 {
+	GLRenderer renderer;
+	_window = std::shared_ptr<Window>(renderer.createWindow());
+	_window->show();
+	_window->update();
     //glEnable(GL_DEPTH_TEST);
 }
 
 void RenderSystem::update(EntityManager &entities, EventManager &events, double dt)
 {
-	auto cameras = entities.entities_with_components<TransformComponent, CameraComponent>();
+	/*auto cameras = entities.entities_with_components<TransformComponent, CameraComponent>();
 	auto cameraObject = cameras.begin();
 	if (cameraObject == cameras.end())
 		return;
@@ -121,10 +127,13 @@ void RenderSystem::update(EntityManager &entities, EventManager &events, double 
         directlight = dlight;
 
         renderer->render();
-    }
+    }*/
 
     //geometryPass(entities, m);
 
+	glClearColor(0.0f, 0.0f, 1.0f, 1.0f);
+	glClearDepth(1.0);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	_window->update();
 }
 

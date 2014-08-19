@@ -70,11 +70,11 @@ public:
         doc["Frame buffer"] >> frameHints;
         doc["Window options"] >> windowHints;
 
-        _context = Ptr<GLContext>(new GLContext(
+        /*_context = Ptr<GLContext>(new GLContext(
             contextHints,
             frameHints));
         _window = Ptr<Window>(new Window(
-			Window::Closable | Window::Resizable));
+			Window::Closable | Window::Resizable));*/
 
         //TODO: create key manager
         std::map<std::string, int> keyMap;
@@ -83,16 +83,16 @@ public:
         keyMap.insert(std::make_pair("left", GLFW_KEY_A));
         keyMap.insert(std::make_pair("right", GLFW_KEY_D));
 
-        bool result = _context->makeCurrent(_window);
+        //bool result = _context->makeCurrent(_window);
         /*if (!result)
             exit(2);*/
 
         //systems.add<InputSystem>(_window, keyMap);
 		//Ptr<ScriptSystem> scripting = systems.add<ScriptSystem>();
         //scripting->registerEngine<LuaScriptEngine>();
-		//systems.add<RenderSystem>(_window);
+		systems.add<RenderSystem>();
 
-		_window->show();
+		//_window->show();
 	}
 
 	void initialize() {
@@ -148,7 +148,7 @@ public:
 	}
 
 	void update(double dt) {
-		_window->update();
+		//_window->update();
         /*if (_window->update())
         {
             stop();
@@ -156,7 +156,7 @@ public:
         }*/
         //systems.update<InputSystem>(dt);
 		//systems.update<ScriptSystem>(dt);
-		//systems.update<RenderSystem>(dt);
+		systems.update<RenderSystem>(dt);
 	}
 
 	void start() {

@@ -1,5 +1,5 @@
-#ifndef RENDERER_H
-#define RENDERER_H
+#ifndef RENDERERCOMPONENT_H
+#define RENDERERCOMPONENT_H
 
 #include "../global.h"
 
