@@ -2,7 +2,7 @@
 #include "../script.h"
 #include "luascriptengine.h"
 
-#include <lua.hpp>
+#include <lua/lua.hpp>
 #include <luabind/luabind.hpp>
 #include <fstream>
 

@@ -116,12 +116,12 @@ Window::Window(int style, char *title, int width, int height) :
 	_data->width = rect.right - rect.left;
 	_data->height = rect.bottom - rect.top;
 
-	create(_data);
+	create(_data->handle);
 }
 
 Window::~Window()
 {
-	destroy(_data);
+	destroy(_data->handle);
 	DestroyWindow(_data->handle);
 	delete _data;
 }
@@ -324,11 +324,11 @@ bool Window::platformEvent(Window *window, void *msgPtr, long *result)
 	return false;
 }
 
-void Window::create(WindowData *data)
+void Window::create(void *data)
 {
 }
 
-void Window::destroy(WindowData *data)
+void Window::destroy(void *data)
 {
 }
 

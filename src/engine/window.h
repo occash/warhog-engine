@@ -42,8 +42,8 @@ public:
 	static bool platformEvent(Window *, void *, long *);
 
 protected:
-	virtual void create(WindowData *data);
-	virtual void destroy(WindowData *data);
+	virtual void create(void *data);
+	virtual void destroy(void *data);
 	virtual void closeEvent();
 	virtual void moveEvent(int x, int y);
 	virtual void resizeEvent(int w, int h);

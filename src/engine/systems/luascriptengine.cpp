@@ -9,7 +9,7 @@
 #include "../components/renderercomponent.h"
 #include "../components/transformcomponent.h"
 
-#include <lua.hpp>
+#include <lua/lua.hpp>
 
 #include <luabind/detail/call_function.hpp>
 #include <luabind/operator.hpp>

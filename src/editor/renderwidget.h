@@ -2,7 +2,7 @@
 #define RENDERWIDGET_H
 
 #include <window.h>
-#include <glcontext.h>
+//#include <glcontext.h>
 
 #include <QWidget>
 
@@ -18,7 +18,7 @@ protected:
     void timerEvent(QTimerEvent *);
 
 private:
-    GLContext _context;
+   // GLContext _context;
     Window _window;
 };
 

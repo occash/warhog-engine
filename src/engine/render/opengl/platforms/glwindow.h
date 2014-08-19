@@ -1,7 +1,7 @@
 #ifndef GLWINDOW_H
 #define GLWINDOW_H
 
-#include "../../window.h"
+#include "../../../window.h"
 
 class GLWindowData;
 
