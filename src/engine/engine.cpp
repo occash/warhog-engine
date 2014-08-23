@@ -101,7 +101,7 @@ void Engine::initialize()
 	//manager.add<ScriptResource>();
 	Renderer *renderer = systems.system<RenderSystem>()->renderer();
 	MeshResource meshResource(renderer);
-	std::ifstream meshIn("D:/projects/warhog-engine/test/project1/resources/models/cube", std::ios::binary | std::ios::in);
+	std::ifstream meshIn("D:/projects/warhog-engine/test/project1/resources/models/cube2", std::ios::binary | std::ios::in);
 	Object *meshObject = nullptr;
 	meshResource.load(meshIn, meshObject);
 	Mesh *cube = static_cast<Mesh*>(meshObject);
