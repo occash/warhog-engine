@@ -19,9 +19,44 @@
 
 #include "../render/opengl/glrenderer.h"
 
-RenderSystem::RenderSystem()
-    //: _window(window),
-    //_gbuffer(window->width(), window->height())
+struct RenderInfo
+{
+	RenderInfo() : 
+		mesh(nullptr) 
+	{}
+	~RenderInfo() 
+	{ 
+		delete mesh; 
+	}
+
+	Mesh *mesh;
+};
+
+struct MatrixBlock
+{
+	glm::mat4 modelView;
+	glm::mat4 projection;
+};
+
+struct Material
+{
+	glm::vec3 color;
+	glm::float_t fresnel0;
+	glm::float_t roughness;
+	glm::float_t __padding1[3];
+};
+
+struct DirectLight
+{
+	glm::vec3 color;
+	glm::float_t __padding0;
+	glm::vec3 direction;
+	glm::float_t __padding1;
+};
+
+RenderSystem::RenderSystem() :
+	_renderer(nullptr),
+	_window(nullptr)
 {
 }
 
@@ -31,11 +66,10 @@ RenderSystem::~RenderSystem()
 
 void RenderSystem::configure(EventManager &events)
 {
-	GLRenderer renderer;
-	_window = std::shared_ptr<Window>(renderer.createWindow());
-	_window->show();
-	_window->update();
-    //glEnable(GL_DEPTH_TEST);
+	events.subscribe<EntityCreatedEvent>(*this);
+	events.subscribe<EntityDestroyedEvent>(*this);
+	events.subscribe<ComponentAddedEvent<MeshFilterComponent>>(*this);
+	events.subscribe<ComponentRemovedEvent<MeshFilterComponent>>(*this);
 }
 
 void RenderSystem::update(EntityManager &entities, EventManager &events, double dt)
@@ -137,9 +171,9 @@ void RenderSystem::update(EntityManager &entities, EventManager &events, double 
 	_window->update();
 }
 
-void RenderSystem::geometryPass(Ptr<EntityManager> entities, MatrixBlock& m)
+/*void RenderSystem::geometryPass(Ptr<EntityManager> entities, MatrixBlock& m)
 {
-    /*_gbuffer.bind(GBuffer::Write);
+    _gbuffer.bind(GBuffer::Write);
 
     glDepthMask(GL_TRUE);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -154,7 +188,7 @@ void RenderSystem::geometryPass(Ptr<EntityManager> entities, MatrixBlock& m)
         auto material = gameObject.component<MaterialComponent>();
         auto renderer = gameObject.component<RendererComponent>();
 
-        auto mesh = meshFilter->mesh();*/
+        auto mesh = meshFilter->mesh();
 
         //glm::mat4 model;
         /*static float angle = 1.0f;
@@ -196,10 +230,54 @@ void RenderSystem::geometryPass(Ptr<EntityManager> entities, MatrixBlock& m)
     }
 
     glDepthMask(GL_FALSE);
-    glDisable(GL_DEPTH_TEST);*/
+    glDisable(GL_DEPTH_TEST);
 }
 
 void RenderSystem::lightPass(Ptr<EntityManager> entities, MatrixBlock& m)
 {
 
+}*/
+
+void RenderSystem::receive(const EntityCreatedEvent& event)
+{
+	RenderInfo *info = new RenderInfo;
+	_renderMap.insert(std::make_pair(event.entity.id(), info));
+}
+
+void RenderSystem::receive(const EntityDestroyedEvent& event)
+{
+	auto info = _renderMap.find(event.entity.id());
+	if (info == _renderMap.end())
+		return;
+
+	delete info->second;
+	_renderMap.erase(info);
+}
+
+void RenderSystem::receive(const ComponentAddedEvent<MeshFilterComponent>& event)
+{
+	//auto info = _renderMap.find(event.entity.id());
+	//if (info == _renderMap.end())
+		//return;
+}
+
+void RenderSystem::receive(const ComponentRemovedEvent<MeshFilterComponent>& event)
+{
+
+}
+
+void RenderSystem::chooseBackend(const std::string& name)
+{
+	//TODO: make choice among renderers available for current platform
+	_renderer = new GLRenderer();
+
+	//Create app window with context
+	_window = _renderer->createWindow();
+	_window->show();
+	_window->update();
+}
+
+Renderer *RenderSystem::renderer() const
+{
+	return _renderer;
 }

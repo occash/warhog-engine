@@ -32,16 +32,28 @@ std::shared_ptr<Object> MeshImporter::import(const QString& filename, const QVar
     {
         emit progress(50);
 
-        std::shared_ptr<Mesh> mesh(new Mesh());
-        mesh->positions = shapes[0].mesh.positions;
-        mesh->normals = shapes[0].mesh.normals;
-        mesh->texcoords = shapes[0].mesh.texcoords;
+		std::shared_ptr<Mesh> mesh(new Mesh());
+		for (int i = 0; i < shapes[0].mesh.positions.size(); ++i)
+		{
+			Vertex vertex;
+			vertex.position[0] = shapes[0].mesh.positions[i];
+			vertex.position[1] = shapes[0].mesh.positions[i + 1];
+			vertex.position[2] = shapes[0].mesh.positions[i + 2];
+			vertex.normal[0] = shapes[0].mesh.normals[i];
+			vertex.normal[1] = shapes[0].mesh.normals[i + 1];
+			vertex.normal[2] = shapes[0].mesh.normals[i + 2];
+			vertex.normal[3] = 0;
+			vertex.uv[0] = shapes[0].mesh.texcoords[i];
+			vertex.uv[1] = shapes[0].mesh.texcoords[i + 1];
+		}
         mesh->indices = shapes[0].mesh.indices;
 
-		return mesh;
+		emit progress(100);
 
-        emit progress(100);
+		return mesh;
     }
+
+	return std::shared_ptr<Mesh>();
 }
 
 QStringList MeshImporter::suffixes()

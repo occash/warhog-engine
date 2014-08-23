@@ -20,7 +20,7 @@ RendererComponent::~RendererComponent()
 {
 }
 
-void RendererComponent::loadData(Mesh *mesh)
+/*void RendererComponent::loadData(Mesh *mesh)
 {
 	glBindVertexArray(_vao);
 
@@ -38,12 +38,12 @@ void RendererComponent::loadData(Mesh *mesh)
 	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, 0);
 	glEnableVertexAttribArray(1);
 
-	/*//Bind and load texcoord buffer
+	//Bind and load texcoord buffer
 	glBindBuffer(GL_ARRAY_BUFFER, _tbo);
 	glBufferData(GL_ARRAY_BUFFER, m.texcoords.size() * sizeof(GLfloat), m.texcoords.data(), GL_STATIC_DRAW);
 	//Bind texcoord attribute (slot 2)
 	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, 0);
-	glEnableVertexAttribArray(1);*/
+	glEnableVertexAttribArray(1);
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _ebo);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, mesh->indices.size() * sizeof(glm::uint), mesh->indices.data(), GL_STATIC_DRAW);
@@ -56,17 +56,17 @@ void RendererComponent::loadData(Mesh *mesh)
 void RendererComponent::render()
 {
 	glBindVertexArray(_vao);
-	/*if (_elementSize <= 0)
+	if (_elementSize <= 0)
 	{
 		glBindBuffer(GL_ARRAY_BUFFER, _vbo);
 		glDrawArrays(GL_TRIANGLES, 0, _vertexSize / sizeof(GLuint));
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 	}
 	else
-	{*/
+	{
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _ebo);
 		glDrawElements(GL_TRIANGLES, _faceNumber, GL_UNSIGNED_INT, 0);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-	//}
+	}
 	glBindVertexArray(0);
-}
+}*/

@@ -12,7 +12,7 @@ solution 'warhog'
 		kind 'SharedLib'
 		
 		defines { 'GLEW_STATIC', 'ENGINE_LIB' }
-		includedirs { dep..'/include'}
+		includedirs { dep..'/include' }
 		
 		links
 		{ 
@@ -70,6 +70,40 @@ solution 'warhog'
 				'luabind09'
 			}
 			
+	project 'launcher'
+		targetname 'launcher'
+		language 'C++'
+		kind 'WindowedApp'
+		
+		includedirs
+		{ 
+			'src/engine',
+			dep..'/include'
+		}
+		
+		links
+		{
+			'engine',
+			'entityx'
+		}
+		
+		files
+		{
+			'src/launcher/**'
+		}
+		
+		configuration 'Debug'
+			targetdir 'bin/debug'
+			defines '_DEBUG'
+			flags { 'Symbols' }
+			libdirs { dep..'/lib/x64/Debug'}
+			
+		configuration 'Release'
+			targetdir 'bin/release'
+			defines 'NDEBUG'
+			optimize 'On'
+			libdirs { dep..'/lib/x64/Release'}
+			
 	project 'editor'
 		targetname 'editor'
 		language 'C++'
@@ -110,6 +144,7 @@ solution 'warhog'
 			targetdir 'bin/debug'
 			defines '_DEBUG'
 			flags { 'Symbols' }
+			qtsuffix 'd'
 			
 			libdirs { dep..'/lib/x64/Debug'}
 			links 

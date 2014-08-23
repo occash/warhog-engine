@@ -1,53 +1,38 @@
 #ifndef RENDERSYSTEM_H
 #define RENDERSYSTEM_H
 
-#include "../render/opengl/gbuffer.h"
+#include "../components/meshfiltercomponent.h"
+#include "../render/renderer.h"
 #include "../window.h"
 
 #include <entityx/System.h>
-#include <glm/glm.hpp>
-
-
-struct MatrixBlock
-{
-    glm::mat4 modelView;
-    glm::mat4 projection;
-};
-
-struct Material
-{
-    glm::vec3 color;
-    glm::float_t fresnel0;
-    glm::float_t roughness;
-    glm::float_t __padding1[3];
-};
-
-struct DirectLight
-{
-    glm::vec3 color;
-    glm::float_t __padding0;
-    glm::vec3 direction;
-    glm::float_t __padding1;
-};
+#include <map>
 
 using namespace entityx;
+struct RenderInfo;
 
-class RenderSystem : public System<RenderSystem>
+class RenderSystem : public System<RenderSystem>, public Receiver<RenderSystem>
 {
 public:
     RenderSystem();
     ~RenderSystem();
 
+	void chooseBackend(const std::string& name);
+	Renderer *renderer() const;
+
     void configure(EventManager &events) override;
     void update(EntityManager &entities, EventManager &events, double dt) override;
 
-private:
-    Ptr<Window> _window;
-    //GBuffer _gbuffer;
+	void receive(const EntityCreatedEvent& event);
+	void receive(const EntityDestroyedEvent& event);
+	void receive(const ComponentAddedEvent<MeshFilterComponent>& event);
+	void receive(const ComponentRemovedEvent<MeshFilterComponent>& event);
 
 private:
-    void geometryPass(Ptr<EntityManager> entities, MatrixBlock& m_);
-    void lightPass(Ptr<EntityManager> entities, MatrixBlock& m);
+	typedef std::map<Entity::Id, RenderInfo*> RenderMap;
+	Renderer *_renderer;
+    Window *_window;
+	RenderMap _renderMap;
 
 };
 

@@ -15,8 +15,8 @@ public:
 	RendererComponent();
 	~RendererComponent();
 
-	void render();
-	void loadData(Mesh *);
+	//void render();
+	//void loadData(Mesh *);
 
 private:
 	glm::uint _vao; //Array object

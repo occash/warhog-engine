@@ -1,32 +1,28 @@
 #include "meshresource.h"
+#include "../render/renderer.h"
 
 #include <iostream>
 
+MeshResource::MeshResource(Renderer *renderer) :
+	_renderer(renderer)
+{
+}
+
 bool MeshResource::load(std::istream& in, Object *&resource) const
 {
-    Mesh *mesh = new Mesh();
-    std::vector<float>::size_type posSize = 0, normSize = 0, texSize = 0;
+    Mesh *mesh = _renderer->createMesh();
+    std::vector<Vertex>::size_type vertSize = 0;
     std::vector<unsigned int>::size_type indSize = 0;
 
-    in.read((char *)&posSize, sizeof(std::vector<float>::size_type));
-    in.read((char *)&normSize, sizeof(std::vector<float>::size_type));
-    in.read((char *)&texSize, sizeof(std::vector<float>::size_type));
+    in.read((char *)&vertSize, sizeof(std::vector<Vertex>::size_type));
     in.read((char *)&indSize, sizeof(std::vector<unsigned int>::size_type));
 
-    mesh->positions.resize(posSize);
-    mesh->normals.resize(normSize);
-    mesh->texcoords.resize(texSize);
+	mesh->verticies.resize(vertSize);
     mesh->indices.resize(indSize);
 
-    if (posSize > 0)
-        in.read((char *)mesh->positions.data(),
-        mesh->positions.size() * sizeof(float));
-    if (normSize > 0)
-        in.read((char *)mesh->normals.data(),
-        mesh->normals.size() * sizeof(float));
-    if (texSize > 0)
-        in.read((char *)mesh->texcoords.data(),
-        mesh->texcoords.size() * sizeof(float));
+	if (vertSize > 0)
+        in.read((char *)mesh->verticies.data(),
+        vertSize * sizeof(Vertex));
     if (indSize > 0)
         in.read((char *)mesh->indices.data(),
         mesh->indices.size() * sizeof(unsigned int));
@@ -40,28 +36,18 @@ bool MeshResource::save(std::ostream& out, Object *resource) const
 {
     const Mesh *mesh = reinterpret_cast<const Mesh *>(resource);
 
-    std::vector<float>::size_type posSize = mesh->positions.size(),
-        normSize = mesh->normals.size(),
-        texSize = mesh->texcoords.size();
+	std::vector<Vertex>::size_type vertSize = mesh->verticies.size();
     std::vector<unsigned int>::size_type indSize = mesh->indices.size();
 
-    out.write((char *)&posSize,
-        sizeof(std::vector<float>::size_type));
-    out.write((char *)&normSize,
-        sizeof(std::vector<float>::size_type));
-    out.write((char *)&texSize,
-        sizeof(std::vector<float>::size_type));
+	out.write((char *)&vertSize,
+        sizeof(std::vector<Vertex>::size_type));
     out.write((char *)&indSize,
         sizeof(std::vector<unsigned int>::size_type));
 
-    out.write((char *)mesh->positions.data(),
-        mesh->positions.size() * sizeof(float));
-    out.write((char *)mesh->normals.data(),
-        mesh->normals.size() * sizeof(float));
-    out.write((char *)mesh->texcoords.data(),
-        mesh->texcoords.size() * sizeof(float));
+	out.write((char *)mesh->verticies.data(),
+		vertSize * sizeof(Vertex));
     out.write((char *)mesh->indices.data(),
-        mesh->indices.size() * sizeof(unsigned int));
+        indSize * sizeof(unsigned int));
 
     return true;
 }

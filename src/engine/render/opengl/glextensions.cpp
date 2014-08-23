@@ -249,6 +249,7 @@ PFNGLDELETEFRAMEBUFFERSPROC glDeleteFramebuffers = NULL;
 PFNGLFRAMEBUFFERTEXTURE2DPROC glFramebufferTexture2D = NULL;
 PFNGLCHECKFRAMEBUFFERSTATUSPROC glCheckFramebufferStatus = NULL;
 PFNGLGETUNIFORMBLOCKINDEXPROC glGetUniformBlockIndex = NULL;
+PFNGLDELETEVERTEXARRAYSPROC glDeleteVertexArrays = NULL;
 
 void GLExt::init()
 {
@@ -486,4 +487,5 @@ void GLExt::init()
 	GET_PROC_ADDRESS(glFramebufferTexture2D);
 	GET_PROC_ADDRESS(glCheckFramebufferStatus);
 	GET_PROC_ADDRESS(glGetUniformBlockIndex);
+	GET_PROC_ADDRESS(glDeleteVertexArrays);
 }

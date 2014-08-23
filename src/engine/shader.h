@@ -9,6 +9,13 @@ class Program;
 class Shader
 {
 public:
+	enum ShaderType
+	{
+		Vertex,
+		//Geometry,
+		//Tessellation,
+		Pixel
+	};
     Shader(const std::string& source, glm::uint type);
     virtual ~Shader();
 
