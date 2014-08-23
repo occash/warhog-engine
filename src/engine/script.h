@@ -2,7 +2,7 @@
 #define SCRIPT_H
 
 #include "global.h"
-#include "object.h"
+#include "meta/object.h"
 
 #include <string>
 

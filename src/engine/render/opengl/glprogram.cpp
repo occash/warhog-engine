@@ -1,33 +1,32 @@
-#include "program.h"
-#include "shader.h"
-#include "mesh.h"
+#include "glprogram.h"
+#include "GLShader.h"
+#include "glextensions.h"
 
-#include "render/opengl/glextensions.h"
 #include <iostream>
 
-Program::Program(void)
+GLProgram::GLProgram(void)
     : _program(glCreateProgram())
 {
 }
 
-Program::~Program(void)
+GLProgram::~GLProgram(void)
 {
     glDeleteProgram(_program);
 }
 
-glm::uint Program::_globalBind = 0;
+glm::uint GLProgram::_globalBind = 0;
 
-void Program::attach(const Shader& shader)
+void GLProgram::attach(const GLShader& shader)
 {
     glAttachShader(_program, shader._shader);
 }
 
-void Program::detach(const Shader& shader)
+void GLProgram::detach(const GLShader& shader)
 {
     glDetachShader(_program, shader._shader);
 }
 
-bool Program::link()
+bool GLProgram::link()
 {
 	//Link shader objects together
     glLinkProgram(_program);
@@ -62,34 +61,34 @@ bool Program::link()
     return true;
 }
 
-void Program::use()
+void GLProgram::use()
 {
     glUseProgram(_program);
 }
 
-void Program::bindFragData(GLuint location, const char *name)
+void GLProgram::bindFragData(GLuint location, const char *name)
 {
     glBindFragDataLocation(_program, location, name);
 }
 
-void Program::bindAttrib(GLuint location, const char *name)
+void GLProgram::bindAttrib(GLuint location, const char *name)
 {
 	glBindAttribLocation(_program, location, name);
 }
 
-Uniform Program::uniform(const char *name)
+Uniform GLProgram::uniform(const char *name)
 {
     GLint loc = glGetUniformLocation(_program, name);
     return Uniform(loc);
 }
 
-UniformBlock Program::block(const char *name)
+UniformBlock GLProgram::block(const char *name)
 {
     GLint loc = glGetUniformBlockIndex(_program, name);
     return UniformBlock(_program, loc);
 }
 
-bool Program::valid()
+bool GLProgram::valid()
 {
     return glIsProgram(_program) == GL_TRUE;
 }

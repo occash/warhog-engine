@@ -1,28 +1,23 @@
-#ifndef MATERIAL_H
-#define MATERIAL_H
+#ifndef MATERIALCOMPONENT_H
+#define MATERIALCOMPONENT_H
 
 #include "../global.h"
-
-#include <string>
 #include <entityx/Entity.h>
 
 using namespace entityx;
-class Program;
+class Material;
 
 class ENGINE_EXPORT MaterialComponent : public Component<MaterialComponent>
 {
 public:
     MaterialComponent();
-    virtual ~MaterialComponent();
+    ~MaterialComponent();
 
-	Program *program() const { return _program;  }
-
-	std::string shader() const;
-	void setShader(const std::string& name);
+	Material *material() const;
+	void setMaterial(Material *);
 
 private:
-	std::string _name;
-    Program *_program;
+	Material *_material;
 
 };
 

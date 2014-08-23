@@ -2,22 +2,22 @@
 #define PROGRAM_H
 
 #include <glm/glm.hpp>
-#include "render/opengl/uniform.h"
-#include "render/opengl/uniformblock.h"
+#include "uniform.h"
+#include "uniformblock.h"
 
-class Shader;
+class GLShader;
 class Mesh;
 
-class Program
+class GLProgram
 {
 public:
-    Program();
-    virtual ~Program();
+    GLProgram();
+    virtual ~GLProgram();
 
     bool valid();
 
-    void attach(const Shader&);
-    void detach(const Shader&);
+    void attach(const GLShader&);
+    void detach(const GLShader&);
     bool link();
     void use();
 

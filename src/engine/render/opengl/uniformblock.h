@@ -4,6 +4,8 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+#include "../../meta/any.h"
+
 class UniformBlock
 {
 public:
@@ -13,6 +15,8 @@ public:
 
     template <class T>
     void operator=(const T& value);
+
+	void set(const char *name, const Any& value);
 
 private:
     void loadData(int size, void *value);

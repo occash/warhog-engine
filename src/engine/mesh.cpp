@@ -24,3 +24,7 @@ void Mesh::load()
 void Mesh::unload()
 {
 }
+
+void Mesh::draw()
+{
+}

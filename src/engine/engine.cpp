@@ -15,6 +15,7 @@
 
 //Engine objects
 #include "mesh.h"
+#include "material.h"
 
 //Resources
 #include "resourcemanager.h"
@@ -67,55 +68,49 @@ void Engine::configure()
 
 void Engine::initialize()
 {
-	tree<Entity> entitieTree;
-
+	//Create camera
 	Entity cameraId = entities.create();
 	auto cameraPos = cameraId.assign<TransformComponent>();
 	auto camera = cameraId.assign<CameraComponent>();
-	entitieTree.insert(entitieTree.end(), cameraId);
 
-	camera->setClearColor(glm::vec3(0.0f, 0.0f, 0.0f));
+	camera->setClearColor(glm::vec3(0.0f, 0.0f, 0.5f));
 	camera->setFarPlane(1000.0f);
 	camera->setFieldOfView(60.0f);
 
-	cameraPos->setPosition(glm::vec3(-1.0f, 1.0f, 1.0f));
-	cameraPos->setRotation(glm::vec3(45.0f, 45.0f, 0.0f));
+	cameraPos->setPosition(glm::vec3(0.0f, 0.0f, 1.0f));
+	cameraPos->setRotation(glm::vec3(0.0f, 0.0f, 0.0f));
 
+	//Create light
 	Entity lightId = entities.create();
 	auto lightPos = lightId.assign<TransformComponent>();
 	auto light = lightId.assign<LightComponent>();
-	auto lightNode = entitieTree.insert(entitieTree.end(), lightId);
 
 	light->setType(LightComponent::Directional);
 	light->setColor(glm::vec4(1.0f, 0.5f, 0.5f, 0.0f));
 	light->setIntensity(1.0f);
-	lightPos->setRotation(glm::vec3(0.0f, 135.0f, 0.0f));
+	lightPos->setRotation(glm::vec3(0.0f, 45.0f, 0.0f));
 
-	//ResourceManager manager;
-	//manager.add<MeshResource>();
-	//manager.add<ScriptResource>();
-
-	MeshResource meshResource(systems.system<RenderSystem>()->renderer());
-	std::ifstream meshIn("D:/projects/warhog-engine/test/project1/resources/models/cube", std::ios::binary | std::ios::in);
-	Object *meshObject = nullptr;
-	meshResource.load(meshIn, meshObject);
-	std::shared_ptr<Mesh> mesh = std::shared_ptr<Mesh>(static_cast<Mesh *>(meshObject));// = manager.load<Mesh>("dragon.bmf");
-	//Ptr<Script> script;// = manager.load<Script>("Test.lua");
-	//script->engine = "lua";
-	//script->name = "Test";
-	Mesh *cube = mesh.get();
-
+	//Create model
 	Entity modelId = entities.create();
 	modelId.assign<TransformComponent>();
 	auto meshFilter = modelId.assign<MeshFilterComponent>();
 	auto material = modelId.assign<MaterialComponent>();
-	auto renderer = modelId.assign<RendererComponent>();
-	entitieTree.append_child(lightNode, modelId);
 
-	//TODO: remake mesh loading
+	//ResourceManager manager;
+	//manager.add<MeshResource>();
+	//manager.add<ScriptResource>();
+	Renderer *renderer = systems.system<RenderSystem>()->renderer();
+	MeshResource meshResource(renderer);
+	std::ifstream meshIn("D:/projects/warhog-engine/test/project1/resources/models/cube", std::ios::binary | std::ios::in);
+	Object *meshObject = nullptr;
+	meshResource.load(meshIn, meshObject);
+	Mesh *cube = static_cast<Mesh*>(meshObject);
+	cube->load();
 	meshFilter->setMesh(cube);
-	material->setShader("shaders/brdf");
-	//renderer->loadData(cube);
+
+	Material *mat = renderer->createMaterial();
+	mat->setShader("D:/projects/warhog-engine/src/engine/shaders/brdf");
+	material->setMaterial(mat);
 
 	//Entity scriptId = entity_manager->create();
 	//auto scriptSystem = systems.system<ScriptSystem>();

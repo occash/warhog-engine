@@ -33,7 +33,8 @@ std::shared_ptr<Object> MeshImporter::import(const QString& filename, const QVar
         emit progress(50);
 
 		std::shared_ptr<Mesh> mesh(new Mesh());
-		for (int i = 0; i < shapes[0].mesh.positions.size(); ++i)
+		mesh->verticies.resize(shapes[0].mesh.positions.size() / 3);
+		for (int i = 0; i < shapes[0].mesh.positions.size() / 3; i += 3)
 		{
 			Vertex vertex;
 			vertex.position[0] = shapes[0].mesh.positions[i];
@@ -43,8 +44,9 @@ std::shared_ptr<Object> MeshImporter::import(const QString& filename, const QVar
 			vertex.normal[1] = shapes[0].mesh.normals[i + 1];
 			vertex.normal[2] = shapes[0].mesh.normals[i + 2];
 			vertex.normal[3] = 0;
-			vertex.uv[0] = shapes[0].mesh.texcoords[i];
-			vertex.uv[1] = shapes[0].mesh.texcoords[i + 1];
+			//vertex.uv[0] = shapes[0].mesh.texcoords[i];
+			//vertex.uv[1] = shapes[0].mesh.texcoords[i + 1];
+			mesh->verticies[i] = vertex;
 		}
         mesh->indices = shapes[0].mesh.indices;
 

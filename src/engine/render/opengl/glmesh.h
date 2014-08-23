@@ -15,6 +15,8 @@ public:
 	void load() override;
 	void unload() override;
 
+	void draw() override;
+
 private:
 	unsigned int _vao;
 	unsigned int _vbo;

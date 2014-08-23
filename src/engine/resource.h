@@ -5,7 +5,7 @@
 #include <string>
 
 #include "global.h"
-#include "object.h"
+#include "meta/object.h"
 
 class BaseResource
 {

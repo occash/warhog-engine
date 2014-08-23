@@ -2,7 +2,7 @@
 #define MESH_H
 
 #include "global.h"
-#include "object.h"
+#include "meta/object.h"
 
 #include <vector>
 #include <glm/glm.hpp>
@@ -29,6 +29,8 @@ public:
 
 	virtual void load();
 	virtual void unload();
+
+	virtual void draw();
 
     std::vector<Vertex> verticies;
     std::vector<unsigned int> indices;

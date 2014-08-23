@@ -8,6 +8,7 @@ class GLRenderer : public Renderer
 public:
 	Window *createWindow() override;
 	Mesh *createMesh() override;
+	Material *createMaterial() override;
 
 };
 

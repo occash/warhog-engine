@@ -2,7 +2,7 @@
 #define TEXTURE_H
 
 #include "global.h"
-#include "object.h"
+#include "meta/object.h"
 
 #include <glm/glm.hpp>
 #include "image.h"

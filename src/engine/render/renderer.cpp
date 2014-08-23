@@ -9,3 +9,8 @@ Mesh *Renderer::createMesh()
 {
 	return nullptr;
 }
+
+Material *Renderer::createMaterial()
+{
+	return nullptr;
+}

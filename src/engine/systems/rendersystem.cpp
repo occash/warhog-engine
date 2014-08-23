@@ -7,11 +7,12 @@
 #include "../components/lightcomponent.h"
 
 #include "../mesh.h"
-#include "../program.h"
 
+#include "glm/glm.hpp"
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/rotate_vector.hpp>
 #include "../render/opengl/glextensions.h"
+#include "../render/opengl/glmaterial.h"
 
 #include <yaml-cpp/yaml.h>
 #include <fstream>
@@ -38,7 +39,7 @@ struct MatrixBlock
 	glm::mat4 projection;
 };
 
-struct Material
+struct MaterialBlock
 {
 	glm::vec3 color;
 	glm::float_t fresnel0;
@@ -74,7 +75,8 @@ void RenderSystem::configure(EventManager &events)
 
 void RenderSystem::update(EntityManager &entities, EventManager &events, double dt)
 {
-	/*auto cameras = entities.entities_with_components<TransformComponent, CameraComponent>();
+	//Setup camera
+	auto cameras = entities.entities_with_components<TransformComponent, CameraComponent>();
 	auto cameraObject = cameras.begin();
 	if (cameraObject == cameras.end())
 		return;
@@ -112,7 +114,10 @@ void RenderSystem::update(EntityManager &entities, EventManager &events, double 
 	glm::vec3 color = camera->clearColor();
 
 	glClearColor(color.x, color.y, color.z, 1.0f);
+	glClearDepth(1.0);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+	//Setup lights
     auto lights = entities.entities_with_components<TransformComponent, LightComponent>();
     auto lightObject = lights.begin();
 
@@ -126,24 +131,22 @@ void RenderSystem::update(EntityManager &entities, EventManager &events, double 
     lightDir = glm::rotate(lightDir, -lightRot.z, glm::vec3(0.0f, 0.0f, 1.0f));
     lightDir = glm::normalize(lightDir);
 
-    Material mat;
-    mat.color = glm::vec3(0.9f / glm::pi<float>(),
-        0.5f / glm::pi<float>(), 0.55f / glm::pi<float>());
-    float refractiveIndex = 10.0f;
-    float fresnel0 = ((1.0f - refractiveIndex) / (1.0f + refractiveIndex));
-    fresnel0 = fresnel0 * fresnel0;
-    mat.fresnel0 = fresnel0;
-    mat.roughness = 0.9f;
-
     DirectLight dlight;
     dlight.color = glm::vec3(light->color()) * glm::pi<float>();
     glm::vec4 lightDir4 = glm::vec4(lightDir, 1.0f);
     dlight.direction = glm::vec3(lightDir4 * m.modelView);
 
-    glClearDepth(1.0);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	//Setup material
+	MaterialBlock mat;
+	mat.color = glm::vec3(0.9f / glm::pi<float>(),
+		0.5f / glm::pi<float>(), 0.55f / glm::pi<float>());
+	float refractiveIndex = 10.0f;
+	float fresnel0 = ((1.0f - refractiveIndex) / (1.0f + refractiveIndex));
+	fresnel0 = fresnel0 * fresnel0;
+	mat.fresnel0 = fresnel0;
+	mat.roughness = 0.9f;
 
-    auto gameObjects = entities.entities_with_components<TransformComponent, MeshFilterComponent, MaterialComponent, RendererComponent>();
+    auto gameObjects = entities.entities_with_components<TransformComponent, MeshFilterComponent, MaterialComponent>();
     for (auto gameObject : gameObjects)
     {
         auto transform = gameObject.component<TransformComponent>();
@@ -151,7 +154,8 @@ void RenderSystem::update(EntityManager &entities, EventManager &events, double 
         auto material = gameObject.component<MaterialComponent>();
         auto renderer = gameObject.component<RendererComponent>();
 
-        auto brdfProg = material->program();
+		GLMaterial *brdfMat = static_cast<GLMaterial *>(material->material());
+		GLProgram *brdfProg = &brdfMat->_program;
         brdfProg->use();
         auto matricies = brdfProg->block("MatrixBlock");
         matricies = m;
@@ -160,14 +164,9 @@ void RenderSystem::update(EntityManager &entities, EventManager &events, double 
         auto directlight = brdfProg->block("DirectLight");
         directlight = dlight;
 
-        renderer->render();
-    }*/
+		meshFilter->mesh()->draw();
+    }
 
-    //geometryPass(entities, m);
-
-	glClearColor(0.0f, 0.0f, 1.0f, 1.0f);
-	glClearDepth(1.0);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	_window->update();
 }
 

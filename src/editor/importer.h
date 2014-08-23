@@ -6,7 +6,7 @@
 #include <QVariantMap>
 
 #include <memory>
-#include <object.h>
+#include <meta/object.h>
 
 class Importer : public QObject
 {

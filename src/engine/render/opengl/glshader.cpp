@@ -1,9 +1,9 @@
-#include "shader.h"
+#include "glshader.h"
 
-#include "render/opengl/glextensions.h"
+#include "glextensions.h"
 #include <iostream>
 
-Shader::Shader(const std::string& source, GLenum type)
+GLShader::GLShader(const std::string& source, GLenum type)
     : _source(source),
     _type(type),
     _shader(glCreateShader(type))
@@ -11,12 +11,12 @@ Shader::Shader(const std::string& source, GLenum type)
 }
 
 
-Shader::~Shader()
+GLShader::~GLShader()
 {
     glDeleteShader(_shader);
 }
 
-bool Shader::compile()
+bool GLShader::compile()
 {
     //Load source
     const char *source[] = { _source.c_str() };

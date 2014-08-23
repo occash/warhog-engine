@@ -43,4 +43,9 @@ void UniformBlock::loadData(int size, void *value)
     glBindBuffer(GL_UNIFORM_BUFFER, 0);
 }
 
+void UniformBlock::set(const char *name, const Any& value)
+{
+
+}
+
 glm::uint UniformBlock::_globalBind = 0;

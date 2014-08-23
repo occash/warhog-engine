@@ -1,6 +1,7 @@
 #include "glrenderer.h"
 #include "glwindow.h"
 #include "glmesh.h"
+#include "glmaterial.h"
 
 Window * GLRenderer::createWindow()
 {
@@ -10,4 +11,9 @@ Window * GLRenderer::createWindow()
 Mesh *GLRenderer::createMesh()
 {
 	return new GLMesh();
+}
+
+Material * GLRenderer::createMaterial()
+{
+	return new GLMaterial();
 }
