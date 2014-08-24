@@ -25,8 +25,8 @@ UniformBlock::UniformBlock(const UniformBlock& other)
 
 UniformBlock::~UniformBlock()
 {
-    //glDeleteBuffers(1, &_buffer);
-    //_globalBind--;
+    glDeleteBuffers(1, &_buffer);
+    _globalBind--;
 }
 
 void UniformBlock::loadData(int size, void *value)

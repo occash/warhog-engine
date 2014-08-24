@@ -43,20 +43,28 @@ bool GLProgram::link()
 		return false;
 	}
 
-	//glBindAttribLocation(_program, 0, "position");
-	//glBindAttribLocation(_program, 0, "color");
+	GLint numBlocks = 0;
+	glGetProgramInterfaceiv(_program, GL_UNIFORM_BLOCK, GL_ACTIVE_RESOURCES, &numBlocks);
+	for (int i = 0; i < numBlocks; ++i)
+	{
+		//Query name and number of struct fields
+		const GLenum blockParams[] = { GL_NAME_LENGTH, GL_NUM_ACTIVE_VARIABLES };
+		GLint paramValues[2];
+		glGetProgramResourceiv(_program, GL_UNIFORM_BLOCK, i, 2, blockParams, 2, 0, paramValues);
+		char blockName[256];
+		glGetProgramResourceName(_program, GL_UNIFORM_BLOCK, i, 256, 0, blockName);
 
-    /*GLint active;
-    glGetProgramiv(_program, GL_ACTIVE_ATTRIBUTES, &active);
-    for (int i = 0; i < active; ++i)
-    {
-        char name[256];
-        //GLsizei length;
-        GLint size;
-        GLenum type;
-        glGetActiveAttrib(_program, i, 256, nullptr, &size, &type, name);
-    }*/
-    
+		const GLenum activeVars[] = { GL_ACTIVE_VARIABLES };
+		GLint blockVars[32];
+		glGetProgramResourceiv(_program, GL_UNIFORM_BLOCK, i, 1, activeVars, blockParams[1], 0, blockVars);
+
+		for (int n = 0; n < paramValues[1]; ++n)
+		{
+			const GLenum varParams[] = { GL_NAME_LENGTH, GL_TYPE, GL_LOCATION };
+			GLint varValues[3];
+			//glGetProgramResourceiv(_program, GL_UNIFORM, n, )+
+		}
+	}
 
     return true;
 }

@@ -11,7 +11,7 @@ solution 'warhog'
 		language 'C++'
 		kind 'SharedLib'
 		
-		defines { 'GLEW_STATIC', 'ENGINE_LIB' }
+		defines { 'GLEW_STATIC', 'ENGINE_LIB', 'UMOF_LIBRARY' }
 		includedirs { dep..'/include' }
 		
 		links
@@ -151,7 +151,8 @@ solution 'warhog'
 			{
 				'libyaml-cppmdd',
 				'FreeImaged',
-				'tinyobjloaderd'
+				'tinyobjloaderd',
+				'assimpd'
 			}
 			
 		configuration 'Release'
@@ -164,5 +165,6 @@ solution 'warhog'
 			{
 				'libyaml-cppmd',
 				'FreeImage',
-				'tinyobjloader'
+				'tinyobjloader',
+				'assimp'
 			}

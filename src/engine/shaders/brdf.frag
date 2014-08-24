@@ -74,4 +74,5 @@ void main()
 	vec3 color_diff = NdotL_clamped * diffuseEnergyRatio(mat.fresnel0, normal, light.direction) * mat.color * light.color;
 
 	fragColor = vec4(color_diff + color_spec, 1.0);
+	//fragColor = vec4(1.0, 0.0, 0.0, 1.0);
 }

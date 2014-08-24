@@ -250,6 +250,9 @@ PFNGLFRAMEBUFFERTEXTURE2DPROC glFramebufferTexture2D = NULL;
 PFNGLCHECKFRAMEBUFFERSTATUSPROC glCheckFramebufferStatus = NULL;
 PFNGLGETUNIFORMBLOCKINDEXPROC glGetUniformBlockIndex = NULL;
 PFNGLDELETEVERTEXARRAYSPROC glDeleteVertexArrays = NULL;
+PFNGLGETPROGRAMINTERFACEIVPROC glGetProgramInterfaceiv = NULL;
+PFNGLGETPROGRAMRESOURCEIVPROC glGetProgramResourceiv = NULL;
+PFNGLGETPROGRAMRESOURCENAMEPROC glGetProgramResourceName = NULL;
 
 void GLExt::init()
 {
@@ -488,4 +491,7 @@ void GLExt::init()
 	GET_PROC_ADDRESS(glCheckFramebufferStatus);
 	GET_PROC_ADDRESS(glGetUniformBlockIndex);
 	GET_PROC_ADDRESS(glDeleteVertexArrays);
+	GET_PROC_ADDRESS(glGetProgramInterfaceiv);
+	GET_PROC_ADDRESS(glGetProgramResourceiv);
+	GET_PROC_ADDRESS(glGetProgramResourceName);
 }

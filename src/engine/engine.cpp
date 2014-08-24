@@ -77,8 +77,8 @@ void Engine::initialize()
 	camera->setFarPlane(1000.0f);
 	camera->setFieldOfView(60.0f);
 
-	cameraPos->setPosition(glm::vec3(0.0f, 0.0f, 1.0f));
-	cameraPos->setRotation(glm::vec3(0.0f, 0.0f, 0.0f));
+	cameraPos->setPosition(glm::vec3(-1.0f, 1.0f, 1.0f));
+	cameraPos->setRotation(glm::vec3(45.0f, 45.0f, 0.0f));
 
 	//Create light
 	Entity lightId = entities.create();
@@ -87,7 +87,7 @@ void Engine::initialize()
 
 	light->setType(LightComponent::Directional);
 	light->setColor(glm::vec4(1.0f, 0.5f, 0.5f, 0.0f));
-	light->setIntensity(1.0f);
+	light->setIntensity(0.1f);
 	lightPos->setRotation(glm::vec3(0.0f, 45.0f, 0.0f));
 
 	//Create model
@@ -101,7 +101,7 @@ void Engine::initialize()
 	//manager.add<ScriptResource>();
 	Renderer *renderer = systems.system<RenderSystem>()->renderer();
 	MeshResource meshResource(renderer);
-	std::ifstream meshIn("D:/projects/warhog-engine/test/project1/resources/models/cube2", std::ios::binary | std::ios::in);
+	std::ifstream meshIn("D:/projects/warhog-engine/test/project1/resources/models/dragon_assimp", std::ios::binary | std::ios::in);
 	Object *meshObject = nullptr;
 	meshResource.load(meshIn, meshObject);
 	Mesh *cube = static_cast<Mesh*>(meshObject);

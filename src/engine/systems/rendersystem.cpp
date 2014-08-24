@@ -140,11 +140,11 @@ void RenderSystem::update(EntityManager &entities, EventManager &events, double 
 	MaterialBlock mat;
 	mat.color = glm::vec3(0.9f / glm::pi<float>(),
 		0.5f / glm::pi<float>(), 0.55f / glm::pi<float>());
-	float refractiveIndex = 10.0f;
+	float refractiveIndex = 16.0f;
 	float fresnel0 = ((1.0f - refractiveIndex) / (1.0f + refractiveIndex));
 	fresnel0 = fresnel0 * fresnel0;
 	mat.fresnel0 = fresnel0;
-	mat.roughness = 0.9f;
+	mat.roughness = 0.25f;
 
     auto gameObjects = entities.entities_with_components<TransformComponent, MeshFilterComponent, MaterialComponent>();
     for (auto gameObject : gameObjects)

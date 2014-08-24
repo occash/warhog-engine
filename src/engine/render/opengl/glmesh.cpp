@@ -46,29 +46,29 @@ void GLMesh::load()
 	glEnableVertexAttribArray(0);
 
 	//Bind bone weights attribute (slot 1)
-	glVertexAttribPointer(1, 4, GL_UNSIGNED_BYTE, GL_FALSE, sizeof(Vertex), 
+	/*glVertexAttribPointer(1, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(Vertex), 
 		(void*)(3 * sizeof(float)));
 	glEnableVertexAttribArray(1);
 
 	//Bind bone indices attribute (slot 2)
-	glVertexAttribPointer(2, 4, GL_UNSIGNED_BYTE, GL_FALSE, sizeof(Vertex), 
+	glVertexAttribPointer(2, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(Vertex),
 		(void*)(3 * sizeof(float) + 4 * sizeof(unsigned char)));
-	glEnableVertexAttribArray(2);
+	glEnableVertexAttribArray(2);*/
 
 	//Bind normals attribute (slot 3)
-	glVertexAttribPointer(3, 4, GL_UNSIGNED_BYTE, GL_FALSE, sizeof(Vertex),
+	glVertexAttribPointer(1, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(Vertex),
 		(void*)(3 * sizeof(float) + 8 * sizeof(unsigned char)));
-	glEnableVertexAttribArray(3);
+	glEnableVertexAttribArray(1);
 
 	//Bind texture coordinates attribute (slot 4)
-	glVertexAttribPointer(4, 4, GL_HALF_FLOAT, GL_FALSE, sizeof(Vertex),
+	/*glVertexAttribPointer(4, 4, GL_HALF_FLOAT, GL_TRUE, sizeof(Vertex),
 		(void*)(3 * sizeof(float) + 12 * sizeof(unsigned char)));
 	glEnableVertexAttribArray(4);
 
 	//Bind tangent attribute (slot 5)
-	glVertexAttribPointer(4, 4, GL_HALF_FLOAT, GL_FALSE, sizeof(Vertex),
+	glVertexAttribPointer(4, 4, GL_HALF_FLOAT, GL_TRUE, sizeof(Vertex),
 		(void*)(3 * sizeof(float) + 12 * sizeof(unsigned char)));
-	glEnableVertexAttribArray(4);
+	glEnableVertexAttribArray(4);*/
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _ebo);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int), indices.data(), GL_STATIC_DRAW);
