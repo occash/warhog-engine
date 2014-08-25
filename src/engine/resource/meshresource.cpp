@@ -11,11 +11,11 @@ MeshResource::MeshResource(Renderer *renderer) :
 bool MeshResource::load(std::istream& in, Object *&resource) const
 {
     Mesh *mesh = _renderer->createMesh();
-    std::vector<Vertex>::size_type vertSize = 0;
-    std::vector<unsigned int>::size_type indSize = 0;
+	std::int64_t vertSize = 0;
+	std::int64_t indSize = 0;
 
-    in.read((char *)&vertSize, sizeof(std::vector<Vertex>::size_type));
-    in.read((char *)&indSize, sizeof(std::vector<unsigned int>::size_type));
+	in.read((char *)&vertSize, sizeof(std::int64_t));
+	in.read((char *)&indSize, sizeof(std::int64_t));
 
 	mesh->verticies.resize(vertSize);
     mesh->indices.resize(indSize);

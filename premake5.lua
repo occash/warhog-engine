@@ -173,7 +173,6 @@ solution 'warhog'
 			{
 				'libyaml-cppmdd',
 				'FreeImaged',
-				'tinyobjloaderd',
 				'assimpd'
 			}
 			
@@ -186,6 +185,5 @@ solution 'warhog'
 			{
 				'libyaml-cppmd',
 				'FreeImage',
-				'tinyobjloader',
 				'assimp'
 			}
