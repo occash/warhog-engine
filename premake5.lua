@@ -1,5 +1,5 @@
 solution 'warhog'
-	platforms { 'x64' }
+	platforms { 'x32', 'x64' }
 	configurations { 'Release', 'Debug' }
 	location 'build'
 	
@@ -42,12 +42,20 @@ solution 'warhog'
 			}
 		end
 		
+		configuration { 'x32', 'Debug' }
+			libdirs { dep..'/lib/x86/Debug'}
+		configuration { 'x32', 'Release' }
+			libdirs { dep..'/lib/x86/Release'}
+		configuration { 'x64', 'Debug' }
+			libdirs { dep..'/lib/x64/Debug'}
+		configuration { 'x64', 'Release' }
+			libdirs { dep..'/lib/x64/Release'}
+		
 		configuration 'Debug'
 			targetdir 'bin/debug'
 			defines '_DEBUG'
 			flags { 'Symbols' }
 			
-			libdirs { dep..'/lib/x64/Debug'}
 			links 
 			{
 				'zlibd',
@@ -61,7 +69,6 @@ solution 'warhog'
 			defines 'NDEBUG'
 			optimize 'On'
 			
-			libdirs { dep..'/lib/x64/Release'}
 			links 
 			{
 				'zlib',
@@ -92,17 +99,24 @@ solution 'warhog'
 			'src/launcher/**'
 		}
 		
+		configuration { 'x32', 'Debug' }
+			libdirs { dep..'/lib/x86/Debug'}
+		configuration { 'x32', 'Release' }
+			libdirs { dep..'/lib/x86/Release'}
+		configuration { 'x64', 'Debug' }
+			libdirs { dep..'/lib/x64/Debug'}
+		configuration { 'x64', 'Release' }
+			libdirs { dep..'/lib/x64/Release'}
+		
 		configuration 'Debug'
 			targetdir 'bin/debug'
 			defines '_DEBUG'
 			flags { 'Symbols' }
-			libdirs { dep..'/lib/x64/Debug'}
 			
 		configuration 'Release'
 			targetdir 'bin/release'
 			defines 'NDEBUG'
 			optimize 'On'
-			libdirs { dep..'/lib/x64/Release'}
 			
 	project 'editor'
 		targetname 'editor'
@@ -140,13 +154,21 @@ solution 'warhog'
 		qtmodules { 'core', 'gui', 'widgets', 'opengl', 'concurrent' }
 		qtprefix 'Qt5'
 		
+		configuration { 'x32', 'Debug' }
+			libdirs { dep..'/lib/x86/Debug'}
+		configuration { 'x32', 'Release' }
+			libdirs { dep..'/lib/x86/Release'}
+		configuration { 'x64', 'Debug' }
+			libdirs { dep..'/lib/x64/Debug'}
+		configuration { 'x64', 'Release' }
+			libdirs { dep..'/lib/x64/Release'}
+		
 		configuration 'Debug'
 			targetdir 'bin/debug'
 			defines '_DEBUG'
 			flags { 'Symbols' }
 			qtsuffix 'd'
 			
-			libdirs { dep..'/lib/x64/Debug'}
 			links 
 			{
 				'libyaml-cppmdd',
@@ -160,7 +182,6 @@ solution 'warhog'
 			defines 'NDEBUG'
 			optimize 'On'
 			
-			libdirs { dep..'/lib/x64/Release'}
 			links 
 			{
 				'libyaml-cppmd',

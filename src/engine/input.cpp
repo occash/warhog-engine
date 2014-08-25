@@ -1,7 +1,7 @@
 #include "input.h"
 #include "window.h"
 
-#include <GLFW/glfw3.h>
+//#include <GLFW/glfw3.h>
 #include <iostream>
 
 bool Input::key(const std::string& name)
