@@ -3,39 +3,89 @@
 #include "glextensions.h"
 #include <iostream>
 
-GLShader::GLShader(const std::string& source, GLenum type)
-    : _source(source),
-    _type(type),
-    _shader(glCreateShader(type))
+class ShaderCompiler
+{
+public:
+	ShaderCompiler(GLenum type) :
+		shader(glCreateShader(type))
+	{}
+
+	~ShaderCompiler()
+	{
+		glDeleteShader(shader);
+	}
+
+	bool compile(const std::string& src)
+	{
+		//Load source
+		const char *source[] = { src.c_str() };
+		glShaderSource(shader, 1, source, NULL);
+
+		//compile from source
+		glCompileShader(shader);
+
+		//Check compilation status
+		GLint status;
+		glGetShaderiv(shader, GL_COMPILE_STATUS, &status);
+		if (status != GL_TRUE)
+		{
+			char buffer[512];
+			glGetShaderInfoLog(shader, 512, NULL, buffer);
+			std::cout << buffer << std::endl;
+
+			return false;
+		}
+
+		return true;
+	}
+
+	GLuint shader;
+
+};
+
+GLShader::GLShader() :
+	_program(glCreateProgram())
 {
 }
-
 
 GLShader::~GLShader()
 {
-    glDeleteShader(_shader);
+	glDeleteProgram(_program);
 }
 
-bool GLShader::compile()
+void GLShader::bind()
 {
-    //Load source
-    const char *source[] = { _source.c_str() };
-    glShaderSource(_shader, 1, source, NULL);
+	glUseProgram(_program);
+}
 
-    //compile from source
-    glCompileShader(_shader);
+void GLShader::unbind()
+{
+	glUseProgram(0);
+}
 
-    //Check compilation status
-    GLint status;
-    glGetShaderiv(_shader, GL_COMPILE_STATUS, &status);
-    if(status != GL_TRUE)
-    {
-        char buffer[512];
-        glGetShaderInfoLog(_shader, 512, NULL, buffer); 
-        std::cout << buffer << std::endl;
+void GLShader::load()
+{
+	ShaderCompiler vertexCompiler(GL_VERTEX_SHADER);
+	vertexCompiler.compile(vertexSource);
 
-        return false;
-    }
+	ShaderCompiler pixelCompiler(GL_FRAGMENT_SHADER);
+	pixelCompiler.compile(pixelSource);
 
-    return true;
+	glAttachShader(_program, vertexCompiler.shader);
+	glAttachShader(_program, pixelCompiler.shader);
+}
+
+void GLShader::unload()
+{
+
+}
+
+ShaderVariable *GLShader::variable(const char *) const
+{
+
+}
+
+ShaderBlock *GLShader::block(const char *) const
+{
+
 }

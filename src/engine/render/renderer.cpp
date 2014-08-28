@@ -1,6 +1,16 @@
 #include "renderer.h"
 
+const char * Renderer::name() const
+{
+	return nullptr;
+}
+
 Window *Renderer::createWindow()
+{
+	return nullptr;
+}
+
+Texture *Renderer::createTexture()
 {
 	return nullptr;
 }
@@ -10,7 +20,7 @@ Mesh *Renderer::createMesh()
 	return nullptr;
 }
 
-Material *Renderer::createMaterial()
+Shader *Renderer::createShader()
 {
 	return nullptr;
 }

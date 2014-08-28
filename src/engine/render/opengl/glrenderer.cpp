@@ -3,9 +3,19 @@
 #include "glmesh.h"
 #include "glmaterial.h"
 
-Window * GLRenderer::createWindow()
+const char * GLRenderer::name() const
+{
+	return "OpenGL";
+}
+
+Window *GLRenderer::createWindow()
 {
 	return new GLWindow();
+}
+
+Texture *GLRenderer::createTexture()
+{
+	return nullptr;
 }
 
 Mesh *GLRenderer::createMesh()
@@ -13,7 +23,7 @@ Mesh *GLRenderer::createMesh()
 	return new GLMesh();
 }
 
-Material * GLRenderer::createMaterial()
+Shader *GLRenderer::createShader()
 {
-	return new GLMaterial();
+	return nullptr;
 }

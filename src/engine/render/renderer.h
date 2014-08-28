@@ -4,15 +4,19 @@
 #include "../global.h"
 
 class Window;
+class Texture;
 class Mesh;
-class Material;
+class Shader;
 
 class ENGINE_EXPORT Renderer
 {
 public:
+	virtual const char *name() const;
+
 	virtual Window *createWindow();
+	virtual Texture *createTexture();
 	virtual Mesh *createMesh();
-	virtual Material *createMaterial();
+	virtual Shader *createShader();
 
 };
 

@@ -1,25 +1,26 @@
-#ifndef SHADER_H
-#define SHADER_H
+#ifndef GLSHADER_H
+#define GLSHADER_H
 
-#include <glm/glm.hpp>
-#include <string>
+#include "../../shader.h"
 
-class GLProgram;
-
-class GLShader
+class GLShader : public Shader
 {
 public:
-    GLShader(const std::string& source, glm::uint type);
-    virtual ~GLShader();
+    GLShader();
+    ~GLShader();
 
-    bool compile();
+	void bind() override;
+	void unbind() override;
+
+	void load() override;
+	void unload() override;
+
+	ShaderVariable *variable(const char *) const override;
+	ShaderBlock *block(const char *) const override;
 
 private:
-    friend class GLProgram;
+	unsigned int _program;
 
-    std::string _source;
-    glm::uint _type;
-    glm::uint _shader;
 };
 
 #endif
