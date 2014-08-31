@@ -22,16 +22,6 @@ void Material::setShader(Shader *shader)
 	_material = _shader->block("Material");
 }
 
-/*int Material::propertyCount() const
-{
-	return 0;
-}
-
-const char *Material::propertyName() const
-{
-	return nullptr;
-}*/
-
 Any Material::property(const char *name) const
 {
 	ShaderVariable *var = _material->variable(name);

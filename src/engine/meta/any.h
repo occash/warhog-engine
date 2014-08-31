@@ -24,6 +24,7 @@ USA.
 
 #include "defines.h"
 #include "type_traits.h"
+#include "type.h"
 #include <new>
 
 template<typename T, typename Ptr>
@@ -37,7 +38,7 @@ struct AnyHelper<T, True>
 
 	inline static void clone(const T **src, void **dest)
 	{
-		new (dest)T(*reinterpret_cast<T const*>(src));
+		new (dest)T(*reinterpret_cast<T const*>(*src));
 	}
 
 	inline static T *cast(void **object)
@@ -80,7 +81,8 @@ public:
 	void reset(T const& x);
 
 	void reset();
-	std::type_info const& type() const;
+	Type type() const;
+	void *object() const;
 
 private:
 	template<typename T>

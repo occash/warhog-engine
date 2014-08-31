@@ -19,8 +19,6 @@ public:
 	Shader *shader() const;
 	void setShader(Shader *shader);
 
-	//int propertyCount() const;
-	//const char *propertyName() const;
 	Any property(const char *name) const;
 	void setProperty(const char *name, const Any& value);
 

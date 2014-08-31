@@ -36,6 +36,7 @@ public:
 	Type(const TypeTable *table);
 
 	bool operator==(const Type& other);
+	bool operator!=(const Type& other);
 
 	bool valid() const;
 	std::type_info const& id() const;

@@ -6,10 +6,14 @@
 #include <map>
 
 class GLShader;
+class GLShaderBlock;
 
-/*class GLShaderVariable : public ShaderVariable
+class GLShaderVariable : public ShaderVariable
 {
 public:
+	GLShaderVariable(GLShaderVariable &&other);
+	~GLShaderVariable();
+
 	const char *name() const override;
 	Type type() const override;
 
@@ -18,9 +22,18 @@ public:
 
 private:
 	friend class GLShader;
-	GLShaderVariable(bool block, int location);
+	GLShaderVariable(unsigned int program, unsigned int buffer, int location);
 
-};*/
+	TypeTable *_init(unsigned int program, int location);
+
+private:
+	const char *_name;
+	Type _type;
+	unsigned int _buffer;
+	int _offset;
+	int _size;
+
+};
 
 class GLShaderBlock : public ShaderBlock
 {
@@ -36,11 +49,14 @@ public:
 
 private:
 	friend class GLShader;
-	GLShaderBlock(unsigned int program, int location);
+	GLShaderBlock(GLShader *shader, const char *name, unsigned int program, int location);
 
 private:
+	friend class GLShader;
 	static unsigned int _globalBind;
 
+	GLShader *_shader;
+	const char *_name;
 	unsigned int _buffer;
 	int _size;
 
@@ -58,13 +74,15 @@ public:
 	void load() override;
 	void unload() override;
 
-	ShaderVariable *variable(const char *) const override;
-	ShaderBlock *block(const char *) const override;
+	ShaderVariable *variable(const char *name) const override;
+	ShaderBlock *block(const char *name) const override;
 
 private:
 	unsigned int _program;
 	std::vector<GLShaderBlock> _blocks;
-	std::map<std::string, int> _names;
+	std::map<std::string, int> _blockNames;
+	std::vector<GLShaderVariable> _variables;
+	std::map<std::string, int> _variableNames;
 
 };
 

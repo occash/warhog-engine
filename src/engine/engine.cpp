@@ -131,6 +131,12 @@ void Engine::initialize()
 	Material *mat = new Material;
 	mat->setShader(shader);
 	material->setMaterial(mat);
+	mat->setProperty("color", glm::vec3(0.9f, 0.5f, 0.55f) / 3.14f);
+	float refractiveIndex = 16.0f;
+	float fresnel0 = ((1.0f - refractiveIndex) / (1.0f + refractiveIndex));
+	fresnel0 = fresnel0 * fresnel0;
+	mat->setProperty("fresnel0", fresnel0);
+	mat->setProperty("roughness", 0.25f);
 
 	//Entity scriptId = entity_manager->create();
 	//auto scriptSystem = systems.system<ScriptSystem>();

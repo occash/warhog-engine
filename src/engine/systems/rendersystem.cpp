@@ -135,19 +135,9 @@ void RenderSystem::update(EntityManager &entities, EventManager &events, double 
     lightDir = glm::normalize(lightDir);
 
     DirectLight dlight;
-    dlight.color = glm::vec3(light->color()) * glm::pi<float>();
+	dlight.color = glm::vec3(light->color()) * glm::pi<float>();
     glm::vec4 lightDir4 = glm::vec4(lightDir, 1.0f);
     dlight.direction = glm::vec3(lightDir4 * m.modelView);
-
-	//Setup material
-	MaterialBlock mat;
-	mat.color = glm::vec3(0.9f / glm::pi<float>(),
-		0.5f / glm::pi<float>(), 0.55f / glm::pi<float>());
-	float refractiveIndex = 16.0f;
-	float fresnel0 = ((1.0f - refractiveIndex) / (1.0f + refractiveIndex));
-	fresnel0 = fresnel0 * fresnel0;
-	mat.fresnel0 = fresnel0;
-	mat.roughness = 0.25f;
 
     auto gameObjects = entities.entities_with_components<TransformComponent, MeshFilterComponent, MaterialComponent>();
     for (auto gameObject : gameObjects)
@@ -163,9 +153,6 @@ void RenderSystem::update(EntityManager &entities, EventManager &events, double 
 
         ShaderBlock *matricies = shader->block("MatrixBlock");
         matricies->set(&m, sizeof(MatrixBlock));
-
-		ShaderBlock *matblock = shader->block("Material");
-        matblock->set(&mat, sizeof(MaterialBlock));
 
         ShaderBlock *directlight = shader->block("DirectLight");
         directlight->set(&dlight, sizeof(DirectLight));
