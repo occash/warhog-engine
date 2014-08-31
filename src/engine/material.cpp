@@ -1,22 +1,25 @@
 #include "material.h"
+#include "shader.h"
 
-const char *Material::shader() const
-{
-	return _shader.c_str();
-}
-
-void Material::setShader(const char *name)
-{
-	_shader = name;
-	createProgram(name);
-}
-
-void Material::bind()
+Material::Material() :
+	_shader(nullptr),
+	_material(nullptr)
 {
 }
 
-void Material::unbind()
+Material::~Material()
 {
+}
+
+Shader *Material::shader() const
+{
+	return _shader;
+}
+
+void Material::setShader(Shader *shader)
+{
+	_shader = shader;
+	_material = _shader->block("Material");
 }
 
 /*int Material::propertyCount() const
@@ -31,13 +34,12 @@ const char *Material::propertyName() const
 
 Any Material::property(const char *name) const
 {
-	return Any();
+	ShaderVariable *var = _material->variable(name);
+	return var->get();
 }
 
 void Material::setProperty(const char *name, const Any& value)
 {
-}
-
-void Material::createProgram(const char *name)
-{
+	ShaderVariable *var = _material->variable(name);
+	var->set(value);
 }

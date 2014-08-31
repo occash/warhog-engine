@@ -18,7 +18,7 @@ class ShaderBlock
 {
 public:
 	virtual const char *name() const;
-	virtual ShaderVariable *variable() const;
+	virtual ShaderVariable *variable(const char *name) const;
 
 	virtual void get(void *, int);
 	virtual void set(void *, int);

@@ -1,7 +1,7 @@
 #include "glrenderer.h"
 #include "glwindow.h"
 #include "glmesh.h"
-#include "glmaterial.h"
+#include "glshader.h"
 
 const char * GLRenderer::name() const
 {
@@ -25,5 +25,5 @@ Mesh *GLRenderer::createMesh()
 
 Shader *GLRenderer::createShader()
 {
-	return nullptr;
+	return new GLShader();
 }

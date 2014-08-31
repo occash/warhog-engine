@@ -45,6 +45,12 @@ public:
 	void destroy(void *data) const;
 	void destruct(void *data) const;
 
+	template<class T>
+	static constexpr int typeValue()
+	{
+		return (int)Table<T>::get();
+	}
+
 private:
 	const TypeTable *_table;
 	//std::type_index id = typeid(void);

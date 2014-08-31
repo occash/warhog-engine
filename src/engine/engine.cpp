@@ -15,11 +15,26 @@
 
 //Engine objects
 #include "mesh.h"
+#include "shader.h"
 #include "material.h"
 
 //Resources
 #include "resourcemanager.h"
 #include "resource/meshresource.h"
+
+std::string readFile(const std::string& fileName)
+{
+	std::string source;
+	std::ifstream file(fileName);
+	if (file.is_open())
+	{
+		source = std::string((std::istreambuf_iterator<char>(file)),
+			std::istreambuf_iterator<char>());
+		file.close();
+	}
+
+	return source;
+}
 
 void Engine::start()
 {
@@ -108,8 +123,13 @@ void Engine::initialize()
 	cube->load();
 	meshFilter->setMesh(cube);
 
-	Material *mat = renderer->createMaterial();
-	mat->setShader("D:/projects/warhog-engine/src/engine/shaders/brdf");
+	Shader *shader = renderer->createShader();
+	shader->vertexSource = readFile("D:/projects/warhog-engine/src/engine/shaders/brdf.vert");
+	shader->pixelSource = readFile("D:/projects/warhog-engine/src/engine/shaders/brdf.frag");
+	shader->load();
+
+	Material *mat = new Material;
+	mat->setShader(shader);
 	material->setMaterial(mat);
 
 	//Entity scriptId = entity_manager->create();

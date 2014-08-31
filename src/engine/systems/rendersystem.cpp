@@ -7,18 +7,21 @@
 #include "../components/lightcomponent.h"
 
 #include "../mesh.h"
+#include "../shader.h"
+#include "../material.h"
 
-#include "glm/glm.hpp"
+#include <glm/glm.hpp>
+#include <glm/gtc/constants.inl>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/rotate_vector.hpp>
+
+#include "../render/opengl/glrenderer.h"
 #include "../render/opengl/glextensions.h"
-#include "../render/opengl/glmaterial.h"
 
 #include <yaml-cpp/yaml.h>
 #include <fstream>
 #include <iostream>
 
-#include "../render/opengl/glrenderer.h"
 
 struct RenderInfo
 {
@@ -154,15 +157,17 @@ void RenderSystem::update(EntityManager &entities, EventManager &events, double 
         auto material = gameObject.component<MaterialComponent>();
         auto renderer = gameObject.component<RendererComponent>();
 
-		GLMaterial *brdfMat = static_cast<GLMaterial *>(material->material());
-		GLProgram *brdfProg = &brdfMat->_program;
-        brdfProg->use();
-        auto matricies = brdfProg->block("MatrixBlock");
-        matricies = m;
-        auto Mat = brdfProg->block("Material");
-        Mat = mat;
-        auto directlight = brdfProg->block("DirectLight");
-        directlight = dlight;
+		Material *currentMaterial = material->material();
+		Shader *shader = currentMaterial->shader();
+
+        ShaderBlock *matricies = shader->block("MatrixBlock");
+        matricies->set(&m, sizeof(MatrixBlock));
+
+		ShaderBlock *matblock = shader->block("Material");
+        matblock->set(&mat, sizeof(MaterialBlock));
+
+        ShaderBlock *directlight = shader->block("DirectLight");
+        directlight->set(&dlight, sizeof(DirectLight));
 
 		meshFilter->mesh()->draw();
     }

@@ -6,24 +6,27 @@
 
 #include <string>
 
+class Shader;
+class ShaderBlock;
+
+//Instance of Shader
 class ENGINE_EXPORT Material
 {
 public:
-	const char *shader() const;
-	void setShader(const char *name);
+	Material();
+	~Material();
 
-	virtual void bind();
-	virtual void unbind();
-	//virtual int propertyCount() const;
-	//virtual const char *propertyName() const;
-	virtual Any property(const char *name) const;
-	virtual void setProperty(const char *name, const Any& value);
+	Shader *shader() const;
+	void setShader(Shader *shader);
 
-protected:
-	virtual void createProgram(const char *name);
+	//int propertyCount() const;
+	//const char *propertyName() const;
+	Any property(const char *name) const;
+	void setProperty(const char *name, const Any& value);
 
 private:
-	std::string _shader;
+	Shader *_shader;
+	ShaderBlock *_material;
 
 };
 
