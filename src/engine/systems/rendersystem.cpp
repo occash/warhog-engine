@@ -159,6 +159,7 @@ void RenderSystem::update(EntityManager &entities, EventManager &events, double 
 
 		Material *currentMaterial = material->material();
 		Shader *shader = currentMaterial->shader();
+		shader->bind();
 
         ShaderBlock *matricies = shader->block("MatrixBlock");
         matricies->set(&m, sizeof(MatrixBlock));
