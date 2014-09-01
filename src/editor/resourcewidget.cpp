@@ -15,12 +15,17 @@
 #include <QFileSystemModel>
 #include <QTreeView>
 #include <QVBoxLayout>
+#include <QProgressBar>
+#include <QApplication>
 
 ResourceWidget::ResourceWidget(QWidget *parent)
     : QWidget(parent),
 	_io(std::make_shared<FileResourceIO>()),
-	_manager(std::make_shared<ResourceManager>(_io))
+	_manager(std::make_shared<ResourceManager>(_io)),
+	_progress(new QProgressBar)
 {
+	_progress->setMinimum(0);
+	_progress->setMaximum(100);
     //ui.setupUi(this);
 
 	setResourceFolder("D:/projects/warhog-engine/test/project1/resources");
@@ -54,6 +59,7 @@ ResourceWidget::ResourceWidget(QWidget *parent)
 
 ResourceWidget::~ResourceWidget()
 {
+	delete _progress;
 }
 
 /*void ResourceWidget::dragEnterEvent(QDragEnterEvent *event)
@@ -111,6 +117,11 @@ void ResourceWidget::dropEvent(QDropEvent *event)
 
 void ResourceWidget::addImporter(Importer *importer)
 {
+	connect(importer, SIGNAL(progress(int)), this, SLOT(onProgress(int)));
+	connect(importer, SIGNAL(info(QString)), this, SLOT(onInfo(QString)));
+	connect(importer, SIGNAL(error(QString)), this, SLOT(onError(QString)));
+	connect(importer, SIGNAL(success()), this, SLOT(onSuccess()));
+
 	_model->addImporter(importer);
 }
 
@@ -119,4 +130,33 @@ void ResourceWidget::setResourceFolder(const QString& folder)
 	_manager->setBasePath(folder.toStdString());
 	//_model->setRootPath(folder);
 	//_view->setRootIndex(_model->index(_model->rootPath()));
+}
+
+void ResourceWidget::onProgress(int val)
+{
+	if (!_progress->isVisible())
+		_progress->show();
+
+	if (val < 0)
+		_progress->setMaximum(0);
+	else
+		_progress->setMaximum(100);
+
+	_progress->setValue(val);
+	QApplication::processEvents();
+}
+
+void ResourceWidget::onInfo(QString e)
+{
+
+}
+
+void ResourceWidget::onError(QString e)
+{
+
+}
+
+void ResourceWidget::onSuccess()
+{
+	_progress->hide();
 }

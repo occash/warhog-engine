@@ -3,6 +3,14 @@
 
 #include "importer.h"
 
+namespace Assimp
+{
+	class Importer;
+	class ProgressHandler;
+}
+
+class ProgressHandler;
+
 class MeshImporter : public Importer
 {
     Q_OBJECT
@@ -14,6 +22,14 @@ public:
     std::shared_ptr<Object> import(const QString& filename, const QVariantMap& config = QVariantMap());
     QStringList suffixes();
     QStringList signatures();
+
+private:
+	void onUpdate(float val);
+
+private:
+	friend class ProgressHandler;
+	Assimp::Importer *_importer;
+	Assimp::ProgressHandler *_handler;
 
 };
 

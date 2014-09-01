@@ -10,6 +10,7 @@ class QTreeView;
 class Importer;
 class ResourceIO;
 class ResourceManager;
+class QProgressBar;
 
 class ResourceWidget : public QWidget
 {
@@ -26,12 +27,19 @@ protected:
     //void dragEnterEvent(QDragEnterEvent *event);
     //void dropEvent(QDropEvent *event);
 
+private slots :
+	void onProgress(int);
+	void onInfo(QString e);
+	void onError(QString e);
+	void onSuccess();
+
 private:
     //Ui::ResourceWidgetClass ui;
 	std::shared_ptr<ResourceIO> _io;
 	std::shared_ptr<ResourceManager> _manager;
 	ResourceModel *_model;
 	QTreeView *_view;
+	QProgressBar *_progress;
 
 };
 

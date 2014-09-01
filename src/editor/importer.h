@@ -22,7 +22,9 @@ public:
 
 signals:
     void error(QString e);
+	void info(QString e);
     void progress(int p);
+	void success();
 
 };
 
