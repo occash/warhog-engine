@@ -1,6 +1,8 @@
 #include "glmesh.h"
 #include "glextensions.h"
 
+#include <limits>
+
 GLMesh::GLMesh()
 {
 	glGenVertexArrays(1, &_vao);
@@ -75,6 +77,8 @@ void GLMesh::load()
 
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindVertexArray(0);
+
+	createBox();
 }
 
 void GLMesh::unload()
@@ -85,8 +89,19 @@ void GLMesh::unload()
 void GLMesh::draw()
 {
 	glBindVertexArray(_vao);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _ebo);
+	//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _ebo);
 	glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+	//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+	glBindVertexArray(0);
+}
+
+void GLMesh::drawBox()
+{
+	glBindVertexArray(_vao);
+	//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _ebo);
+	glDrawElements(GL_LINE_LOOP, 4, GL_UNSIGNED_INT, 0);
+	glDrawElements(GL_LINE_LOOP, 4, GL_UNSIGNED_INT, (GLvoid*)(4 * sizeof(unsigned int)));
+	glDrawElements(GL_LINES, 8, GL_UNSIGNED_INT, (GLvoid*)(8 * sizeof(unsigned int)));
+	//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 	glBindVertexArray(0);
 }

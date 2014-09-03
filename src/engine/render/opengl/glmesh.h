@@ -16,6 +16,7 @@ public:
 	void unload() override;
 
 	void draw() override;
+	void drawBox() override;
 
 private:
 	unsigned int _vao;

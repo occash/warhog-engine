@@ -18,6 +18,10 @@ public:
 	virtual Mesh *createMesh();
 	virtual Shader *createShader();
 
+	virtual void createOcclusionQuery();
+	virtual void beginOcclusionQuery();
+	virtual bool endOcclusionQuery();
+
 };
 
 #endif

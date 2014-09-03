@@ -24,3 +24,18 @@ Shader *Renderer::createShader()
 {
 	return nullptr;
 }
+
+void Renderer::createOcclusionQuery()
+{
+
+}
+
+void Renderer::beginOcclusionQuery()
+{
+
+}
+
+bool Renderer::endOcclusionQuery()
+{
+	return false;
+}

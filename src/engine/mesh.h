@@ -24,6 +24,8 @@ public:
 	Mesh();
 	~Mesh();
 
+	void createBox();
+
 	virtual void bind();
 	virtual void unbind();
 
@@ -31,9 +33,13 @@ public:
 	virtual void unload();
 
 	virtual void draw();
+	virtual void drawBox();
 
     std::vector<Vertex> verticies;
     std::vector<unsigned int> indices;
+
+	float scale[3];
+	float delta[3];
 
 };
 

@@ -10,6 +10,8 @@
 
 using namespace entityx;
 struct RenderInfo;
+class Shader;
+class Mesh;
 
 class RenderSystem : public System<RenderSystem>, public Receiver<RenderSystem>
 {
@@ -33,6 +35,8 @@ private:
 	Renderer *_renderer;
     Window *_window;
 	RenderMap _renderMap;
+	Shader *_boxShader;
+	Mesh *_boxMesh;
 
 };
 

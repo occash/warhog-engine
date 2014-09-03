@@ -22,6 +22,20 @@
 #include <fstream>
 #include <iostream>
 
+static std::string readFile(const std::string& fileName)
+{
+	std::string source;
+	std::ifstream file(fileName);
+	if (file.is_open())
+	{
+		source = std::string((std::istreambuf_iterator<char>(file)),
+			std::istreambuf_iterator<char>());
+		file.close();
+	}
+
+	return source;
+}
+
 
 struct RenderInfo
 {
@@ -158,6 +172,19 @@ void RenderSystem::update(EntityManager &entities, EventManager &events, double 
         directlight->set(&dlight, sizeof(DirectLight));
 
 		meshFilter->mesh()->draw();
+		shader->unbind();
+
+		//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+		glm::vec3 *boxScale = reinterpret_cast<glm::vec3 *>(meshFilter->mesh()->scale);
+		m.modelView = glm::scale(m.modelView, *boxScale);
+		_boxShader->bind();
+		ShaderBlock *boxmat = _boxShader->block("MatrixBlock");
+		boxmat->set(&m, sizeof(MatrixBlock));
+		//_renderer->beginOcclusionQuery();
+		_boxMesh->drawBox();
+		//bool visible = _renderer->endOcclusionQuery();
+		_boxShader->unbind();
+		//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     }
 
 	_window->update();
@@ -267,6 +294,33 @@ void RenderSystem::chooseBackend(const std::string& name)
 	_window = _renderer->createWindow();
 	_window->show();
 	_window->update();
+	_renderer->createOcclusionQuery();
+
+	_boxShader = _renderer->createShader();
+	_boxShader->vertexSource = readFile("D:/projects/warhog-engine/src/engine/shaders/box.vert");
+	_boxShader->pixelSource = readFile("D:/projects/warhog-engine/src/engine/shaders/box.frag");
+	_boxShader->load();
+
+	_boxMesh = _renderer->createMesh();
+	_boxMesh->verticies.assign
+	({
+		Vertex{ { -0.5, -0.5, -0.5 } },
+		Vertex{ { 0.5, -0.5, -0.5 } },
+		Vertex{ { 0.5, 0.5, -0.5 } },
+		Vertex{ { -0.5, 0.5, -0.5 } },
+		Vertex{ { -0.5, -0.5, 0.5 } },
+		Vertex{ { 0.5, -0.5, 0.5 } },
+		Vertex{ { 0.5, 0.5, 0.5 } },
+		Vertex{ { -0.5, 0.5, 0.5 } }
+	});
+	_boxMesh->indices.assign
+	({
+		0, 1, 2, 3,
+		4, 5, 6, 7,
+		0, 4, 1, 5, 
+		2, 6, 3, 7
+	});
+	_boxMesh->load();
 }
 
 Renderer *RenderSystem::renderer() const
