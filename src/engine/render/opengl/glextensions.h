@@ -239,6 +239,7 @@ extern PFNGLPROGRAMPARAMETERIPROC glProgramParameteri;
 extern PFNGLFRAMEBUFFERTEXTUREPROC glFramebufferTexture;
 
 //OpenGL 4 ??
+extern PFNGLGENERATEMIPMAPPROC glGenerateMipmap;
 extern PFNGLGENVERTEXARRAYSPROC glGenVertexArrays;
 extern PFNGLBINDVERTEXARRAYPROC glBindVertexArray;
 extern PFNGLUNIFORMBLOCKBINDINGPROC glUniformBlockBinding;

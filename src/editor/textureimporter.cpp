@@ -6,6 +6,65 @@
 #include <memory>
 #include <Freeimage.h>
 
+static QString cubeNames[] = 
+{
+	"_negx",
+	"_posx",
+	"_negy",
+	"_posy",
+	"_negz",
+	"_posz"
+};
+
+unsigned int toPngColorType(int type)
+{
+	switch (type)
+	{
+	case FIC_PALETTE:
+		return 1; //Png palette
+	case FIC_RGB:
+		return 2; //Png rgb
+	case FIC_RGBALPHA:
+		return 4; //Png rgba
+	default:
+		return 4;
+	}
+}
+
+void loadImage(const char *name, Image *image)
+{
+	FREE_IMAGE_FORMAT fif = FreeImage_GetFIFFromFilename(name);
+	FIBITMAP *bitmap = FreeImage_Load(fif, name);
+
+	if (!bitmap)
+		return;
+
+	image->width = FreeImage_GetWidth(bitmap);
+	image->height = FreeImage_GetHeight(bitmap);
+	image->bitDepth = FreeImage_GetBPP(bitmap);
+	image->channels = 4;
+	image->colorType = toPngColorType(FreeImage_GetColorType(bitmap));
+
+	//Allocate memory for data and raws
+	int dataSize = image->width * image->height * image->bitDepth * image->channels / 8;
+	image->rowPtrs = new unsigned char *[image->height];
+	image->data = new unsigned char[dataSize];
+
+	//Set data
+	unsigned char *imageData = FreeImage_GetBits(bitmap);
+	memcpy(image->data, imageData, dataSize);
+
+	//Set pointer to beginning of each row
+	const unsigned int stride = image->width * image->bitDepth * image->channels / 8;
+	for (size_t i = 0; i < image->height; i++)
+	{
+		unsigned int q = i * stride;
+		image->rowPtrs[i] = image->data + q;
+	}
+
+	FreeImage_Unload(bitmap);
+}
+
 TextureImporter::TextureImporter(QObject *parent)
     : Importer(parent)
 {
@@ -23,18 +82,38 @@ std::shared_ptr<Object> TextureImporter::import(const QString& filename, const Q
     QStringList nameExt = shortName.split('.');
     QByteArray nameBytes = filename.toLocal8Bit();
 
-    FREE_IMAGE_FORMAT fif = FreeImage_GetFIFFromFilename(nameBytes.constData());
-    FIBITMAP *image = FreeImage_Load(fif, nameBytes.constData());
+	QString pattern;
+	bool isCube = false;
+	for (int i = 0; i < 6; ++i)
+	{
+		if (shortName.contains(cubeNames[i]))
+		{
+			pattern = cubeNames[i];
+			isCube = true;
+			break;
+		}
+	}
 
-    std::shared_ptr<Texture> texture(new Texture());
-    texture->_width = FreeImage_GetWidth(image);
-    texture->_height = FreeImage_GetHeight(image);
-    texture->_bitDepth = FreeImage_GetBPP(image); //Bit depth?
-    texture->_colorType/* = FreeImage_GetColorType(image)*/;//Convert to png
-    //texture->_channels;
-    texture->_data = FreeImage_GetBits(image);
-    //texture->_rowPtrs;
+	std::shared_ptr<Texture> texture(new Texture());
 
+	if (isCube)
+	{
+		Image *images = new Image[6];
+		for (int i = 0; i < 6; ++i)
+		{
+			QString fullName = filename;
+			QString cubeName = fullName.replace(pattern, cubeNames[i]);
+			QByteArray cubeNameBytes = cubeName.toLocal8Bit();
+			texture->images[i] = images + i;
+			loadImage(cubeNameBytes.constData(), texture->images[i]);
+		}
+	}
+	else
+	{
+		texture->images[0] = new Image();
+		loadImage(nameBytes.constData(), texture->images[0]);
+	}
+    
 	return texture;
 }
 

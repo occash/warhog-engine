@@ -239,6 +239,7 @@ PFNGLPROGRAMPARAMETERIPROC glProgramParameteri = NULL;
 PFNGLFRAMEBUFFERTEXTUREPROC glFramebufferTexture = NULL;
 
 //OpenGL 4.0 ??
+PFNGLGENERATEMIPMAPPROC glGenerateMipmap = NULL;
 PFNGLGENVERTEXARRAYSPROC glGenVertexArrays = NULL;
 PFNGLBINDVERTEXARRAYPROC glBindVertexArray = NULL;
 PFNGLUNIFORMBLOCKBINDINGPROC glUniformBlockBinding = NULL;
@@ -480,6 +481,8 @@ void GLExt::init()
 	GET_PROC_ADDRESS(glProgramParameteri)
 	GET_PROC_ADDRESS(glFramebufferTexture)
 
+	// OpenGL 4 ??
+	GET_PROC_ADDRESS(glGenerateMipmap);
 	GET_PROC_ADDRESS(glGenVertexArrays);
 	GET_PROC_ADDRESS(glBindVertexArray);
 	GET_PROC_ADDRESS(glUniformBlockBinding);

@@ -28,7 +28,17 @@ void pngReadData(png_structp pngPtr, png_bytep data, png_size_t length)
     ((std::istream*)a)->read((char*)data, length);
 }
 
-void readData(std::istream& source, Texture *texture)
+void pngWriteData(png_structp png_ptr, png_bytep data, png_size_t length)
+{
+	png_voidp a = png_get_io_ptr(png_ptr);
+	((std::ostream*)a)->write((char*)data, length);
+}
+
+void pngFlushData(png_structp)
+{
+}
+
+void readData(std::istream& source, Image *image)
 {
     //Create read structure
     png_structp pngPtr = png_create_read_struct(
@@ -53,15 +63,15 @@ void readData(std::istream& source, Texture *texture)
     if (setjmp(png_jmpbuf(pngPtr)))
     {
         png_destroy_read_struct(&pngPtr, &infoPtr, (png_infopp)0);
-        if (texture->_rowPtrs != nullptr)
+        if (image->rowPtrs != nullptr)
         {
-            delete[] texture->_rowPtrs;
-            texture->_rowPtrs = nullptr;
+            delete[] image->rowPtrs;
+            image->rowPtrs = nullptr;
         }
-        if (texture->_data != nullptr)
+        if (image->data != nullptr)
         {
-            delete[] texture->_data;
-            texture->_data = nullptr;
+            delete[] image->data;
+            image->data = nullptr;
         }
         return;
     }
@@ -74,60 +84,143 @@ void readData(std::istream& source, Texture *texture)
     png_read_info(pngPtr, infoPtr);
 
     //Get basic info
-    texture->_width = png_get_image_width(pngPtr, infoPtr);
-    texture->_height = png_get_image_height(pngPtr, infoPtr);
-    texture->_bitDepth = png_get_bit_depth(pngPtr, infoPtr);
-    texture->_channels = png_get_channels(pngPtr, infoPtr);
-    texture->_colorType = png_get_color_type(pngPtr, infoPtr);
+    image->width = png_get_image_width(pngPtr, infoPtr);
+    image->height = png_get_image_height(pngPtr, infoPtr);
+    image->bitDepth = png_get_bit_depth(pngPtr, infoPtr);
+    image->channels = png_get_channels(pngPtr, infoPtr);
+    image->colorType = png_get_color_type(pngPtr, infoPtr);
 
     //Handle different color type, depth and channels
     //and convert if possible
-    switch (texture->_colorType) {
+    switch (image->colorType) 
+	{
     case PNG_COLOR_TYPE_PALETTE:
         png_set_palette_to_rgb(pngPtr);
-        texture->_channels = 3;
+        image->channels = 3;
         break;
     case PNG_COLOR_TYPE_GRAY:
-        if (texture->_bitDepth < 8)
+        if (image->bitDepth < 8)
             png_set_expand_gray_1_2_4_to_8(pngPtr);
-        texture->_bitDepth = 8;
+        image->bitDepth = 8;
         break;
     }
 
-    if (png_get_valid(pngPtr, infoPtr, PNG_INFO_tRNS)) {
+    if (png_get_valid(pngPtr, infoPtr, PNG_INFO_tRNS)) 
+	{
         png_set_tRNS_to_alpha(pngPtr);
-        texture->_channels += 1;
+        image->channels += 1;
     }
 
-    if (texture->_bitDepth == 16)
+    if (image->bitDepth == 16)
         png_set_strip_16(pngPtr);
 
     //Allocate memory for data and raws
-    texture->_rowPtrs = new png_bytep[texture->_height];
-    texture->_data = new png_byte[texture->_width * texture->_height 
-        * texture->_bitDepth * texture->_channels / 8];
+    image->rowPtrs = new png_bytep[image->height];
+    image->data = new png_byte[image->width * image->height 
+        * image->bitDepth * image->channels / 8];
 
     //Set pointer to beginning of each row
-    const unsigned int stride = texture->_width * texture->_bitDepth 
-        * texture->_channels / 8;
-    for (size_t i = 0; i < texture->_height; i++) {
+    const unsigned int stride = image->width * image->bitDepth 
+        * image->channels / 8;
+    for (size_t i = 0; i < image->height; i++) 
+	{
         png_uint_32 q = i * stride;
-        texture->_rowPtrs[i] = (png_bytep)texture->_data + q;
+        image->rowPtrs[i] = (png_bytep)image->data + q;
     }
 
     //Actually read data
-    png_read_image(pngPtr, texture->_rowPtrs);
+    png_read_image(pngPtr, image->rowPtrs);
 
     png_destroy_read_struct(&pngPtr, &infoPtr, (png_infopp)0);
 }
 
+void writeData(std::ostream& source, Image *image)
+{
+	//Create write structure
+	png_structp pngPtr = png_create_write_struct(
+		PNG_LIBPNG_VER_STRING, nullptr, nullptr, nullptr);
+	if (!pngPtr)
+	{
+		std::cout << "Cannot initialize write struct";
+		return;
+	}
+
+	//Create info structure
+	png_infop infoPtr = png_create_info_struct(pngPtr);
+	if (!infoPtr)
+	{
+		std::cout << "Cannot create info struct";
+		png_destroy_read_struct(&pngPtr, (png_infopp)0, (png_infopp)0);
+		return;
+	}
+
+	//Set error handler
+	//If error occurred it will jump to code in if body
+	if (setjmp(png_jmpbuf(pngPtr)));
+
+	//Set custom read function (read from std::stream)
+	png_set_write_fn(pngPtr, (png_voidp)&source, pngWriteData, pngFlushData);
+
+	// Write header
+	png_set_IHDR(pngPtr, infoPtr, image->width, image->height, image->bitDepth,
+		PNG_COLOR_TYPE_RGB_ALPHA, PNG_INTERLACE_NONE, PNG_COMPRESSION_TYPE_DEFAULT,
+		PNG_FILTER_TYPE_DEFAULT);
+
+	png_write_info(pngPtr, infoPtr);
+
+	// Write image data
+	for (unsigned int i = 0; i < image->height; i++)
+	{
+		png_write_row(pngPtr, image->rowPtrs[i]);
+	}
+
+	// End write
+	png_write_end(pngPtr, 0);
+
+	if (infoPtr)
+		png_free_data(pngPtr, infoPtr, PNG_FREE_ALL, -1);
+	if (pngPtr)
+		png_destroy_write_struct(&pngPtr, 0);
+}
+
 bool TextureResource::load(std::istream& in, Object *&resource) const
 {
-    if (!validate(in))
-        return false;
-
     Texture *texture = new Texture();
-    readData(in, texture);
+
+	std::int16_t type = 0;
+	std::int16_t filter = 0;
+	std::int16_t wrap = 0;
+	std::int16_t format = 0;
+	std::int16_t aniso = 0;
+	std::int16_t mipmap = 0;
+
+	in.read((char *)&type, sizeof(std::int16_t));
+	in.read((char *)&filter, sizeof(std::int16_t));
+	in.read((char *)&wrap, sizeof(std::int16_t));
+	in.read((char *)&format, sizeof(std::int16_t));
+	in.read((char *)&aniso, sizeof(std::int16_t));
+	in.read((char *)&mipmap, sizeof(std::int16_t));
+
+	if (texture->type() == Texture::CubeMap)
+	{
+		if (!validate(in))
+			return false;
+
+		Image *images = new Image[6];
+		for (int i = 0; i < 6; ++i)
+		{
+			texture->images[i] = images + i;
+			readData(in, texture->images[i]);
+		}
+	}
+	else
+	{
+		if (!validate(in))
+			return false;
+
+		texture->images[0] = new Image();
+		readData(in, texture->images[0]);
+	}
 
     resource = texture;
     return true;
@@ -135,5 +228,32 @@ bool TextureResource::load(std::istream& in, Object *&resource) const
 
 bool TextureResource::save(std::ostream& out, Object *resource) const
 {
-    return false;
+	Texture *texture = static_cast<Texture *>(resource);
+	if (!texture)
+		return false;
+
+	std::int16_t type = texture->type();
+	std::int16_t filter = texture->filter();
+	std::int16_t wrap = texture->wrap();
+	std::int16_t format = texture->format();
+	std::int16_t aniso = texture->anisotropicLevel();
+	std::int16_t mipmap = texture->mipmapCount();
+
+	out.write((char *)&type, sizeof(std::int16_t));
+	out.write((char *)&filter, sizeof(std::int16_t));
+	out.write((char *)&wrap, sizeof(std::int16_t));
+	out.write((char *)&format, sizeof(std::int16_t));
+	out.write((char *)&aniso, sizeof(std::int16_t));
+	out.write((char *)&mipmap, sizeof(std::int16_t));
+
+	if (texture->type() == Texture::CubeMap)
+	{
+		Image *images = new Image[6];
+		for (int i = 0; i < 6; ++i)
+			writeData(out, texture->images[i]);
+	}
+	else
+		writeData(out, texture->images[0]);
+
+	return true;
 }

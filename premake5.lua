@@ -134,7 +134,15 @@ solution 'warhog'
 		{ 
 			'engine',
 			'entityx',
-			'libnoise'
+			'libnoise',
+			'LibJPEG',
+			'LibJXR',
+			'LibOpenJPEG',
+			'LibPNG',
+			'LibRaw',
+			'LibTIFF4',
+			'LibWebP',
+			'OpenEXR',
 		}
 		
 		files

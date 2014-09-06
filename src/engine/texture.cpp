@@ -1,63 +1,91 @@
 #include "texture.h"
 
-#include "render/opengl/glextensions.h"
-
-Texture::Texture(/*Texture::Type type, GLuint unit*/)
-	: _type((Type)GL_TEXTURE_2D),
-    _texture(0),
-	_unit(15)
+Texture::Texture() :
+	_type(Texture2D),
+	_filter(Point),
+	_wrap(Clamp),
+	_format(RGBA),
+	_anisoLevel(1),
+	_mipmaps(0)
 {
-	glGenTextures(1, &_texture);
-    glBindTexture(GL_TEXTURE_2D, _texture);
-
-	//Set wrap mode to repeat
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-
-	//Generate mipmap
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    //glGenerateMipmap(GL_TEXTURE_2D);
-
-    glBindTexture(GL_TEXTURE_2D, 0);
 }
 
-
-Texture::~Texture(void)
+Texture::~Texture()
 {
-	glDeleteTextures(1, &_texture);
 }
 
-void Texture::load(const Image& image)
+void Texture::load()
 {
-	glActiveTexture(_unit);
-    glBindTexture(GL_TEXTURE_2D, _texture);
+}
 
-    if (image._data)
-    {
-        GLint format = GL_RGBA;
-        /*if (image._colorType == PNG_COLOR_TYPE_RGB)
-            format = GL_RGB;
-        else if (image._colorType == PNG_COLOR_TYPE_RGB_ALPHA)
-            format = GL_RGBA;*/
-
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA,
-            image._width,
-            image._height,
-            0, format, GL_UNSIGNED_BYTE,
-            image._data);
-    }
-        
-    glBindTexture(GL_TEXTURE_2D, 0);
+void Texture::unload()
+{
 }
 
 void Texture::bind()
 {
-	glActiveTexture(_unit);
-    glBindTexture(GL_TEXTURE_2D, _texture);
+}
+
+void Texture::unbind()
+{
 }
 
 Texture::Type Texture::type() const
 {
     return _type;
+}
+
+void Texture::setType(Type type)
+{
+	_type = type;
+}
+
+Texture::Filter Texture::filter() const
+{
+	return _filter;
+}
+
+void Texture::setFilter(Filter filter)
+{
+	_filter = filter;
+}
+
+Texture::Wrap Texture::wrap() const
+{
+	return _wrap;
+}
+
+void Texture::setWrap(Wrap wrap)
+{
+	_wrap = wrap;
+}
+
+Texture::Format Texture::format() const
+{
+	return _format;
+}
+
+void Texture::setFormat(Format format)
+{
+	_format = format;
+}
+
+int Texture::anisotropicLevel() const
+{
+	return _anisoLevel;
+}
+
+void Texture::setAnisotropicLevel(int level)
+{
+	_anisoLevel = level;
+}
+
+int Texture::mipmapCount() const
+{
+	return _mipmaps;
+}
+
+void Texture::setMipmapCount(int count)
+{
+	_mipmaps = count;
 }
