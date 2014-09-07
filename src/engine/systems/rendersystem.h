@@ -21,6 +21,7 @@ public:
 
 	void chooseBackend(const std::string& name);
 	Renderer *renderer() const;
+	Window *window() const;
 
     void configure(EventManager &events) override;
     void update(EntityManager &entities, EventManager &events, double dt) override;
@@ -36,7 +37,9 @@ private:
     Window *_window;
 	RenderMap _renderMap;
 	Shader *_boxShader;
+	Shader *_skyShader;
 	Mesh *_boxMesh;
+	Mesh *_skyMesh;
 
 };
 

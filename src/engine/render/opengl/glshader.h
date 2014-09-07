@@ -36,6 +36,33 @@ private:
 
 };
 
+class GLGlobalVariable : public ShaderVariable
+{
+public:
+	GLGlobalVariable(GLGlobalVariable &&other);
+	~GLGlobalVariable();
+
+	const char *name() const override;
+	Type type() const override;
+
+	Any get() const override;
+	void set(const Any&) override;
+
+private:
+	friend class GLShader;
+	GLGlobalVariable(GLShader *shader, unsigned int program, int location);
+
+	TypeTable *_init(unsigned int program, int location);
+
+private:
+	GLShader *_shader;
+	const char *_name;
+	Type _type;
+	unsigned int _internalType;
+	unsigned int _index;
+
+};
+
 class GLShaderBlock : public ShaderBlock
 {
 public:
@@ -86,6 +113,8 @@ private:
 	std::map<std::string, int> _blockNames;
 	std::vector<GLShaderVariable> _variables;
 	std::map<std::string, int> _variableNames;
+	std::vector<GLGlobalVariable> _globals;
+	std::map<std::string, int> _globalNames;
 	std::map<ShaderVariable *, unsigned int> _textureUnits;
 	unsigned int _unitCounter;
 

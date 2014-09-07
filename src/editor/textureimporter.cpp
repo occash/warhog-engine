@@ -142,6 +142,8 @@ std::shared_ptr<Object> TextureImporter::import(const QString& filename, const Q
 
 	if (isCube)
 	{
+		texture->setType(Texture::CubeMap);
+
 		Image *images = new Image[6];
 		for (int i = 0; i < 6; ++i)
 		{

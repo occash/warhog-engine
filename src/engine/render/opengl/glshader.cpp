@@ -125,6 +125,22 @@ void GLShader::load()
 			_variableNames.insert(std::make_pair((_variables.data() + _variables.size() - 1)->name(), _variables.size() - 1));
 		}
 	}
+
+	//Get the number of global variables
+	glGetProgramInterfaceiv(_program, GL_UNIFORM, GL_ACTIVE_RESOURCES, &numBlocks);
+	_globals.reserve(numBlocks);
+
+	for (int i = 0; i < numBlocks; ++i)
+	{
+		//Query location
+		const GLenum globalParams[] = { GL_LOCATION };
+		GLint location;
+		glGetProgramResourceiv(_program, GL_UNIFORM, i, 1, globalParams, 1, 0, &location);
+		if (location == -1) continue; //Skip block uniforms
+
+		_globals.push_back(GLGlobalVariable(this, _program, location));
+		_globalNames.insert(std::make_pair((_globals.data() + _globals.size() - 1)->name(), _globals.size() - 1));
+	}
 }
 
 void GLShader::unload()
@@ -136,7 +152,14 @@ ShaderVariable *GLShader::variable(const char *name) const
 {
 	auto varId = _variableNames.find(name);
 	if (varId == _variableNames.end())
-		return nullptr;
+	{
+		auto globId = _globalNames.find(name);
+		if (globId == _globalNames.end())
+			return nullptr;
+
+		const GLGlobalVariable *data = _globals.data() + globId->second;
+		return const_cast<GLGlobalVariable *>(data);
+	}
 
 	const GLShaderVariable *data = _variables.data() + varId->second;
 	return const_cast<GLShaderVariable *>(data);
@@ -255,6 +278,7 @@ GLShaderVariable::GLShaderVariable(GLShader *shader, unsigned int program, unsig
 }
 
 GLShaderVariable::GLShaderVariable(GLShaderVariable &&other) :
+	_shader(other._shader),
 	_name(other._name),
 	_type(other._type),
 	_buffer(other._buffer),
@@ -479,4 +503,79 @@ static TypeTable *dispatchType(int glType)
 	}
 
 	return nullptr;
+}
+
+GLGlobalVariable::GLGlobalVariable(GLShader *shader, unsigned int program, int location) :
+	_shader(shader),
+	_type(_init(program, location)),
+	_index(location)
+{
+}
+
+GLGlobalVariable::GLGlobalVariable(GLGlobalVariable &&other) :
+	_shader(other._shader),
+	_name(other._name),
+	_type(other._type),
+	_internalType(other._internalType),
+	_index(other._index)
+{
+}
+
+GLGlobalVariable::~GLGlobalVariable()
+{
+}
+
+const char *GLGlobalVariable::name() const
+{
+	return _name;
+}
+
+Type GLGlobalVariable::type() const
+{
+	return _type;
+}
+
+Any GLGlobalVariable::get() const
+{
+	return Any();
+}
+
+void GLGlobalVariable::set(const Any& value)
+{
+	if (_type != value.type())
+		return;
+
+	switch (_internalType)
+	{
+	case GL_SAMPLER_1D:
+	case GL_SAMPLER_2D:
+	case GL_SAMPLER_3D:
+	case GL_SAMPLER_CUBE:
+	{
+		Texture *texture = any_cast<Texture *>(value);
+		unsigned int unit = _shader->acquireTexture(this);
+		glActiveTexture(GL_TEXTURE0 + unit);
+		texture->bind();
+		glUniform1i(_index, unit);
+	}
+		break;
+	default:
+		break;
+	}
+}
+
+TypeTable *GLGlobalVariable::_init(unsigned int program, int location)
+{
+	//Query variable params
+	const GLenum varParams[] = { GL_NAME_LENGTH, GL_TYPE };
+	GLint varValues[2];
+	glGetProgramResourceiv(program, GL_UNIFORM, location, 2, varParams, 2, 0, varValues);
+
+	//Query name
+	_name = new char[varValues[0]];
+	glGetProgramResourceName(program, GL_UNIFORM, location, varValues[0], 0, const_cast<char*>(_name));
+
+	_internalType = varValues[1];
+	TypeTable *table = dispatchType(varValues[1]);
+	return table;
 }

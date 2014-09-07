@@ -9,6 +9,7 @@
 #include <ctime>
 
 using namespace entityx;
+class Material;
 
 class ENGINE_EXPORT Engine : public EntityX 
 {
@@ -24,6 +25,9 @@ protected:
 	void update(double dt);
 
 private:
+	Material *mat;
+	entityx::Entity _lightNode;
+	double _elapsed;
 	std::clock_t _timer;
 	bool _running = false;
 

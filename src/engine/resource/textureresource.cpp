@@ -132,6 +132,9 @@ void readData(std::istream& source, Image *image)
     //Actually read data
     png_read_image(pngPtr, image->rowPtrs);
 
+	//Read end
+	png_read_end(pngPtr, infoPtr);
+
     png_destroy_read_struct(&pngPtr, &infoPtr, (png_infopp)0);
 }
 
@@ -220,12 +223,12 @@ bool TextureResource::load(std::istream& in, Object *&resource) const
 
 	if (texture->type() == Texture::CubeMap)
 	{
-		if (!validate(in))
-			return false;
-
 		Image *images = new Image[6];
 		for (int i = 0; i < 6; ++i)
 		{
+			if (!validate(in))
+				return false;
+
 			texture->images[i] = images + i;
 			readData(in, texture->images[i]);
 		}
@@ -265,7 +268,6 @@ bool TextureResource::save(std::ostream& out, Object *resource) const
 
 	if (texture->type() == Texture::CubeMap)
 	{
-		Image *images = new Image[6];
 		for (int i = 0; i < 6; ++i)
 			writeData(out, texture->images[i]);
 	}

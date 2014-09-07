@@ -17,6 +17,8 @@
 
 #include "../render/opengl/glrenderer.h"
 #include "../render/opengl/glextensions.h"
+#include "../resource/textureresource.h"
+#include "../material.h"
 
 #include <yaml-cpp/yaml.h>
 #include <fstream>
@@ -133,6 +135,12 @@ void RenderSystem::update(EntityManager &entities, EventManager &events, double 
 	glClearColor(color.x, color.y, color.z, 1.0f);
 	glClearDepth(1.0);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	_skyShader->bind();
+	ShaderBlock *skyMatrices = _skyShader->block("MatrixBlock");
+	skyMatrices->set(&m, sizeof(MatrixBlock));
+	_skyMesh->draw();
+	_skyShader->unbind();
 
 	//Setup lights
     auto lights = entities.entities_with_components<TransformComponent, LightComponent>();
@@ -296,9 +304,25 @@ void RenderSystem::chooseBackend(const std::string& name)
 	_renderer->createOcclusionQuery();
 
 	_boxShader = _renderer->createShader();
-	_boxShader->vertexSource = readFile("D:/projects/warhog-engine/src/engine/shaders/box.vert");
-	_boxShader->pixelSource = readFile("D:/projects/warhog-engine/src/engine/shaders/box.frag");
+	_boxShader->vertexSource = readFile("resources/shaders/box.vert");
+	_boxShader->pixelSource = readFile("resources/shaders/box.frag");
 	_boxShader->load();
+
+	_skyShader = _renderer->createShader();
+	_skyShader->vertexSource = readFile("resources/shaders/skybox.vert");
+	_skyShader->pixelSource = readFile("resources/shaders/skybox.frag");
+	_skyShader->load();
+
+	TextureResource texResource(_renderer);
+	std::ifstream texIn("resources/skybox", std::ios::binary | std::ios::in);
+	Object *texObject = nullptr;
+	texResource.load(texIn, texObject);
+	Texture *tex2d = static_cast<Texture*>(texObject);
+	tex2d->load();
+
+	Material *skyMat = new Material();
+	skyMat->setShader(_skyShader);
+	skyMat->setProperty("skyBox", tex2d);
 
 	_boxMesh = _renderer->createMesh();
 	_boxMesh->verticies.assign
@@ -320,9 +344,44 @@ void RenderSystem::chooseBackend(const std::string& name)
 		2, 6, 3, 7
 	});
 	_boxMesh->load();
+
+	float width = 100.0f, height = 100.0f, depth = 100.0f;
+	_skyMesh = _renderer->createMesh();
+	_skyMesh->verticies.assign
+		({
+		Vertex{ { -width, -height, -depth } }, // 0
+		Vertex{ { width, -height, -depth } }, // 1
+		Vertex{ { width, height, -depth } }, // 2
+		Vertex{ { -width, height, -depth } }, // 3
+		Vertex{ { -width, -height, depth } }, // 4
+		Vertex{ { width, -height, depth } }, // 5
+		Vertex{ { width, height, depth } }, // 6
+		Vertex{ { -width, height, depth } } // 7
+	});
+	_skyMesh->indices.assign
+		({
+		0, 2, 1,
+		0, 3, 2,
+		1, 2, 6,
+		6, 5, 1,
+		4, 5, 6,
+		6, 7, 4,
+		2, 3, 6,
+		6, 3, 7,
+		0, 7, 3,
+		0, 4, 7,
+		0, 1, 5,
+		0, 5, 4
+	});
+	_skyMesh->load();
 }
 
 Renderer *RenderSystem::renderer() const
 {
 	return _renderer;
+}
+
+Window *RenderSystem::window() const
+{
+	return _window;
 }

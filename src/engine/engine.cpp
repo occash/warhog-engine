@@ -39,6 +39,7 @@ std::string readFile(const std::string& fileName)
 
 void Engine::start()
 {
+	_elapsed = 0.0;
 	configure();
 	systems.configure();
 	initialize();
@@ -47,7 +48,7 @@ void Engine::start()
 int Engine::run()
 {
 	_running = true;
-	while (_running) {
+	while (_running && systems.system<RenderSystem>()->window()->isVisible()) {
 		std::clock_t ticks = std::clock();
 		update(double(ticks - _timer) / CLOCKS_PER_SEC);
 		_timer = ticks;
@@ -89,7 +90,7 @@ void Engine::initialize()
 	auto cameraPos = cameraId.assign<TransformComponent>();
 	auto camera = cameraId.assign<CameraComponent>();
 
-	camera->setClearColor(glm::vec3(0.0f, 0.0f, 0.5f));
+	camera->setClearColor(glm::vec3(0.0f, 0.0f, 0.0f));
 	camera->setFarPlane(1000.0f);
 	camera->setFieldOfView(60.0f);
 
@@ -98,6 +99,7 @@ void Engine::initialize()
 
 	//Create light
 	Entity lightId = entities.create();
+	_lightNode = lightId;
 	auto lightPos = lightId.assign<TransformComponent>();
 	auto light = lightId.assign<LightComponent>();
 
@@ -117,26 +119,19 @@ void Engine::initialize()
 	//manager.add<ScriptResource>();
 	Renderer *renderer = systems.system<RenderSystem>()->renderer();
 	MeshResource meshResource(renderer);
-	std::ifstream meshIn("D:/projects/warhog-engine/test/project1/resources/models/dragon_assimp", std::ios::binary | std::ios::in);
+	std::ifstream meshIn("resources/dragon", std::ios::binary | std::ios::in);
 	Object *meshObject = nullptr;
 	meshResource.load(meshIn, meshObject);
 	Mesh *cube = static_cast<Mesh*>(meshObject);
 	cube->load();
 	meshFilter->setMesh(cube);
 
-	TextureResource texResource(renderer);
-	std::ifstream texIn("D:/projects/warhog-engine/test/project1/resources/textures/me", std::ios::binary | std::ios::in);
-	Object *texObject = nullptr;
-	texResource.load(texIn, texObject);
-	Texture *tex2d = static_cast<Texture*>(texObject);
-	tex2d->load();
-
 	Shader *shader = renderer->createShader();
-	shader->vertexSource = readFile("D:/projects/warhog-engine/src/engine/shaders/brdf.vert");
-	shader->pixelSource = readFile("D:/projects/warhog-engine/src/engine/shaders/brdf.frag");
+	shader->vertexSource = readFile("resources/shaders/brdf.vert");
+	shader->pixelSource = readFile("resources/shaders/brdf.frag");
 	shader->load();
 
-	Material *mat = new Material;
+	mat = new Material;
 	mat->setShader(shader);
 	material->setMaterial(mat);
 	mat->setProperty("color", glm::vec3(0.9f, 0.5f, 0.55f) / 3.14f);
@@ -180,5 +175,24 @@ void Engine::update(double dt)
 	}*/
 	//systems.update<InputSystem>(dt);
 	//systems.update<ScriptSystem>(dt);
+	auto lightPos = _lightNode.component<TransformComponent>();
+	glm::vec3 rot = lightPos->rotation();
+	rot.y = rot.y + 1;
+	lightPos->setRotation(rot);
+
+	_elapsed += dt;
+	if (_elapsed >= 4)
+	{
+		float refractiveIndex = std::rand() % 20;
+		float roughness = 0.1f * (std::rand() % 10);
+		float fresnel0 = ((1.0f - refractiveIndex) / (1.0f + refractiveIndex));
+		fresnel0 = fresnel0 * fresnel0;
+
+		mat->setProperty("fresnel0", fresnel0);
+		mat->setProperty("roughness", roughness);
+
+		_elapsed = 0.0;
+	}
+
 	systems.update<RenderSystem>(dt);
 }
