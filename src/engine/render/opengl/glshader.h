@@ -22,11 +22,12 @@ public:
 
 private:
 	friend class GLShader;
-	GLShaderVariable(unsigned int program, unsigned int buffer, int location);
+	GLShaderVariable(GLShader *shader, unsigned int program, unsigned int buffer, int location);
 
 	TypeTable *_init(unsigned int program, int location);
 
 private:
+	GLShader *_shader;
 	const char *_name;
 	Type _type;
 	unsigned int _buffer;
@@ -77,12 +78,16 @@ public:
 	ShaderVariable *variable(const char *name) const override;
 	ShaderBlock *block(const char *name) const override;
 
+	unsigned int acquireTexture(ShaderVariable *);
+
 private:
 	unsigned int _program;
 	std::vector<GLShaderBlock> _blocks;
 	std::map<std::string, int> _blockNames;
 	std::vector<GLShaderVariable> _variables;
 	std::map<std::string, int> _variableNames;
+	std::map<ShaderVariable *, unsigned int> _textureUnits;
+	unsigned int _unitCounter;
 
 };
 

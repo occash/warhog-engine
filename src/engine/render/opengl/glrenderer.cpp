@@ -1,5 +1,6 @@
 #include "glrenderer.h"
 #include "glwindow.h"
+#include "gltexture.h"
 #include "glmesh.h"
 #include "glshader.h"
 #include "glquery.h"
@@ -26,7 +27,7 @@ Window *GLRenderer::createWindow()
 
 Texture *GLRenderer::createTexture()
 {
-	return nullptr;
+	return new GLTexture();
 }
 
 Mesh *GLRenderer::createMesh()

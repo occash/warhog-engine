@@ -21,6 +21,7 @@
 //Resources
 #include "resourcemanager.h"
 #include "resource/meshresource.h"
+#include "resource/textureresource.h"
 
 std::string readFile(const std::string& fileName)
 {
@@ -122,6 +123,13 @@ void Engine::initialize()
 	Mesh *cube = static_cast<Mesh*>(meshObject);
 	cube->load();
 	meshFilter->setMesh(cube);
+
+	TextureResource texResource(renderer);
+	std::ifstream texIn("D:/projects/warhog-engine/test/project1/resources/textures/me", std::ios::binary | std::ios::in);
+	Object *texObject = nullptr;
+	texResource.load(texIn, texObject);
+	Texture *tex2d = static_cast<Texture*>(texObject);
+	tex2d->load();
 
 	Shader *shader = renderer->createShader();
 	shader->vertexSource = readFile("D:/projects/warhog-engine/src/engine/shaders/brdf.vert");

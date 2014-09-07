@@ -1,4 +1,5 @@
 #include "textureresource.h"
+#include "../render/renderer.h"
 
 #include <libpng/png.h>
 #include <iostream>
@@ -117,7 +118,7 @@ void readData(std::istream& source, Image *image)
     //Allocate memory for data and raws
     image->rowPtrs = new png_bytep[image->height];
     image->data = new png_byte[image->width * image->height 
-        * image->bitDepth * image->channels / 8];
+        * image->bitDepth * image->channels / 8]; //REVISE: channels?
 
     //Set pointer to beginning of each row
     const unsigned int stride = image->width * image->bitDepth 
@@ -163,7 +164,7 @@ void writeData(std::ostream& source, Image *image)
 
 	// Write header
 	png_set_IHDR(pngPtr, infoPtr, image->width, image->height, image->bitDepth,
-		PNG_COLOR_TYPE_RGB_ALPHA, PNG_INTERLACE_NONE, PNG_COMPRESSION_TYPE_DEFAULT,
+		image->colorType, PNG_INTERLACE_NONE, PNG_COMPRESSION_TYPE_DEFAULT,
 		PNG_FILTER_TYPE_DEFAULT);
 
 	png_write_info(pngPtr, infoPtr);
@@ -183,9 +184,18 @@ void writeData(std::ostream& source, Image *image)
 		png_destroy_write_struct(&pngPtr, 0);
 }
 
+TextureResource::TextureResource(Renderer *renderer) :
+	_renderer(renderer)
+{
+}
+
+TextureResource::~TextureResource()
+{
+}
+
 bool TextureResource::load(std::istream& in, Object *&resource) const
 {
-    Texture *texture = new Texture();
+    Texture *texture = _renderer->createTexture();
 
 	std::int16_t type = 0;
 	std::int16_t filter = 0;
@@ -200,6 +210,13 @@ bool TextureResource::load(std::istream& in, Object *&resource) const
 	in.read((char *)&format, sizeof(std::int16_t));
 	in.read((char *)&aniso, sizeof(std::int16_t));
 	in.read((char *)&mipmap, sizeof(std::int16_t));
+
+	texture->setType(Texture::Type(type));
+	texture->setFilter(Texture::Filter(filter));
+	texture->setWrap(Texture::Wrap(wrap));
+	texture->setFormat(Texture::Format(format));
+	texture->setAnisotropicLevel(aniso);
+	texture->setMipmapCount(mipmap);
 
 	if (texture->type() == Texture::CubeMap)
 	{

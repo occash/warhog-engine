@@ -20,7 +20,7 @@ ResourceModel::ResourceModel(std::shared_ptr<ResourceIO> io, QObject *parent) :
 {
 	_io->addLoader(std::make_shared<MeshResource>(nullptr));
 	_io->addLoader(std::make_shared<ScriptResource>());
-	_io->addLoader(std::make_shared<TextureResource>());
+	_io->addLoader(std::make_shared<TextureResource>(nullptr));
 }
 
 ResourceModel::~ResourceModel()

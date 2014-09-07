@@ -174,8 +174,8 @@ void RenderSystem::update(EntityManager &entities, EventManager &events, double 
 		meshFilter->mesh()->draw();
 		shader->unbind();
 
-		//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-		glm::vec3 *boxScale = reinterpret_cast<glm::vec3 *>(meshFilter->mesh()->scale);
+		//TODO: make occlusion query (CHC++ ?)
+		/*glm::vec3 *boxScale = reinterpret_cast<glm::vec3 *>(meshFilter->mesh()->scale);
 		m.modelView = glm::scale(m.modelView, *boxScale);
 		_boxShader->bind();
 		ShaderBlock *boxmat = _boxShader->block("MatrixBlock");
@@ -183,8 +183,7 @@ void RenderSystem::update(EntityManager &entities, EventManager &events, double 
 		//_renderer->beginOcclusionQuery();
 		_boxMesh->drawBox();
 		//bool visible = _renderer->endOcclusionQuery();
-		_boxShader->unbind();
-		//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+		_boxShader->unbind();*/
     }
 
 	_window->update();

@@ -1,5 +1,6 @@
 #include "glshader.h"
 #include "glextensions.h"
+#include "gltexture.h"
 
 #include "../../meta/any.h"
 
@@ -49,7 +50,8 @@ public:
 };
 
 GLShader::GLShader() :
-	_program(glCreateProgram())
+	_program(glCreateProgram()),
+	_unitCounter(0)
 {
 }
 
@@ -119,7 +121,7 @@ void GLShader::load()
 		glGetProgramResourceiv(_program, GL_UNIFORM_BLOCK, i, 1, &activeVars, blockParams[1], 0, vars.data());
 		for (int n = 0; n < paramValues[1]; ++n)
 		{
-			_variables.push_back(GLShaderVariable(_program, (_blocks.data() + i)->_buffer, vars[n]));
+			_variables.push_back(GLShaderVariable(this, _program, (_blocks.data() + i)->_buffer, vars[n]));
 			_variableNames.insert(std::make_pair((_variables.data() + _variables.size() - 1)->name(), _variables.size() - 1));
 		}
 	}
@@ -148,6 +150,19 @@ ShaderBlock *GLShader::block(const char *name) const
 
 	const GLShaderBlock *data = _blocks.data() + blockId->second;
 	return const_cast<GLShaderBlock *>(data);
+}
+
+unsigned int GLShader::acquireTexture(ShaderVariable *variable)
+{
+	auto textureUnit = _textureUnits.find(variable);
+	if (textureUnit == _textureUnits.end()) //New unit
+	{
+		auto ret = _textureUnits.insert(std::make_pair(variable, _unitCounter++));
+		if (ret.second)
+			textureUnit = ret.first;
+	}
+
+	return textureUnit->second;
 }
 
 GLShaderBlock::GLShaderBlock(GLShader *shader, const char* name, unsigned int program, int location) :
@@ -232,7 +247,8 @@ void GLShaderBlock::set(void *data, int size)
 	glBindBuffer(GL_UNIFORM_BUFFER, 0);
 }
 
-GLShaderVariable::GLShaderVariable(unsigned int program, unsigned int buffer, int location) :
+GLShaderVariable::GLShaderVariable(GLShader *shader, unsigned int program, unsigned int buffer, int location) :
+	_shader(shader),
 	_type(_init(program, location)),
 	_buffer(buffer)
 {
@@ -272,7 +288,17 @@ void GLShaderVariable::set(const Any& value)
 		return;
 
 	void *data = value.object();
-	bool smallType = _type.size() < sizeof(void *);
+	bool smallType = _type.size() <= sizeof(void *);
+
+	//Bind texture unit
+	if (_type == Type::from<Texture*>())
+	{
+		Texture *texture = any_cast<Texture *>(value);
+		unsigned int unit = _shader->acquireTexture(this);
+		glActiveTexture(GL_TEXTURE0 + unit);
+		texture->bind();
+		void *data = (void *)unit;
+	}
 
 	glBindBuffer(GL_UNIFORM_BUFFER, _buffer);
 	glBufferSubData(GL_UNIFORM_BUFFER, _offset, _size, smallType ? &data : data);
@@ -378,15 +404,15 @@ static TypeTable *dispatchType(int glType)
 		return Table<glm::dmat4x2>::get();
 	case GL_DOUBLE_MAT4x3:
 		return Table<glm::dmat4x3>::get();
-	/*case GL_SAMPLER_1D:
-		return Table<sampler1D>::get();
+	case GL_SAMPLER_1D:
+		return Table<Texture *>::get();
 	case GL_SAMPLER_2D:
-		return Table<sampler2D>::get();
+		return Table<Texture *>::get();
 	case GL_SAMPLER_3D:
-		return Table<sampler3D>::get();
+		return Table<Texture *>::get();
 	case GL_SAMPLER_CUBE:
-		return Table<samplerCube>::get();
-	case GL_SAMPLER_1D_SHADOW:
+		return Table<Texture *>::get();
+	/*case GL_SAMPLER_1D_SHADOW:
 		return Table<sampler1DShadow>::get();
 	case GL_SAMPLER_2D_SHADOW:
 		return Table<sampler2DShadow>::get();

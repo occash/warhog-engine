@@ -52,6 +52,12 @@ public:
 		return (int)Table<T>::get();
 	}
 
+	template<class T>
+	static Type from()
+	{
+		return Table<T>::get();
+	}
+
 private:
 	const TypeTable *_table;
 	//std::type_index id = typeid(void);
