@@ -104,7 +104,7 @@ void Engine::initialize()
 	auto light = lightId.assign<LightComponent>();
 
 	light->setType(LightComponent::Directional);
-	light->setColor(glm::vec4(1.0f, 0.5f, 0.5f, 0.0f));
+	light->setColor(glm::vec4(1.0f, 1.0f, 1.0f, 0.0f));
 	light->setIntensity(0.1f);
 	lightPos->setRotation(glm::vec3(0.0f, 45.0f, 0.0f));
 
@@ -134,7 +134,7 @@ void Engine::initialize()
 	mat = new Material;
 	mat->setShader(shader);
 	material->setMaterial(mat);
-	mat->setProperty("color", glm::vec3(0.9f, 0.5f, 0.55f) / 3.14f);
+	mat->setProperty("color", glm::vec3(0.6f, 0.84f, 0.91f) / 3.14f);
 	float refractiveIndex = 16.0f;
 	float fresnel0 = ((1.0f - refractiveIndex) / (1.0f + refractiveIndex));
 	fresnel0 = fresnel0 * fresnel0;
@@ -175,10 +175,10 @@ void Engine::update(double dt)
 	}*/
 	//systems.update<InputSystem>(dt);
 	//systems.update<ScriptSystem>(dt);
-	auto lightPos = _lightNode.component<TransformComponent>();
-	glm::vec3 rot = lightPos->rotation();
-	rot.y = rot.y + 1;
-	lightPos->setRotation(rot);
+	//auto lightPos = _lightNode.component<TransformComponent>();
+	//glm::vec3 rot = lightPos->rotation();
+	//rot.y = rot.y + 1;
+	//lightPos->setRotation(rot);
 
 	_elapsed += dt;
 	if (_elapsed >= 4)

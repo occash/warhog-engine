@@ -108,8 +108,8 @@ void GLShader::load()
 		const GLenum blockParams[] = { GL_NAME_LENGTH, GL_NUM_ACTIVE_VARIABLES };
 		GLint paramValues[2];
 		glGetProgramResourceiv(_program, GL_UNIFORM_BLOCK, i, 2, blockParams, 2, 0, paramValues);
-		char *blockName = new char[paramValues[0]];
-		glGetProgramResourceName(_program, GL_UNIFORM_BLOCK, i, paramValues[0], 0, const_cast<char*>(blockName));
+		char *blockName = new char[paramValues[0] + 1];
+		glGetProgramResourceName(_program, GL_UNIFORM_BLOCK, i, paramValues[0] + 1, 0, const_cast<char*>(blockName));
 
 		_blocks.push_back(GLShaderBlock(this, blockName, _program, i));
 		_blockNames.insert(std::make_pair((_blocks.data() + i)->name(), i));		
@@ -339,8 +339,8 @@ TypeTable *GLShaderVariable::_init(unsigned int program, int location)
 	_offset = varValues[2];
 
 	//Query name
-	_name = new char[varValues[0]];
-	glGetProgramResourceName(program, GL_UNIFORM, location, varValues[0], 0, const_cast<char*>(_name));
+	_name = new char[varValues[0] + 1];
+	glGetProgramResourceName(program, GL_UNIFORM, location, varValues[0] + 1, 0, const_cast<char*>(_name));
 
 	TypeTable *table = dispatchType(varValues[1]);
 	_size = table->get_size();
