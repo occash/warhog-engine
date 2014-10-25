@@ -46,11 +46,11 @@ public:
 	void destroy(void *data) const;
 	void destruct(void *data) const;
 
-	template<class T>
+	/*template<class T>
 	static constexpr int typeValue()
 	{
 		return (int)Table<T>::get();
-	}
+	}*/
 
 	template<class T>
 	static Type from()
