@@ -195,7 +195,7 @@ Vector4::Vector4(float v) :
 {}
 
 Vector4::Vector4(float x, float y, float z, float w) :
-	data(_mm_set_ps(0, x, y, z))
+	data(_mm_set_ps(w, z, y, x))
 {}
 
 Vector4::Vector4(const Vector4& v) :
