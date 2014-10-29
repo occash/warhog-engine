@@ -1,16 +1,19 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+//Compile: always include entityx before Qt
+#include <entityx/Entity.h>
+
 #include <QMainWindow>
 #include <QSettings>
 
-class QTreeView;
 class QSessionManager;
 
-class SceneModel;
 class InspectorWidget;
 class ResourceWidget;
-class ViewManager;
+class SceneWidget;
+class RenderWidget;
+class Project;
 
 class MainWindow : public QMainWindow
 {
@@ -27,9 +30,11 @@ private:
 	void installUi();
 	void readSettings();
 	void writeSettings();
+	void setProject(Project *project);
 
 private slots:
 	void commitData(QSessionManager *);
+	void newProject();
 
 private:
 	//Common
@@ -38,12 +43,12 @@ private:
     QToolBar *_toolBar;
     QStatusBar *_statusBar;
 
-	ViewManager *_viewManager;
+	Project *_project;
 
-    QTreeView *_tree;
-    SceneModel *_model;
+	SceneWidget *_scene;
     InspectorWidget *_inspector;
     ResourceWidget *_resources;
+	RenderWidget *_renderer;
 
 };
 

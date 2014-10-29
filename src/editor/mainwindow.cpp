@@ -1,56 +1,42 @@
-#include "scenemodel.h"
-#include "inspectorwidget.h"
 #include "mainwindow.h"
-#include "renderwidget.h"
-#include "resourcewidget.h"
-#include "viewmanager.h"
-#include "viewcreator.h"
+#include "project.h"
 
-#include <QDockWidget>
-#include <QTreeView>
+#include "scene/scenewidget.h"
+#include "inspector/inspectorwidget.h"
+#include "resource/resourcewidget.h"
+#include "render/renderwidget.h"
+
+#include "dialogs/newproject.h"
+
 #include <QMenuBar>
 #include <QToolBar>
 #include <QStatusBar>
+#include <QDockWidget>
 #include <QSessionManager>
 #include <QCoreApplication>
 #include <QMessageBox>
 #include <QKeyEvent>
 
-/*class TestCreator : public ViewCreator
-{
-public:
-	QWidget *create() const override
-	{
-		return new QWidget();
-	}
-};*/
-
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent),
-    _tree(new QTreeView(this)),
-    _model(new SceneModel(this)),
+	_project(nullptr),
+    _scene(new SceneWidget(this)),
     _inspector(new InspectorWidget(this)),
     _resources(new ResourceWidget(this)),
-	_viewManager(new ViewManager(this))
+	_renderer(new RenderWidget(this))
 {
 	readSettings();
-
-	//_viewManager->registerView("Test", new TestCreator());
-
     installUi();
 
-	RenderWidget *renderer = new RenderWidget(this);
-    setCentralWidget(renderer);
+    setCentralWidget(_renderer);
 
-	_tree->setModel(_model);
-    connect(_tree, SIGNAL(activated(const QModelIndex&)),
-        _inspector, SLOT(inspectEntity(const QModelIndex&)));
-
-	connect(qApp, SIGNAL(commitDataRequest(QSessionManager *)), this, SLOT(commitData(QSessionManager *)));
+	connect(qApp, SIGNAL(commitDataRequest(QSessionManager *)), 
+		this, SLOT(commitData(QSessionManager *)));
 }
 
 MainWindow::~MainWindow()
 {
+	setProject(nullptr);
 	writeSettings();
 }
 
@@ -70,9 +56,11 @@ void MainWindow::installUi()
 	QAction *saveAction = new QAction(tr("Save project"), fileMenu);
 	QMenu *recentMenu = new QMenu(tr("Recent projects"), fileMenu);
 	QAction *quitAction = new QAction(tr("Quit"), fileMenu);
+	
 	//For MacOS only 
 	quitAction->setMenuRole(QAction::QuitRole);
 
+	connect(newAction, SIGNAL(triggered()), this, SLOT(newProject()));
 	connect(quitAction, SIGNAL(triggered()), qApp, SLOT(quit()));
 
 	fileMenu->addAction(newAction);
@@ -86,10 +74,23 @@ void MainWindow::installUi()
 	//Create actions for VIEW menu
 	QAction *fullscreenAction = new QAction(tr("Full screen"), viewMenu);
 
-	//addDockWidget(Qt::LeftDockWidgetArea, _viewManager->createView("Test"));
+	//Install menus
+	_menubar = new QMenuBar(this);
+	_menubar->addMenu(fileMenu);
+	_menubar->addMenu(viewMenu);
+	_menubar->addMenu(entityMenu);
+	_menubar->addMenu(componentMenu);
+	_menubar->addMenu(aboutMenu);
+	setMenuBar(_menubar);
+
+	_toolBar = new QToolBar(this);
+	addToolBar(Qt::TopToolBarArea, _toolBar);
+
+	_statusBar = new QStatusBar(this);
+	setStatusBar(_statusBar);
 
 	QDockWidget *leftDock = new QDockWidget("Project tree", this);
-	leftDock->setWidget(_tree);
+	leftDock->setWidget(_scene);
 	addDockWidget(Qt::LeftDockWidgetArea, leftDock);
 
 	QDockWidget *rightDock = new QDockWidget("Inspector", this);
@@ -99,21 +100,6 @@ void MainWindow::installUi()
 	QDockWidget *bottomDock = new QDockWidget("Resources", this);
 	bottomDock->setWidget(_resources);
 	addDockWidget(Qt::LeftDockWidgetArea, bottomDock);
-
-	//Install menus
-    _menubar = new QMenuBar(this);
-    _menubar->addMenu(fileMenu);
-	_menubar->addMenu(viewMenu);
-    _menubar->addMenu(entityMenu);
-    _menubar->addMenu(componentMenu);
-    _menubar->addMenu(aboutMenu);
-    setMenuBar(_menubar);
-
-    _toolBar = new QToolBar(this);
-    addToolBar(Qt::TopToolBarArea, _toolBar);
-
-    _statusBar = new QStatusBar(this);
-    setStatusBar(_statusBar);
 }
 
 void MainWindow::commitData(QSessionManager *manager)
@@ -176,3 +162,45 @@ void MainWindow::keyReleaseEvent(QKeyEvent *event)
 	if (event->key() == Qt::Key_F11)
 		setWindowState(windowState() ^ Qt::WindowFullScreen);
 }
+
+void MainWindow::newProject()
+{
+	NewProjectDialog dialog;
+	if (dialog.exec())
+	{
+		QString baseName = dialog.projectName();
+		QString basePath = dialog.projectPath();
+
+		QString projFile = Project::create(basePath, baseName);
+		if (projFile.isEmpty())
+		{
+			QMessageBox::warning(nullptr,
+				tr("Project error"),
+				tr("Cannot create project"),
+				QMessageBox::Ok);
+			return;
+		}
+
+		Project *project = Project::open(projFile);
+		if (!project)
+		{
+			QMessageBox::warning(nullptr,
+				tr("Project error"),
+				tr("Cannot create project"),
+				QMessageBox::Ok);
+			return;
+		}
+
+		setProject(project);
+	}
+}
+
+void MainWindow::setProject(Project *project)
+{
+	if (!project)
+		delete _project;
+
+	_project = project;
+	
+}
+
