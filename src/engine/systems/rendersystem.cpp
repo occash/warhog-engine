@@ -24,6 +24,8 @@
 #include <fstream>
 #include <iostream>
 
+using namespace entityx;
+
 static std::string readFile(const std::string& fileName)
 {
 	std::string source;

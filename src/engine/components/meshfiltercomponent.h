@@ -2,13 +2,12 @@
 #define MESHFILTER_H
 
 #include "../global.h"
-
 #include <entityx/Entity.h>
 
-using namespace entityx;
 class Mesh;
 
-class ENGINE_EXPORT MeshFilterComponent : public Component<MeshFilterComponent>
+class ENGINE_EXPORT MeshFilterComponent : 
+	public entityx::Component<MeshFilterComponent>
 {
 public:
 	MeshFilterComponent();

@@ -1,25 +1,23 @@
 #ifndef INPUTSYSTEM_H
 #define INPUTSYSTEM_H
 
+#include "../global.h"
+#include "../window.h"
+
 #include <entityx\System.h>
 #include <string>
 #include <map>
 
-#include "../global.h"
-#include "../window.h"
-
-using namespace entityx;
-
 typedef std::map<std::string, int> KeyMap;
 
-class InputSystem : public System<InputSystem>
+class InputSystem : public entityx::System<InputSystem>
 {
 public:
     InputSystem(Ptr<Window> window, const KeyMap& keyMap);
     ~InputSystem();
 
-    void configure(EventManager &events) override;
-    void update(EntityManager &entities, EventManager &events, double dt) override;
+    void configure(entityx::EventManager &events) override;
+	void update(entityx::EntityManager &entities, entityx::EventManager &events, double dt) override;
 
 private:
     double _horizontal;

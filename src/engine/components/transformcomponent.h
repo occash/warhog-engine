@@ -3,12 +3,11 @@
 
 #include "../global.h"
 
-#include <glm/glm.hpp>
 #include <entityx/Entity.h>
+#include <glm/glm.hpp>
 
-using namespace entityx;
-
-class ENGINE_EXPORT TransformComponent : public Component<TransformComponent>
+class ENGINE_EXPORT TransformComponent : 
+	public entityx::Component<TransformComponent>
 {
 public:
 	TransformComponent();

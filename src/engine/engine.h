@@ -8,10 +8,9 @@
 #include <entityx/quick.h>
 #include <ctime>
 
-using namespace entityx;
 class Material;
 
-class ENGINE_EXPORT Engine : public EntityX 
+class ENGINE_EXPORT Engine : public entityx::EntityX
 {
 public:
 	void start();

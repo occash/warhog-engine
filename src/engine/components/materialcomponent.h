@@ -4,10 +4,10 @@
 #include "../global.h"
 #include <entityx/Entity.h>
 
-using namespace entityx;
 class Material;
 
-class ENGINE_EXPORT MaterialComponent : public Component<MaterialComponent>
+class ENGINE_EXPORT MaterialComponent : 
+	public entityx::Component<MaterialComponent>
 {
 public:
     MaterialComponent();

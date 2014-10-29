@@ -23,6 +23,9 @@
 #include "resource/meshresource.h"
 #include "resource/textureresource.h"
 
+
+using namespace entityx;
+
 std::string readFile(const std::string& fileName)
 {
 	std::string source;

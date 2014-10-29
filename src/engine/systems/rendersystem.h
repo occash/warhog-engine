@@ -8,12 +8,12 @@
 #include <entityx/System.h>
 #include <map>
 
-using namespace entityx;
 struct RenderInfo;
 class Shader;
 class Mesh;
 
-class RenderSystem : public System<RenderSystem>, public Receiver<RenderSystem>
+class RenderSystem : public entityx::System<RenderSystem>, 
+	public entityx::Receiver<RenderSystem>
 {
 public:
     RenderSystem();
@@ -23,16 +23,17 @@ public:
 	Renderer *renderer() const;
 	Window *window() const;
 
-    void configure(EventManager &events) override;
-    void update(EntityManager &entities, EventManager &events, double dt) override;
+	void configure(entityx::EventManager &events) override;
+	void update(entityx::EntityManager &entities, 
+		entityx::EventManager &events, double dt) override;
 
-	void receive(const EntityCreatedEvent& event);
-	void receive(const EntityDestroyedEvent& event);
-	void receive(const ComponentAddedEvent<MeshFilterComponent>& event);
-	void receive(const ComponentRemovedEvent<MeshFilterComponent>& event);
+	void receive(const entityx::EntityCreatedEvent& event);
+	void receive(const entityx::EntityDestroyedEvent& event);
+	void receive(const entityx::ComponentAddedEvent<MeshFilterComponent>& event);
+	void receive(const entityx::ComponentRemovedEvent<MeshFilterComponent>& event);
 
 private:
-	typedef std::map<Entity::Id, RenderInfo*> RenderMap;
+	typedef std::map<entityx::Entity::Id, RenderInfo*> RenderMap;
 	Renderer *_renderer;
     Window *_window;
 	RenderMap _renderMap;

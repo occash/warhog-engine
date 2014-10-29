@@ -3,12 +3,11 @@
 
 #include "../global.h"
 
-#include <glm/glm.hpp>
 #include <entityx/Entity.h>
+#include <glm/glm.hpp>
 
-using namespace entityx;
-
-class ENGINE_EXPORT LightComponent : public Component<LightComponent>
+class ENGINE_EXPORT LightComponent : 
+	public entityx::Component<LightComponent>
 {
 public:
     LightComponent();

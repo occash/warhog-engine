@@ -1,31 +1,31 @@
 #ifndef SCRIPTSYSTEM_H
 #define SCRIPTSYSTEM_H
 
-#include <entityx/System.h>
 #include "../global.h"
 #include "../components/scriptcomponent.h"
 
+#include <entityx/System.h>
 #include <map>
 #include <set>
 
 class Script;
 class ScriptEngine;
 
-using namespace entityx;
-
-class ScriptSystem : public System<ScriptSystem>
+class ScriptSystem : 
+	public entityx::System<ScriptSystem>
 {
 public:
     ScriptSystem();
     ~ScriptSystem();
 
-    void configure(EventManager &events) override;
-    void update(EntityManager &entities, EventManager &events, double dt) override;
+    void configure(entityx::EventManager &events) override;
+	void update(entityx::EntityManager &entities, 
+		entityx::EventManager &events, double dt) override;
 
     template<class Engine>
     void registerEngine();
 
-    bool assign(Entity entity, Ptr<Script> script);
+	bool assign(entityx::Entity entity, Ptr<Script> script);
 
 private:
     void registerEngine(ScriptEngine *engine);

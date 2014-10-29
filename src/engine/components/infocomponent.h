@@ -4,9 +4,8 @@
 #include "../global.h"
 #include <entityx/entityx.h>
 
-using namespace entityx;
-
-class ENGINE_EXPORT InfoComponent : public Component<InfoComponent>
+class ENGINE_EXPORT InfoComponent : 
+	public entityx::Component<InfoComponent>
 {
 public:
     InfoComponent(const std::string& n);

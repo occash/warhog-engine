@@ -3,12 +3,11 @@
 
 #include "../global.h"
 
-#include <glm/glm.hpp>
 #include <entityx/Entity.h>
+#include <glm/glm.hpp>
 
-using namespace entityx;
-
-class ENGINE_EXPORT CameraComponent : public Component<CameraComponent>
+class ENGINE_EXPORT CameraComponent : 
+	public entityx::Component<CameraComponent>
 {
 public:
 	enum PojectionType

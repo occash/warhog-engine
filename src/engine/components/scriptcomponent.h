@@ -2,10 +2,7 @@
 #define SCRIPTCOMPONENT_H
 
 #include "../global.h"
-
 #include <entityx/Entity.h>
-
-using namespace entityx;
 
 class CameraComponent;
 class LightComponent;
@@ -32,14 +29,15 @@ public:
 	TransformComponent *getTransform();
 
 public:
-	Entity entity;
+	entityx::Entity entity;
 
 protected:
 	virtual void proxyObject() const {}
 
 };
 
-class ENGINE_EXPORT ScriptComponent : public Component<ScriptComponent>
+class ENGINE_EXPORT ScriptComponent : 
+	public entityx::Component<ScriptComponent>
 {
 public:
     ScriptComponent();

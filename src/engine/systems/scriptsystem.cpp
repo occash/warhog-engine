@@ -7,6 +7,7 @@
 #include <fstream>
 
 using namespace luabind;
+using namespace entityx;
 
 ScriptSystem::ScriptSystem()
 {
