@@ -10,7 +10,6 @@ InfoComponent::InfoComponent(const std::string& n)
 {
 }
 
-
 InfoComponent::~InfoComponent()
 {
 }

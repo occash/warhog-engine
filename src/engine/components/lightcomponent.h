@@ -26,13 +26,13 @@ public:
     glm::vec4 color() const;
     void setColor(const glm::vec4& c);
 
-    glm::float_t intensity() const;
-    void setIntensity(glm::float_t i);
+    float intensity() const;
+    void setIntensity(float i);
 
 private:
     Type _type;
     glm::vec4 _color;
-    glm::float_t _intensity;
+    float _intensity;
     
 };
 

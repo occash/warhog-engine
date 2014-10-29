@@ -30,12 +30,12 @@ void LightComponent::setColor(const glm::vec4& c)
     _color = c;
 }
 
-glm::float_t LightComponent::intensity() const
+float LightComponent::intensity() const
 {
     return _intensity;
 }
 
-void LightComponent::setIntensity(glm::float_t i)
+void LightComponent::setIntensity(float i)
 {
     _intensity = i;
 }

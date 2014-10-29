@@ -23,42 +23,42 @@ void CameraComponent::setProjectionType(CameraComponent::PojectionType type)
 	_type = type;
 }
 
-glm::float_t CameraComponent::fieldOfView() const
+float CameraComponent::fieldOfView() const
 {
 	return _fov;
 }
 
-void CameraComponent::setFieldOfView(const glm::float_t& fov)
+void CameraComponent::setFieldOfView(const float& fov)
 {
 	_fov = fov;
 }
 
-glm::float_t CameraComponent::aspect() const
+float CameraComponent::aspect() const
 {
 	return _aspect;
 }
 
-void CameraComponent::setAspect(const glm::float_t& aspect)
+void CameraComponent::setAspect(const float& aspect)
 {
 	_aspect = aspect;
 }
 
-glm::float_t CameraComponent::nearPlane() const
+float CameraComponent::nearPlane() const
 {
 	return _nearPlane;
 }
 
-void CameraComponent::setNearPlane(const glm::float_t& near)
+void CameraComponent::setNearPlane(const float& near)
 {
 	_nearPlane = near;
 }
 
-glm::float_t CameraComponent::farPlane() const
+float CameraComponent::farPlane() const
 {
 	return _farPlane;
 }
 
-void CameraComponent::setFarPlane(const glm::float_t& far)
+void CameraComponent::setFarPlane(const float& far)
 {
 	_farPlane = far;
 }
