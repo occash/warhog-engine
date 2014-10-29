@@ -1,21 +1,14 @@
 #ifndef INSPECTORWIDGET_H
 #define INSPECTORWIDGET_H
 
-#include <entityx/entityx.h>
+#include <entityx/Entity.h>
+#include <tree.h>
 
 #include <QWidget>
 #include <QModelIndex>
 
 class QVBoxLayout;
 class CameraView;
-
-template<class C>
-bool checkComponent(entityx::Entity entity)
-{
-    auto ptr = entity.component<C>();
-    bool result = ptr ? true : false;
-    return result;
-}
 
 class InspectorWidget : public QWidget
 {
@@ -29,14 +22,11 @@ public slots:
     void inspectEntity(const QModelIndex &index);
 
 private:
-    //typedef QMap<entityx::BaseComponent::Family, QWidget *> ViewerMap;
-
     QVBoxLayout *_layout;
     CameraView *_cameraView;
-    //ViewerMap _viewers;
 
 private:
-    void showComponents(entityx::Entity entity);
+    void showComponents(quint32 id, quint32 version);
 
 };
 

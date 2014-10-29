@@ -1,18 +1,22 @@
 #include "inspectorwidget.h"
+#include "cameraview.h"
 
 #include <components/cameracomponent.h>
 #include <components/lightcomponent.h>
 #include <components/materialcomponent.h>
 #include <components/meshfiltercomponent.h>
-#include <components/renderercomponent.h>
 #include <components/scriptcomponent.h>
 #include <components/transformcomponent.h>
 
-#include "cameraview.h"
-
 #include <QVBoxLayout>
-#include <tree.h>
-#include <bitset>
+
+template<class C>
+bool checkComponent(entityx::Entity entity)
+{
+	auto ptr = entity.component<C>();
+	bool result = ptr ? true : false;
+	return result;
+}
 
 InspectorWidget::InspectorWidget(QWidget *parent)
     : QWidget(parent),
@@ -49,12 +53,9 @@ void InspectorWidget::inspectEntity(const QModelIndex &index)
             entity.component<CameraComponent>();
         _cameraView->inspectComponent(camera.get());
     }
-
-    /*std::bitset<entityx::MAX_COMPONENTS> componentMask = entity.component_mask();
-    int scriptOffset = ScriptComponent::maxComponents();*/
 }
 
-void InspectorWidget::showComponents(entityx::Entity entity)
+void InspectorWidget::showComponents(quint32 id, quint32 version)
 {
 
 }

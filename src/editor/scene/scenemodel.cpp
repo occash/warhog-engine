@@ -46,7 +46,7 @@ QVariant SceneModel::data(const QModelIndex &index, int role) const
 	std::string name = info->name;
 	QString qname = QString::fromStdString(name);
 	QVariant res = QVariant(qname);
-    return res;
+	return res;
 }
 
 Qt::ItemFlags SceneModel::flags(const QModelIndex &index) const

@@ -1,9 +1,10 @@
 #include "resourcewidget.h"
-#include "meshimporter.h"
-#include "scriptimporter.h"
-#include "textureimporter.h"
 #include "fileresourceio.h"
 #include "resourcemodel.h"
+
+#include "import/meshimporter.h"
+#include "import/scriptimporter.h"
+#include "import/textureimporter.h"
 
 #include <resourcemanager.h>
 

@@ -2,10 +2,10 @@
 #define COMPONENTVIEW_H
 
 #include <entityx/entityx.h>
-
-#include <QWidget>
 #include <glm/glm.hpp>
 #include <memory>
+
+#include <QWidget>
 
 class QVBoxLayout;
 class QPushButton;

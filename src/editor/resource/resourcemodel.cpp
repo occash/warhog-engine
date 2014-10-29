@@ -1,5 +1,5 @@
 #include "resourcemodel.h"
-#include "importer.h"
+#include "import/importer.h"
 
 #include <resourceio.h>
 #include <resource.h>
