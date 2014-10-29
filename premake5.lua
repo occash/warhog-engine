@@ -139,7 +139,7 @@ solution 'warhog'
 			'LibJXR',
 			'LibOpenJPEG',
 			'LibPNG',
-			'LibRaw',
+			'LibRawLite',
 			'LibTIFF4',
 			'LibWebP',
 			'OpenEXR',
