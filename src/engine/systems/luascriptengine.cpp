@@ -6,7 +6,6 @@
 #include "../components/lightcomponent.h"
 #include "../components/materialcomponent.h"
 #include "../components/meshfiltercomponent.h"
-#include "../components/renderercomponent.h"
 #include "../components/transformcomponent.h"
 
 #include <lua/lua.hpp>
@@ -153,7 +152,6 @@ bool LuaScriptEngine::bind()
 		.property("light", &BaseScript::getLight)
 		.property("material", &BaseScript::getMaterial)
 		.property("meshFilter", &BaseScript::getMeshFilter)
-		.property("renderer", &BaseScript::getRenderer)
 		.property("transform", &BaseScript::getTransform),
 
         class_<Input>("Input")

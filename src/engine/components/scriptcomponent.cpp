@@ -3,7 +3,6 @@
 #include "lightcomponent.h"
 #include "materialcomponent.h"
 #include "meshfiltercomponent.h"
-#include "renderercomponent.h"
 #include "transformcomponent.h"
 
 
@@ -37,11 +36,6 @@ MeshFilterComponent * BaseScript::getMeshFilter()
 	return entity.component<MeshFilterComponent>().get();
 }
 
-RendererComponent * BaseScript::getRenderer()
-{
-	return entity.component<RendererComponent>().get();
-}
-
 TransformComponent * BaseScript::getTransform()
 {
 	return entity.component<TransformComponent>().get();
@@ -50,7 +44,6 @@ TransformComponent * BaseScript::getTransform()
 ScriptComponent::ScriptComponent()
 {
 }
-
 
 ScriptComponent::~ScriptComponent()
 {

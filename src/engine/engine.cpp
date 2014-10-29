@@ -10,7 +10,6 @@
 #include "components/cameracomponent.h"
 #include "components/meshfiltercomponent.h"
 #include "components/materialcomponent.h"
-#include "components/renderercomponent.h"
 #include "components/lightcomponent.h"
 
 //Engine objects
@@ -23,6 +22,8 @@
 #include "resource/meshresource.h"
 #include "resource/textureresource.h"
 
+#include "math/vector.h"
+#include "math/matrix.h"
 
 using namespace entityx;
 
@@ -72,6 +73,48 @@ void Engine::stop()
 
 void Engine::configure()
 {
+	Vector4 SrcA0{ 1, 2, 3, 4 };
+	Vector4 SrcA1{ 5, 6, 7, 8 };
+	Vector4 SrcA2{ 9, 10, 11, 12 };
+	Vector4 SrcA3{ 13, 14, 15, 16 };
+
+	Vector4 SrcB0{ 1, 2, 3, 4 };
+	Vector4 SrcB1{ 5, 6, 7, 8 };
+	Vector4 SrcB2{ 9, 10, 11, 12 };
+	Vector4 SrcB3{ 13, 14, 15, 16 };
+
+	Vector4 r11 = SrcA0 * SrcB0.x;
+	Vector4 r12 = SrcA1 * SrcB0.y;
+	Vector4 r13 = SrcA2 * SrcB0.z;
+	Vector4 r14 = SrcA3 * SrcB0.w;
+	Vector4 Result1 = SrcA0 * SrcB0.x + SrcA1 * SrcB0.y + SrcA2 * SrcB0.z + SrcA3 * SrcB0.w;
+	Vector4 Result2 = SrcA0 * SrcB1.x + SrcA1 * SrcB1.y + SrcA2 * SrcB1.z + SrcA3 * SrcB1.w;
+	Vector4 Result3 = SrcA0 * SrcB2.x + SrcA1 * SrcB2.y + SrcA2 * SrcB2.z + SrcA3 * SrcB2.w;
+	Vector4 Result4 = SrcA0 * SrcB3.x + SrcA1 * SrcB3.y + SrcA2 * SrcB3.z + SrcA3 * SrcB3.w;
+
+	Matrix4 matA;
+	matA[0] = Vector4(1, 2, 3, 4);
+	matA[1] = Vector4(5, 6, 7, 8);
+	matA[2] = Vector4(9, 10, 11, 12);
+	matA[3] = Vector4(13, 14, 15, 16);
+
+	Matrix4 matB;
+	matB[0] = Vector4(1, 2, 3, 4);
+	matB[1] = Vector4(5, 6, 7, 8);
+	matB[2] = Vector4(9, 10, 11, 12);
+	matB[3] = Vector4(13, 14, 15, 16);
+
+	Matrix4 matC = matA * matB;
+	Vector4 v0 = matC[0];
+
+	__m256 vald = _mm256_set1_ps(5);
+
+	ALIGNED(float data[8], 32);
+	__m256 vals;
+
+	vals = vald;
+	_mm256_store_ps(data, vald);
+
 	//TODO: create key manager
 	//std::map<std::string, int> keyMap;
 	//keyMap.insert(std::make_pair("up", GLFW_KEY_W));

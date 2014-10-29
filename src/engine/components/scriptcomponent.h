@@ -8,7 +8,6 @@ class CameraComponent;
 class LightComponent;
 class MaterialComponent;
 class MeshFilterComponent;
-class RendererComponent;
 class TransformComponent;
 
 class ENGINE_EXPORT BaseScript
@@ -25,7 +24,6 @@ public:
 	LightComponent *getLight();
 	MaterialComponent *getMaterial();
 	MeshFilterComponent *getMeshFilter();
-	RendererComponent *getRenderer();
 	TransformComponent *getTransform();
 
 public:

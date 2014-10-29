@@ -3,7 +3,6 @@
 #include "../components/cameracomponent.h"
 #include "../components/meshfiltercomponent.h"
 #include "../components/materialcomponent.h"
-#include "../components/renderercomponent.h"
 #include "../components/lightcomponent.h"
 
 #include "../mesh.h"
@@ -169,7 +168,6 @@ void RenderSystem::update(EntityManager &entities, EventManager &events, double 
         auto transform = gameObject.component<TransformComponent>();
         auto meshFilter = gameObject.component<MeshFilterComponent>();
         auto material = gameObject.component<MaterialComponent>();
-        auto renderer = gameObject.component<RendererComponent>();
 
 		Material *currentMaterial = material->material();
 		Shader *shader = currentMaterial->shader();
