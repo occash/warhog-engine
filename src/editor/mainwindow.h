@@ -8,6 +8,8 @@
 #include <QSettings>
 
 class QSessionManager;
+class QMenu;
+class QAction;
 
 class InspectorWidget;
 class ResourceWidget;
@@ -28,13 +30,19 @@ protected:
 
 private:
 	void installUi();
+	void installRecent();
 	void readSettings();
 	void writeSettings();
 	void setProject(Project *project);
+	void openProject(const QString& path);
 
 private slots:
-	void commitData(QSessionManager *);
+	void commitData(QSessionManager&);
 	void newProject();
+	void openProject();
+	void closeProject();
+	void saveProject();
+	void recentProject(QAction *);
 
 private:
 	//Common
@@ -42,8 +50,10 @@ private:
     QMenuBar *_menubar;
     QToolBar *_toolBar;
     QStatusBar *_statusBar;
+	QMenu *_recentMenu;
 
 	Project *_project;
+	QStringList _recent;
 
 	SceneWidget *_scene;
     InspectorWidget *_inspector;

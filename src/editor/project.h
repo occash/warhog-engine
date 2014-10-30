@@ -8,6 +8,8 @@ class Project : public QObject
 	Q_OBJECT
 	
 public:
+	QString path() const;
+	QString projectPath() const;
 	QString version() const;
 	QString name() const;
 	QString resources() const;
@@ -26,6 +28,7 @@ private:
 
 private:
 	QString _path;
+	QString _projectPath;
 	QString _version;
 	QString _name;
 	QString _resources;

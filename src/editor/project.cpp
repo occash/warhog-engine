@@ -9,7 +9,8 @@
 
 Project::Project(const QString& path) :
 	QObject(nullptr),
-	_path(path)
+	_path(QFileInfo(path).path()),
+	_projectPath(path)
 {
 }
 
@@ -20,10 +21,10 @@ Project *Project::open(const QString& path)
 		return nullptr;
 
 	QJsonDocument projDocument;
-	projDocument.fromBinaryData(projFile.readAll());
+	projDocument = QJsonDocument::fromJson(projFile.readAll());
 	QJsonObject global = projDocument.object();
 
-	Project *project = new Project(QFileInfo(path).path());
+	Project *project = new Project(path);
 	project->setVersion(global["version"].toString());
 	project->setName(global["name"].toString());
 	project->setResources(global["resources"].toString());
@@ -36,6 +37,9 @@ QString Project::create(const QString& path, const QString& name)
 {
 	QDir projectDir(path);
 	if (!projectDir.mkdir(name))
+		return QString();
+
+	if (!projectDir.cd(name))
 		return QString();
 
 	//Create required subfolders
@@ -57,9 +61,19 @@ QString Project::create(const QString& path, const QString& name)
 		return QString();
 
 	QJsonDocument projDocument(global);
-	projFile.write(projDocument.toBinaryData());
+	projFile.write(projDocument.toJson());
 
 	return projFileName;
+}
+
+QString Project::path() const
+{
+	return _path;
+}
+
+QString Project::projectPath() const
+{
+	return _projectPath;
 }
 
 QString Project::version() const
@@ -95,13 +109,12 @@ void Project::setName(const QString& v)
 void Project::setResources(const QString& v)
 {
 	QDir projectPath(_path);
-	projectPath.setPath(v);
+	projectPath.cd(v);
 	_resources = projectPath.absolutePath();
 }
 
 void Project::setScene(const QString& v)
 {
 	QDir projectPath(_path);
-	projectPath.setPath(v);
-	_resources = projectPath.absolutePath();
+	_scene = projectPath.absoluteFilePath(v);
 }

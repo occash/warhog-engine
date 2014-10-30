@@ -16,6 +16,8 @@
 #include <QCoreApplication>
 #include <QMessageBox>
 #include <QKeyEvent>
+#include <QFileDialog>
+#include <QStandardPaths>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent),
@@ -30,8 +32,8 @@ MainWindow::MainWindow(QWidget *parent)
 
     setCentralWidget(_renderer);
 
-	connect(qApp, SIGNAL(commitDataRequest(QSessionManager *)), 
-		this, SLOT(commitData(QSessionManager *)));
+	connect(qApp, SIGNAL(commitDataRequest(QSessionManager&)), 
+		this, SLOT(commitData(QSessionManager&)));
 }
 
 MainWindow::~MainWindow()
@@ -54,13 +56,19 @@ void MainWindow::installUi()
 	QAction *openAction = new QAction(tr("Open project"), fileMenu);
 	QAction *closeAction = new QAction(tr("Close project"), fileMenu);
 	QAction *saveAction = new QAction(tr("Save project"), fileMenu);
-	QMenu *recentMenu = new QMenu(tr("Recent projects"), fileMenu);
+	_recentMenu = new QMenu(tr("Recent projects"), fileMenu);
 	QAction *quitAction = new QAction(tr("Quit"), fileMenu);
 	
 	//For MacOS only 
 	quitAction->setMenuRole(QAction::QuitRole);
 
+	installRecent();
+
 	connect(newAction, SIGNAL(triggered()), this, SLOT(newProject()));
+	connect(openAction, SIGNAL(triggered()), this, SLOT(openProject()));
+	connect(closeAction, SIGNAL(triggered()), this, SLOT(closeProject()));
+	connect(saveAction, SIGNAL(triggered()), this, SLOT(saveProject()));
+	connect(_recentMenu, SIGNAL(triggered(QAction*)), this, SLOT(recentProject(QAction*)));
 	connect(quitAction, SIGNAL(triggered()), qApp, SLOT(quit()));
 
 	fileMenu->addAction(newAction);
@@ -68,7 +76,7 @@ void MainWindow::installUi()
 	fileMenu->addAction(closeAction);
 	fileMenu->addAction(saveAction);
 	fileMenu->addSeparator();
-	fileMenu->addMenu(recentMenu);
+	fileMenu->addMenu(_recentMenu);
 	fileMenu->addAction(quitAction);
 
 	//Create actions for VIEW menu
@@ -102,9 +110,20 @@ void MainWindow::installUi()
 	addDockWidget(Qt::LeftDockWidgetArea, bottomDock);
 }
 
-void MainWindow::commitData(QSessionManager *manager)
+void MainWindow::installRecent()
 {
-	if (manager->allowsInteraction())
+	_recentMenu->clear();
+
+	for (int i = 0; i < _recent.size(); ++i)
+	{
+		QAction *recentAction = new QAction(_recent.at(i), _recentMenu);
+		_recentMenu->addAction(recentAction);
+	}
+}
+
+void MainWindow::commitData(QSessionManager& manager)
+{
+	if (manager.allowsInteraction())
 	{
 		int ret = QMessageBox::warning(
 			this,
@@ -115,7 +134,7 @@ void MainWindow::commitData(QSessionManager *manager)
 		switch (ret)
 		{
 		case QMessageBox::Save:
-			manager->release();
+			manager.release();
 			/*if (!saveAll())
 				manager->cancel();*/
 			break;
@@ -123,7 +142,7 @@ void MainWindow::commitData(QSessionManager *manager)
 			break;
 		case QMessageBox::Cancel:
 		default:
-			manager->cancel();
+			manager.cancel();
 			break;
 		}
 	}
@@ -144,6 +163,8 @@ void MainWindow::readSettings()
 	if (maximized)
 		states |= Qt::WindowMaximized;
 	setWindowState(states);
+
+	_recent = _settings.value("editor/recent", QStringList()).toStringList();
 }
 
 void MainWindow::writeSettings()
@@ -155,6 +176,46 @@ void MainWindow::writeSettings()
 		_settings.setValue("editor/width", width());
 		_settings.setValue("editor/height", height());
 	}
+
+	_settings.setValue("editor/recent", _recent);
+}
+
+void MainWindow::setProject(Project *project)
+{
+	if (!project)
+	{
+		delete _project;
+		_resources->setResourceFolder("");
+	}
+	else
+	{
+		QString recentPath = project->projectPath();
+		int index = _recent.indexOf(recentPath);
+		if (index != -1)
+			 recentPath = _recent.takeAt(index);
+		
+		_recent.append(recentPath);
+		installRecent();
+
+		_resources->setResourceFolder(project->resources());
+	}
+
+	_project = project;
+}
+
+void MainWindow::openProject(const QString& path)
+{
+	closeProject();
+
+	Project *project = Project::open(path);
+	if (!project)
+	{
+		QMessageBox::warning(this, tr("Project warning"),
+			tr("Cannot load project"), QMessageBox::Ok);
+		return;
+	}
+
+	setProject(project);
 }
 
 void MainWindow::keyReleaseEvent(QKeyEvent *event)
@@ -195,12 +256,31 @@ void MainWindow::newProject()
 	}
 }
 
-void MainWindow::setProject(Project *project)
+void MainWindow::openProject()
 {
-	if (!project)
-		delete _project;
+	QString docsDir = QStandardPaths::writableLocation(
+		QStandardPaths::DocumentsLocation);
+	QString projFileName = QFileDialog::getOpenFileName(
+		this, tr("Open project"), docsDir, tr("Warhog project(*.whproj)")
+		);
 
-	_project = project;
-	
+	if (projFileName.isEmpty())
+		return;
+
+	openProject(projFileName);
 }
 
+void MainWindow::closeProject()
+{
+	setProject(nullptr);
+}
+
+void MainWindow::saveProject()
+{
+
+}
+
+void MainWindow::recentProject(QAction *recent)
+{
+	openProject(recent->text());
+}
