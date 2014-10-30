@@ -1,6 +1,8 @@
 #ifndef SCENEWIDGET_H
 #define SCENEWIDGET_H
 
+#include <entityx/Entity.h>
+
 #include <QWidget>
 
 class QTreeView;
