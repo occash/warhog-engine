@@ -21,7 +21,7 @@ int main(int argc, char *argv[])
     a.setStyleSheet(styleFile.readAll());
 
 	//Load splash screen
-	QSplashScreen splash(QPixmap(":/icons/splash"));
+	QSplashScreen splash(QPixmap(":/splash"));
 	splash.showMessage("Loading resources...", Qt::AlignBottom, Qt::black);
 	splash.show();
 	a.processEvents();
