@@ -50,17 +50,6 @@ public:
 		return ResourceNode::NodeType::Group;
 	}
 
-public:
-	//Groups handling
-	//virtual int groupCount() const = 0;
-	//virtual std::list<std::string> groupNames() const = 0;
-	virtual ResourceGroup *group(const std::string& id) const = 0;
-
-	//Resource handling
-	//virtual int resourceCount() const = 0;
-	//virtual std::list<std::string> resourceNames() const = 0;
-	virtual ResourceHandle *resource(const std::string& id) const = 0;
-
 };
 
 #endif

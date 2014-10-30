@@ -4,6 +4,7 @@
 #include <resourceio.h>
 #include <resource.h>
 #include <resourcegroup.h>
+
 #include <resource/meshresource.h>
 #include <resource/scriptresource.h>
 #include <resource/textureresource.h>
@@ -18,9 +19,15 @@ ResourceModel::ResourceModel(std::shared_ptr<ResourceIO> io, QObject *parent) :
 	_io(io),
 	_root(io->rootNode())
 {
+	//Set loaders
 	_io->addLoader(std::make_shared<MeshResource>(nullptr));
 	_io->addLoader(std::make_shared<ScriptResource>());
 	_io->addLoader(std::make_shared<TextureResource>(nullptr));
+
+	//set basic icon map
+	_iconMap.insert(MeshResource::staticType(), ":/icons/mesh");
+	_iconMap.insert(ScriptResource::staticType(), ":/icons/script");
+	_iconMap.insert(TextureResource::staticType(), ":/icons/texture");
 }
 
 ResourceModel::~ResourceModel()
@@ -30,95 +37,96 @@ ResourceModel::~ResourceModel()
 
 void ResourceModel::addImporter(Importer *importer)
 {
-	if (!importer || _importers.contains(importer))
+	if (!importer)
 		return;
 
-	_importers.append(importer);
+	foreach(const QString& suffix, importer->suffixes())
+		_importers.insert(suffix, importer);
 }
 
-Importer *ResourceModel::findImporter(const QString& ext) const
+void ResourceModel::createGroup(const QModelIndex& parent, const QString& id)
 {
-	foreach(Importer *importer, _importers)
-	{
-		QStringList suffixes = importer->suffixes();
-		foreach(QString suffix, suffixes)
-		{
-			if (suffix == ext)
-				return importer;
-		}
-	}
+	ResourceNode *node = nullptr;
+	if (parent.isValid())
+		node = static_cast<ResourceNode *>(parent.internalPointer());
+	else
+		node = const_cast<ResourceNode *>(_root);
 
-	return nullptr;
+	int row = node->childCount();
+	emit beginInsertRows(parent, row, row + 1);
+	_io->createGroup(node, id.toStdString());
+	emit endInsertRows();
 }
 
-QVariant ResourceModel::data(const QModelIndex &index, int role) const
+bool ResourceModel::import(const QModelIndex& parent, const QString& filename)
 {
-	if (!index.isValid())
-		return QVariant();
+	QFileInfo fileInfo(filename);
+	if (!fileInfo.exists() || !fileInfo.isFile())
+		return false;
 
-	const ResourceNode *node =
-		static_cast<const ResourceNode *>(index.internalPointer());
+	//Find importer
+	QString extension = fileInfo.suffix();
+	Importer *importer = _importers.value(extension, nullptr);
+	if (!importer)
+		return false;
 
-	switch (role)
-	{
-	case Qt::DisplayRole:
-	case Qt::EditRole:
-	{
-		if (node == _root)
-			return QVariant();
+	//Try to import
+	std::shared_ptr<Object> object = importer->import(filename);
+	if (!object)
+		return false;
 
-		return QString::fromStdString(node->name());
-	}
-	case Qt::DecorationRole:
-	{
-		if (node->nodeType() == ResourceNode::NodeType::Group)
-			return QIcon(":/icons/folder_opened");
-		else if (node->nodeType() == ResourceNode::NodeType::Handle)
-		{
-			//TODO create resource icon map
-			//const ResourceHandle *handle = dynamic_cast<const ResourceHandle *>(node);
-			//if (handle && handle->type() == ScriptResource::staticType())
-				return QIcon(":/icons/script");
-		}
+	ResourceNode *node = nullptr;
+	if (parent.isValid())
+		node = static_cast<ResourceNode *>(parent.internalPointer());
+	else
+		node = const_cast<ResourceNode *>(_root);
 
-		return QIcon();
-	}
-	case Qt::ToolTipRole:
-	case Qt::StatusTipRole:
-	case Qt::WhatsThisRole:
-	{
-		if (node->nodeType() == ResourceNode::NodeType::Group)
-			return QString("Group ") + QString::fromStdString(node->name());
-		else if (node->nodeType() == ResourceNode::NodeType::Handle)
-		{
-			const ResourceHandle *handle = dynamic_cast<const ResourceHandle *>(node);
-			return QString::fromStdString(handle->type()) + " " + QString::fromStdString(node->name());
-		}
+	if (!node)
+		return false;
 
-		return QString();
-	}
-	default:
-		return QVariant();
-	}
+	//Append to end
+	int row = node->childCount();
+	emit beginInsertRows(parent, row, row);
+	static int nodeCount = 0;
+	QString nodeName = "New node" + nodeCount++;
+	ResourceNode *newNode = _io->createHandle(node, object->api()->name(), nodeName.toStdString());
+	bool res = _io->save(newNode, object);
+	emit endInsertRows();
+	return res;
 }
 
-Qt::ItemFlags ResourceModel::flags(const QModelIndex &index) const
+void ResourceModel::changePath()
 {
-	if (!index.isValid())
-		return Qt::ItemIsDropEnabled;
-
-	Qt::ItemFlags flags = Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable |
-		Qt::ItemIsDragEnabled;
-	ResourceNode *node = static_cast<ResourceNode *>(index.internalPointer());
-	if (node->nodeType() == ResourceNode::NodeType::Group)
-		flags |= Qt::ItemIsDropEnabled;
-
-	return flags;
+	beginResetModel();
+	_root = _io->rootNode();
+	endResetModel();
 }
 
-QVariant ResourceModel::headerData(int section, Qt::Orientation orientation, int role) const
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+int ResourceModel::rowCount(const QModelIndex &parent) const
 {
-	return QVariant();
+	if (parent.column() > 0)
+		return 0;
+
+	const ResourceNode *parentNode;
+
+	if (!parent.isValid())
+		parentNode = _root;
+	else
+		parentNode = static_cast<const ResourceNode *>(parent.internalPointer());
+
+	if (!parentNode)
+		return 0;
+
+	return parentNode->childCount();
+}
+
+int ResourceModel::columnCount(const QModelIndex &parent) const
+{
+	return 1;
 }
 
 QModelIndex ResourceModel::index(int row, int column, const QModelIndex &parent) const
@@ -132,6 +140,9 @@ QModelIndex ResourceModel::index(int row, int column, const QModelIndex &parent)
 		parentNode = _root;
 	else
 		parentNode = static_cast<const ResourceNode *>(parent.internalPointer());
+
+	if (!parentNode)
+		return QModelIndex();
 
 	if (parentNode->childCount() <= row)
 		return QModelIndex();
@@ -157,23 +168,57 @@ QModelIndex ResourceModel::parent(const QModelIndex &index) const
 	return createIndex(0, 0, parent);
 }
 
-int ResourceModel::rowCount(const QModelIndex &parent) const
+QVariant ResourceModel::data(const QModelIndex &index, int role) const
 {
-	if (parent.column() > 0)
-		return 0;
+	if (!index.isValid())
+		return QVariant();
 
-	const ResourceNode *parentItem;
-	if (!parent.isValid())
-		parentItem = _root;
-	else
-		parentItem = static_cast<const ResourceNode *>(parent.internalPointer());
+	const ResourceNode *node =
+		static_cast<const ResourceNode *>(index.internalPointer());
 
-	return parentItem->childCount();
-}
+	switch (role)
+	{
+	case Qt::DisplayRole:
+	case Qt::EditRole:
+	{
+		if (node == _root)
+			return QVariant();
 
-int ResourceModel::columnCount(const QModelIndex &parent) const
-{
-	return 1;
+		return QString::fromStdString(node->name());
+	}
+	case Qt::DecorationRole:
+	{
+		if (node->nodeType() == ResourceNode::NodeType::Group)
+			return QIcon(":/icons/folder");
+		else if (node->nodeType() == ResourceNode::NodeType::Handle)
+		{
+			const ResourceHandle *handle = dynamic_cast<const ResourceHandle *>(node);
+			QString iconPath = _iconMap.value(handle->type(), "");
+			if (!iconPath.isEmpty())
+				return QIcon(iconPath);
+
+			return QIcon();
+		}
+
+		return QIcon();
+	}
+	case Qt::ToolTipRole:
+	case Qt::StatusTipRole:
+	case Qt::WhatsThisRole:
+	{
+		if (node->nodeType() == ResourceNode::NodeType::Group)
+			return QString("Group ") + QString::fromStdString(node->name());
+		else if (node->nodeType() == ResourceNode::NodeType::Handle)
+		{
+			const ResourceHandle *handle = dynamic_cast<const ResourceHandle *>(node);
+			return QString::fromStdString(handle->type()) + " " + QString::fromStdString(node->name());
+		}
+
+		return QString();
+	}
+	default:
+		return QVariant();
+	}
 }
 
 bool ResourceModel::setData(const QModelIndex &index, const QVariant &value, int role)
@@ -183,7 +228,7 @@ bool ResourceModel::setData(const QModelIndex &index, const QVariant &value, int
 
 	if (role == Qt::EditRole)
 	{
-		const ResourceNode *item = 
+		const ResourceNode *item =
 			static_cast<const ResourceNode *>(index.internalPointer());
 		return _io->renameNode(const_cast<ResourceNode *>(item), value.toString().toStdString());
 	}
@@ -191,27 +236,23 @@ bool ResourceModel::setData(const QModelIndex &index, const QVariant &value, int
 	return false;
 }
 
-bool ResourceModel::setHeaderData(int section, Qt::Orientation orientation, const QVariant &value, int role)
+Qt::ItemFlags ResourceModel::flags(const QModelIndex &index) const
 {
-	return false;
+	if (!index.isValid())
+		return Qt::ItemIsDropEnabled;
+
+	Qt::ItemFlags flags = Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable |
+		Qt::ItemIsDragEnabled;
+	ResourceNode *node = static_cast<ResourceNode *>(index.internalPointer());
+	if (node->nodeType() == ResourceNode::NodeType::Group)
+		flags |= Qt::ItemIsDropEnabled;
+
+	return flags;
 }
 
-bool ResourceModel::insertRows(int position, int rows, const QModelIndex &parent)
+Qt::DropActions ResourceModel::supportedDropActions() const
 {
-	const ResourceNode *item =
-		static_cast<const ResourceNode *>(parent.internalPointer());
-	bool success;
-
-	beginInsertRows(parent, position, position + rows - 1);
-	//success = _io->
-	endInsertRows();
-
-	return success;
-}
-
-bool ResourceModel::removeRows(int position, int rows, const QModelIndex &parent)
-{
-	return false;
+	return Qt::MoveAction | Qt::CopyAction;
 }
 
 bool ResourceModel::canDropMimeData(const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent) const
@@ -233,7 +274,7 @@ bool ResourceModel::canDropMimeData(const QMimeData *data, Qt::DropAction action
 			if (fileInfo.isFile())
 			{
 				QString extension = fileInfo.suffix();
-				Importer *importer = findImporter(extension);
+				Importer *importer = _importers.value(extension, nullptr);
 				if (importer)
 					canImport = true;
 			}
@@ -243,29 +284,13 @@ bool ResourceModel::canDropMimeData(const QMimeData *data, Qt::DropAction action
 	return canImport;
 }
 
-QStringList ResourceModel::mimeTypes() const
-{
-	QStringList mime;
-	mime << "text/uri-list";
-	mime << "application/x-qabstractitemmodeldatalist";
-	return mime;
-}
-
 bool ResourceModel::dropMimeData(const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent)
 {
-	if (action == Qt::IgnoreAction)
-		return true;
-
-	if (!data->hasUrls())
+	if (canDropMimeData(data, action, row, column, parent))
 		return false;
 
-	int beginRow;
-	if (row != -1)
-		beginRow = row;
-	else if (parent.isValid())
-		beginRow = 0;
-	else
-		beginRow = rowCount(QModelIndex());
+	if (action == Qt::IgnoreAction)
+		return true;
 
 	if (!data->hasUrls())
 		return false;
@@ -276,36 +301,19 @@ bool ResourceModel::dropMimeData(const QMimeData *data, Qt::DropAction action, i
 		if (url.isValid() && url.isLocalFile())
 		{
 			QString fileName = url.toLocalFile();
-			QFileInfo fileInfo(fileName);
-			if (fileInfo.isFile())
-			{
-				QString extension = fileInfo.suffix();
-				Importer *importer = findImporter(extension);
-				if (importer)
-				{
-					std::shared_ptr<Object> object = importer->import(fileName);
-					ResourceNode *node = nullptr;
-					if (parent.isValid())
-						node = static_cast<ResourceNode *>(parent.internalPointer());
-					else
-						node = const_cast<ResourceNode *>(_root);
-
-					emit beginInsertRows(parent, beginRow, beginRow + 1);
-					ResourceNode *newNode = _io->createHandle(node, object->api()->name(), "new node");
-					bool res = _io->save(newNode, object);
-					emit endInsertRows();
-					return res;
-				}
-			}
+			return import(parent, fileName);
 		}
 	}
 
 	return false;
 }
 
-Qt::DropActions ResourceModel::supportedDropActions() const
+QStringList ResourceModel::mimeTypes() const
 {
-	return Qt::MoveAction | Qt::CopyAction;
+	QStringList mime;
+	mime << "text/uri-list";
+	mime << "application/x-qabstractitemmodeldatalist";
+	return mime;
 }
 
 QMimeData *ResourceModel::mimeData(const QModelIndexList &indexes) const

@@ -8,29 +8,30 @@
 
 #include <resourcemanager.h>
 
-#include <QDragEnterEvent>
-#include <QDropEvent>
-#include <QMimeData>
-#include <QDebug>
 #include <QFileInfo>
-#include <QFileSystemModel>
+#include <QProgressDialog>
 #include <QTreeView>
+#include <QToolBar>
 #include <QVBoxLayout>
-#include <QProgressBar>
 #include <QApplication>
+#include <QAction>
 
 ResourceWidget::ResourceWidget(QWidget *parent)
     : QWidget(parent),
 	_io(std::make_shared<FileResourceIO>()),
-	_manager(std::make_shared<ResourceManager>(_io)),
-	_progress(new QProgressBar)
+	_toolbar(new QToolBar(this)),
+	_progress(new QProgressDialog(this))
 {
 	_progress->setMinimum(0);
 	_progress->setMaximum(100);
-    //ui.setupUi(this);
 
-	setResourceFolder("D:/projects/warhog-engine/test/project1/resources");
 	_model = new ResourceModel(_io, this);
+
+	_toolbar->setIconSize(QSize(16, 16));
+	QAction *createGroup = _toolbar->addAction(
+		QIcon(":/icons/folder"), tr("Create group"));
+
+	connect(createGroup, SIGNAL(triggered()), this, SLOT(createGroup()));
 
 	_view = new QTreeView(this);
 	_view->setModel(_model);
@@ -48,6 +49,7 @@ ResourceWidget::ResourceWidget(QWidget *parent)
 
 	QVBoxLayout *layout = new QVBoxLayout(this);
 	layout->setMargin(0);
+	layout->addWidget(_toolbar);
 	layout->addWidget(_view);
 	setLayout(layout);
 
@@ -56,65 +58,13 @@ ResourceWidget::ResourceWidget(QWidget *parent)
 	addImporter(new TextureImporter());
 
     setAcceptDrops(true);
+
+	setResourceFolder("");
 }
 
 ResourceWidget::~ResourceWidget()
 {
-	delete _progress;
 }
-
-/*void ResourceWidget::dragEnterEvent(QDragEnterEvent *event)
-{
-	const QMimeData *data = event->mimeData();
-	if (data->hasUrls())
-	{
-		QList<QUrl> urls = data->urls();
-		for each (QUrl url in urls)
-		{
-			if (url.isValid() && url.isLocalFile())
-			{
-				QString fileName = url.toLocalFile();
-				QFileInfo fileInfo(fileName);
-				if (fileInfo.isFile())
-				{
-					QString extension = fileInfo.suffix();
-					foreach (Importer *importer, _importers)
-					{
-						if (importer->suffixes().contains(extension))
-						{
-							event->acceptProposedAction();
-							return;
-						}
-					}
-				}
-			}
-		}
-	}
-}
-
-void ResourceWidget::dropEvent(QDropEvent *event)
-{
-    const QMimeData *data = event->mimeData();
-    if (data->hasUrls())
-    {
-        QList<QUrl> urls = data->urls();
-        for each (QUrl url in urls)
-        {
-            if (url.isValid() && url.isLocalFile())
-            {
-                QString fileName = url.toLocalFile();
-                QFileInfo fileInfo(fileName);
-                if (fileInfo.isFile())
-                {
-                    QString extension = fileInfo.suffix();
-                    Importer *importer = findImporter(extension);
-                    if (importer)
-                        importer->import(fileName);
-                }
-            }
-        }
-    }
-}*/
 
 void ResourceWidget::addImporter(Importer *importer)
 {
@@ -128,9 +78,15 @@ void ResourceWidget::addImporter(Importer *importer)
 
 void ResourceWidget::setResourceFolder(const QString& folder)
 {
-	_manager->setBasePath(folder.toStdString());
-	//_model->setRootPath(folder);
-	//_view->setRootIndex(_model->index(_model->rootPath()));
+	_io->setBasePath(folder.toStdString());
+	_model->changePath();
+	_toolbar->setEnabled(!folder.isEmpty());
+}
+
+void ResourceWidget::createGroup()
+{
+	QModelIndex current = _view->currentIndex();
+	_model->createGroup(current, "New group");
 }
 
 void ResourceWidget::onProgress(int val)

@@ -26,7 +26,8 @@ ResourceManager::ResourceManager(std::shared_ptr<ResourceIO> io)
 
 ResourceManager::~ResourceManager()
 {
-	_io->clear();
+	//_io->clear();
+	setBasePath("");
 }
 
 void ResourceManager::setBasePath(const std::string& path)

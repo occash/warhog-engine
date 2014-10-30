@@ -1,18 +1,17 @@
 #include "fileresourceio.h"
-#include "resourcegroup.h"
+#include "fileresourcemeta.h"
+
+#include <resourcegroup.h>
 
 #include <QDir>
 #include <QFile>
 #include <QFileInfo>
 #include <QMap>
 #include <QList>
-#include <QStack>
 #include <QUrl>
-#include <yaml-cpp/yaml.h>
 
-#include <map>
+#include <yaml-cpp/yaml.h>
 #include <fstream>
-#include <iostream>
 
 class FileResourceHandle : public ResourceHandle
 {
@@ -110,22 +109,6 @@ public:
 		return _subfolders.value(QString::fromStdString(id), nullptr);
 	}
 
-	ResourceGroup *group(const std::string& id) const override
-	{
-		ResourceNode *node = _subfolders.value(QString::fromStdString(id), nullptr);
-		if (!node || node->nodeType() != ResourceNode::NodeType::Group)
-			return nullptr;
-		return static_cast<ResourceGroup *>(node);
-	}
-
-	ResourceHandle *resource(const std::string& id) const override
-	{
-		ResourceNode *node = _subfolders.value(QString::fromStdString(id), nullptr);
-		if (!node || node->nodeType() != ResourceNode::NodeType::Handle)
-			return nullptr;
-		return static_cast<ResourceHandle *>(node);
-	}
-
 public:
 	ResourceNode *_parent;
 	QString _path;
@@ -134,7 +117,8 @@ public:
 };
 
 FileResourceIO::FileResourceIO() :
-	ResourceIO()
+	ResourceIO(),
+	_meta(new FileResourceMeta(this, this))
 {
 }
 
@@ -154,142 +138,29 @@ bool FileResourceIO::createTree(const std::string& path, ResourceNode *& root)
 
 	if (!QFileInfo(qPath).exists())
 	{
-		root = new FileResourceGroup(qPath);
+		root = createGroup(nullptr, path);
 		return true;
 	}
 
-	YAML::Node rootNode = YAML::LoadFile(qPath.toStdString());
-	YAML::Node parentNode = rootNode["bundle"];
-	QStack<YAML::Node> parents;
-	parents.push(parentNode);
-
-	QStack<ResourceNode *> groups;
-	groups.push(nullptr);
-	while (!parents.isEmpty())
-	{
-		YAML::Node current = parents.pop();
-		ResourceNode *parent = groups.pop();
-		FileResourceGroup *parentGroup = dynamic_cast<FileResourceGroup *>(parent);
-		ResourceNode *currentNode = nullptr;
-
-		ResourceNode::NodeType nodeType =
-			static_cast<ResourceNode::NodeType>(current["node"].as<int>());
-		if (nodeType == ResourceNode::NodeType::Group)
-		{
-			FileResourceGroup *newGroup =
-				new FileResourceGroup(
-				QString::fromStdString(current["path"].as<std::string>()),
-				parentGroup
-				);
-			if (parentGroup)
-				parentGroup->_subfolders[QString::fromStdString(newGroup->name())] = newGroup;
-			else
-				root = newGroup;
-
-			currentNode = newGroup;
-		}
-		else if (nodeType == ResourceNode::NodeType::Handle)
-		{
-			if (!parentGroup)
-				continue;
-
-			FileResourceHandle *newHandle =
-				new FileResourceHandle(
-				current["type"].as<std::string>(),
-				QString::fromStdString(current["path"].as<std::string>()),
-				parentGroup
-				);
-			parentGroup->_subfolders[QString::fromStdString(newHandle->name())] = newHandle;
-
-			currentNode = newHandle;
-		}
-
-		YAML::Node subfolders = current["children"];
-		if (subfolders && subfolders.IsMap())
-		{
-			auto i = subfolders.begin();
-			for (; i != subfolders.end(); ++i)
-			{
-				parents.push(subfolders[i->first.as<std::string>()]);
-				groups.push(currentNode);
-			}
-		}
-	}
-
-	return true;
+	return _meta->readTree(qPath, root);
 }
 
 bool FileResourceIO::removeTree(ResourceNode *root)
 {
-	if (root->childCount() <= 0)
-	{
-		delete root;
-		return true;
-	}
+	QString qPath = QString::fromStdString(basePath());
+	qPath = QDir(qPath).absoluteFilePath("resources.meta");
 
-	YAML::Node rootNode;
-	rootNode["version"] = 2;
-	YAML::Node parentNode = rootNode["bundle"];
-	QStack<YAML::Node> parents;
-	parents.push(parentNode);
-
-	QStack<ResourceNode *> groups;
-	groups.push(root);
-
-	while (!groups.isEmpty())
-	{
-		ResourceNode *current = groups.pop();
-		YAML::Node currentParent = parents.pop();
-
-		YAML::Node node;
-		node["name"] = current->name();
-		node["node"] = static_cast<int>(current->nodeType());
-
-		if (current->nodeType() == ResourceNode::NodeType::Group)
-		{
-			FileResourceGroup *group = 
-				dynamic_cast<FileResourceGroup *>(current);
-			node["path"] = group->_path.toStdString();
-		}
-		else if (current->nodeType() == ResourceNode::NodeType::Handle)
-		{
-			FileResourceHandle *handle =
-				dynamic_cast<FileResourceHandle *>(current);
-			node["path"] = handle->_path.toStdString();
-			node["type"] = handle->type();
-		}
-
-		if (current->parent())
-			currentParent["children"][current->name()] = node;
-		else
-			parentNode = node;
-
-		if (current->childCount() > 0)
-		{
-			node["children"] = YAML::Node(YAML::NodeType::Map);
-			for (int i = 0; i < current->childCount(); ++i)
-			{
-				groups.push(current->child(i));
-				parents.push(node);
-			}
-		}
-	}
-
-	std::string outPath = basePath() + "/" + "resources.meta";
-	std::ofstream fout(outPath);
-	if (!fout)
-	{
-		delete root;
-		return false;
-	}
-
-	fout << rootNode;
+	bool result = _meta->writeTree(qPath, root);
+	
 	delete root;
 	return true;
 }
 
 ResourceNode *FileResourceIO::createGroup(ResourceNode *baseNode, const std::string& id)
 {
+	if (!baseNode)
+		return new FileResourceGroup(QString::fromStdString(id));
+
 	//Can create only in group
 	if (baseNode->nodeType() != ResourceNode::NodeType::Group)
 		return nullptr;
@@ -321,6 +192,9 @@ ResourceNode *FileResourceIO::createGroup(ResourceNode *baseNode, const std::str
 
 ResourceNode *FileResourceIO::createHandle(ResourceNode *baseNode, BaseResource::Type type, const std::string& id)
 {
+	if (!baseNode)
+		return nullptr;
+
 	//Can create only in group
 	if (baseNode->nodeType() != ResourceNode::NodeType::Group)
 		return nullptr;

@@ -6,6 +6,7 @@
 #include "resourceio.h"
 
 class ResourceNode;
+class FileResourceMeta;
 
 class FileResourceIO : public QObject, public ResourceIO
 {
@@ -27,6 +28,9 @@ public:
 
 	bool read(ResourceNode *node, std::shared_ptr<BaseResource> loader, Object *& object) override;
 	bool write(ResourceNode *node, std::shared_ptr<BaseResource> loader, Object *object) override;
+
+private:
+	FileResourceMeta *_meta;
 
 };
 

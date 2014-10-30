@@ -2,20 +2,23 @@
 #define FILERESOURCEMETA_H
 
 #include <QObject>
+#include <memory>
 
-class FileResourceGroup;
+class ResourceNode;
+class ResourceIO;
 
 class FileResourceMeta : public QObject
 {
 public:
-	FileResourceMeta(const QString& config, QObject *parent = nullptr);
+	FileResourceMeta(ResourceIO *io, QObject *parent = nullptr);
 	~FileResourceMeta();
 
-	FileResourceGroup *read() const;
-	void write(FileResourceGroup *root);
+	bool readTree(const QString& meta, ResourceNode *& root);
+	bool writeTree(const QString& meta, ResourceNode *root);
 
 private:
-	QString _config;
+	ResourceIO *_io;
+	QString _metafile;
 
 };
 

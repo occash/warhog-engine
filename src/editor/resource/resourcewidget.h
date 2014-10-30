@@ -1,16 +1,17 @@
 #ifndef RESOURCEWIDGET_H
 #define RESOURCEWIDGET_H
 
-#include <QtWidgets/QWidget>
+#include <QWidget>
 #include <memory>
-//#include "ui_resourcewidget.h"
+
+class QTreeView;
+class QToolBar;
+class QProgressDialog;
 
 class ResourceModel;
-class QTreeView;
-class Importer;
 class ResourceIO;
 class ResourceManager;
-class QProgressBar;
+class Importer;
 
 class ResourceWidget : public QWidget
 {
@@ -23,23 +24,22 @@ public:
 	void setResourceFolder(const QString& folder);
 	void addImporter(Importer *importer);
 
-protected:
-    //void dragEnterEvent(QDragEnterEvent *event);
-    //void dropEvent(QDropEvent *event);
-
 private slots :
 	void onProgress(int);
 	void onInfo(QString e);
 	void onError(QString e);
 	void onSuccess();
 
+private slots:
+	void createGroup();
+
 private:
-    //Ui::ResourceWidgetClass ui;
 	std::shared_ptr<ResourceIO> _io;
-	std::shared_ptr<ResourceManager> _manager;
 	ResourceModel *_model;
+	
 	QTreeView *_view;
-	QProgressBar *_progress;
+	QToolBar *_toolbar;
+	QProgressDialog *_progress;
 
 };
 

@@ -19,14 +19,18 @@ std::string ResourceIO::basePath() const
 bool ResourceIO::setBasePath(const std::string& path)
 {
 	bool result = true;
-	if (_rootNode)
+	if (_rootNode) {
 		result = removeTree(_rootNode);
+		_rootNode = nullptr;
+	}
+
+	if (path.empty())
+		return result;
+
+	_basePath = path;
 
 	if (result)
 		result &= createTree(path, _rootNode);
-
-	if (result)
-		_basePath = path;
 
 	return result;
 }

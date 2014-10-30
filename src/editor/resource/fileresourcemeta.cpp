@@ -1,10 +1,15 @@
 #include "fileresourcemeta.h"
+#include "fileresourceio.h"
 
+#include <resourcegroup.h>
+
+#include <QStack>
+#include <fstream>
 #include <yaml-cpp/yaml.h>
 
-FileResourceMeta::FileResourceMeta(const QString& config, QObject *parent) :
+FileResourceMeta::FileResourceMeta(ResourceIO *io, QObject *parent) :
 	QObject(parent),
-	_config(_config)
+	_io(io)
 {
 }
 
@@ -12,12 +17,112 @@ FileResourceMeta::~FileResourceMeta()
 {
 }
 
-FileResourceGroup *FileResourceMeta::read() const
+bool FileResourceMeta::readTree(const QString& meta, ResourceNode *& root)
 {
-	return nullptr;
+	YAML::Node rootNode = YAML::LoadFile(meta.toStdString());
+	YAML::Node parentNode = rootNode["bundle"];
+	QStack<YAML::Node> parents;
+	parents.push(parentNode);
+
+	QStack<ResourceNode *> groups;
+	groups.push(nullptr);
+	while (!parents.isEmpty())
+	{
+		YAML::Node current = parents.pop();
+		ResourceNode *parent = groups.pop();
+		ResourceNode *currentNode = nullptr;
+
+		ResourceNode::NodeType nodeType =
+			static_cast<ResourceNode::NodeType>(current["node"].as<int>());
+		if (nodeType == ResourceNode::NodeType::Group)
+		{
+			std::string groupId = current["path"].as<std::string>();
+			ResourceNode *newGroup = _io->createGroup(parent, groupId);
+			if (!parent)
+				root = newGroup;
+
+			currentNode = newGroup;
+		}
+		else if (nodeType == ResourceNode::NodeType::Handle)
+		{
+			if (!parent)
+				continue;
+
+			std::string handleId = current["path"].as<std::string>();
+			std::string handleType = current["type"].as<std::string>();
+			ResourceNode *newHandle = _io->createHandle(parent, handleType, handleId);
+
+			currentNode = newHandle;
+		}
+
+		YAML::Node subfolders = current["children"];
+		if (subfolders && subfolders.IsMap())
+		{
+			auto i = subfolders.begin();
+			for (; i != subfolders.end(); ++i)
+			{
+				parents.push(subfolders[i->first.as<std::string>()]);
+				groups.push(currentNode);
+			}
+		}
+	}
+
+	return true;
 }
 
-void FileResourceMeta::write(FileResourceGroup *)
+bool FileResourceMeta::writeTree(const QString& meta, ResourceNode *root)
 {
+	YAML::Node rootNode;
+	rootNode["version"] = 1;
+	YAML::Node parentNode = rootNode["bundle"];
+	QStack<YAML::Node> parents;
+	parents.push(parentNode);
 
+	QStack<ResourceNode *> groups;
+	groups.push(root);
+
+	while (!groups.isEmpty())
+	{
+		ResourceNode *current = groups.pop();
+		YAML::Node currentParent = parents.pop();
+
+		YAML::Node node;
+		node["name"] = current->name();
+		node["node"] = static_cast<int>(current->nodeType());
+
+		if (current->nodeType() == ResourceNode::NodeType::Group)
+		{
+			ResourceGroup *group =
+				dynamic_cast<ResourceGroup *>(current);
+			node["path"] = group->name();
+		}
+		else if (current->nodeType() == ResourceNode::NodeType::Handle)
+		{
+			ResourceHandle *handle =
+				dynamic_cast<ResourceHandle *>(current);
+			node["path"] = handle->name();
+			node["type"] = handle->type();
+		}
+
+		if (current->parent())
+			currentParent["children"][current->name()] = node;
+		else
+			parentNode = node;
+
+		if (current->childCount() > 0)
+		{
+			node["children"] = YAML::Node(YAML::NodeType::Map);
+			for (int i = 0; i < current->childCount(); ++i)
+			{
+				groups.push(current->child(i));
+				parents.push(node);
+			}
+		}
+	}
+
+	std::string outPath = meta.toStdString();
+	std::ofstream fout(outPath);
+	fout << rootNode;
+
+	return true;
 }
