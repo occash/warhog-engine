@@ -53,7 +53,9 @@ void ResourceModel::createGroup(const QModelIndex& parent, const QString& id)
 		node = const_cast<ResourceNode *>(_root);
 
 	int row = node->childCount();
-	emit beginInsertRows(parent, row, row + 1);
+	emit beginInsertRows(parent, row, row);
+	static int nodeCount = 0;
+	QString groupId = "New group " + nodeCount;
 	_io->createGroup(node, id.toStdString());
 	emit endInsertRows();
 }
@@ -87,8 +89,7 @@ bool ResourceModel::import(const QModelIndex& parent, const QString& filename)
 	//Append to end
 	int row = node->childCount();
 	emit beginInsertRows(parent, row, row);
-	static int nodeCount = 0;
-	QString nodeName = "New node" + nodeCount++;
+	QString nodeName = fileInfo.baseName();
 	ResourceNode *newNode = _io->createHandle(node, object->api()->name(), nodeName.toStdString());
 	bool res = _io->save(newNode, object);
 	emit endInsertRows();
@@ -286,7 +287,7 @@ bool ResourceModel::canDropMimeData(const QMimeData *data, Qt::DropAction action
 
 bool ResourceModel::dropMimeData(const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent)
 {
-	if (canDropMimeData(data, action, row, column, parent))
+	if (!canDropMimeData(data, action, row, column, parent))
 		return false;
 
 	if (action == Qt::IgnoreAction)

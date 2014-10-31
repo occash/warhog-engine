@@ -16,21 +16,22 @@
 class FileResourceHandle : public ResourceHandle
 {
 public:
-	FileResourceHandle(BaseResource::Type type,
-		const QString& path,
+	FileResourceHandle(
+		BaseResource::Type type,
+		const QString& name,
 		ResourceNode *parent = nullptr) :
-		_path(path), _parent(parent), _type(type) {}
+		_name(name), _parent(parent), _type(type) {}
 	~FileResourceHandle() {}
 
 public:
 	std::string name() const override
 	{
-		return QFileInfo(_path).fileName().toStdString();
+		return _name.toStdString();
 	}
 
 	bool valid() const override
 	{
-		return QFileInfo::exists(_path);
+		return QFileInfo::exists(_name);
 	}
 
 	ResourceNode *parent() const override
@@ -59,18 +60,19 @@ public:
 	}
 
 public:
-	ResourceNode *_parent;
-	QString _path;
 	BaseResource::Type _type;
+	QString _name;
+	ResourceNode *_parent;
 
 };
 
 class FileResourceGroup : public ResourceGroup
 {
 public:
-	FileResourceGroup(const QString& path,
+	FileResourceGroup(
+		const QString& name,
 		ResourceNode *parent = nullptr) :
-		_path(path), _parent(parent) {}
+		_name(name), _parent(parent) {}
 	~FileResourceGroup() 
 	{
 		qDeleteAll(_subfolders);
@@ -80,12 +82,12 @@ public:
 public:
 	std::string name() const override
 	{
-		return QDir(_path).dirName().toStdString();
+		return _name.toStdString();
 	}
 
 	bool valid() const override
 	{
-		return QDir(_path).exists();
+		return QDir(_name).exists();
 	}
 
 	ResourceNode *parent() const override
@@ -111,7 +113,7 @@ public:
 
 public:
 	ResourceNode *_parent;
-	QString _path;
+	QString _name;
 	QMap<QString, ResourceNode *> _subfolders;
 
 };
@@ -134,11 +136,12 @@ bool FileResourceIO::readOnly() const
 bool FileResourceIO::createTree(const std::string& path, ResourceNode *& root)
 {
 	QString qPath = QString::fromStdString(path);
+	QString id = QDir(qPath).dirName();
 	qPath = QDir(qPath).absoluteFilePath("resources.meta");
 
 	if (!QFileInfo(qPath).exists())
 	{
-		root = createGroup(nullptr, path);
+		root = createGroup(nullptr, id.toStdString());
 		return true;
 	}
 
@@ -177,11 +180,13 @@ ResourceNode *FileResourceIO::createGroup(ResourceNode *baseNode, const std::str
 	if (subGroup)
 		return subGroup;
 
+	QString path = fullPath(group);
+
 	//Try to create new sub folder
-	if (QDir(group->_path + "/" + qGroupName).exists() ||
-		QDir(group->_path).mkdir(qGroupName))
+	if (QDir(path + "/" + qGroupName).exists() ||
+		QDir(path).mkdir(qGroupName))
 	{
-		subGroup = new FileResourceGroup(group->_path + "/" + qGroupName, group);
+		subGroup = new FileResourceGroup(qGroupName, group);
 		group->_subfolders.insert(qGroupName, subGroup);
 
 		return subGroup;
@@ -204,68 +209,62 @@ ResourceNode *FileResourceIO::createHandle(ResourceNode *baseNode, BaseResource:
 	if (!group)
 		return nullptr;
 
-	QString qGroupName = QString::fromStdString(id);
-	ResourceNode *subGroup =
-		group->_subfolders.value(qGroupName, nullptr);
+	QString qHandleName = QString::fromStdString(id);
+	ResourceNode *subNode =
+		group->_subfolders.value(qHandleName, nullptr);
 	//Already exist
-	if (subGroup)
-		return subGroup;
+	if (subNode)
+		return subNode;
+
+	QString path = fullPath(group);
 
 	//Try to create new file
-	QString filePath = group->_path + "/" + qGroupName;
+	QString filePath = path + "/" + qHandleName;
 	if (QFile(filePath).exists() ||
 		QFile(filePath).open(QIODevice::WriteOnly))
 	{
-		subGroup = new FileResourceHandle(type, group->_path + "/" + qGroupName, group);
-		group->_subfolders.insert(qGroupName, subGroup);
+		subNode = new FileResourceHandle(type, qHandleName, group);
+		group->_subfolders.insert(qHandleName, subNode);
 
-		return subGroup;
+		return subNode;
 	}
 
 	return nullptr;
 }
 
-bool FileResourceIO::removeNode(ResourceNode *baseNode)
+bool FileResourceIO::removeNode(ResourceNode *node)
 {
-	if (baseNode->nodeType() == ResourceNode::NodeType::Group)
+	FileResourceGroup *parent = dynamic_cast<FileResourceGroup *>(node->parent());
+	//Cannot remove root group
+	if (!parent)
+		return false;
+
+	QString groupKey = parent->_subfolders.key(node);
+	if (groupKey.isEmpty())
+		return false;
+
+	QString path = fullPath(node);
+	if (node->nodeType() == ResourceNode::NodeType::Group)
 	{
-		FileResourceGroup *group = dynamic_cast<FileResourceGroup *>(baseNode);
-		//Wrong group type
+		FileResourceGroup *group = dynamic_cast<FileResourceGroup *>(node);
+		//Wrong node type
 		if (!group)
 			return false;
 
-		FileResourceGroup *parent = dynamic_cast<FileResourceGroup *>(group->parent());
-		//Cannot remove root group
-		if (!parent)
-			return false;
-
-		QString groupKey = parent->_subfolders.key(group);
-		if (groupKey.isEmpty())
-			return false;
-
-		QDir(group->_path).removeRecursively();
+		QDir(path).removeRecursively();
 		parent->_subfolders.remove(groupKey);
 		delete group;
 
 		return true;
 	}
-	else if (baseNode->nodeType() == ResourceNode::NodeType::Handle)
+	else if (node->nodeType() == ResourceNode::NodeType::Handle)
 	{
-		FileResourceHandle *handle = dynamic_cast<FileResourceHandle *>(baseNode);
-		//Wrong group type
+		FileResourceHandle *handle = dynamic_cast<FileResourceHandle *>(node);
+		//Wrong node type
 		if (!handle)
 			return false;
 
-		FileResourceGroup *parent = dynamic_cast<FileResourceGroup *>(handle->parent());
-		//Cannot remove root group
-		if (!parent)
-			return false;
-
-		QString groupKey = parent->_subfolders.key(handle);
-		if (groupKey.isEmpty())
-			return false;
-
-		QFile(handle->_path).remove();
+		QFile(path).remove();
 		parent->_subfolders.remove(groupKey);
 		delete handle;
 
@@ -277,8 +276,12 @@ bool FileResourceIO::removeNode(ResourceNode *baseNode)
 
 bool FileResourceIO::renameNode(ResourceNode *node, const std::string& id)
 {
-	if (!node->valid())
-		return false;
+	/*if (!node->valid())
+		return false;*/
+
+	QString path = fullPath(node);
+
+	QString qId = QString::fromStdString(id);
 
 	if (node->nodeType() == ResourceNode::NodeType::Group)
 	{
@@ -287,14 +290,12 @@ bool FileResourceIO::renameNode(ResourceNode *node, const std::string& id)
 		if (!group)
 			return false;
 
-		QDir dir(group->_path);
-		QString dirName = dir.dirName();
-		QString dirPath = dir.absolutePath();
-		dirPath.chop(dirName.size());
-		dirPath.append(QString::fromStdString(id));
-		if (dir.rename(group->_path, dirPath))
+		QDir dir(path);
+		QString oldId = dir.dirName();
+		dir.cdUp();
+		if (dir.rename(oldId, qId))
 		{
-			group->_path = dirPath;
+			group->_name = qId;
 			return true;
 		}
 	}
@@ -305,12 +306,9 @@ bool FileResourceIO::renameNode(ResourceNode *node, const std::string& id)
 		if (!handle)
 			return false;
 
-		QString newPath = QFileInfo(handle->_path).dir().absolutePath();
-		newPath.append("/");
-		newPath.append(QString::fromStdString(id));
-		if (QDir().rename(handle->_path, newPath))
+		if (QDir().rename(path, qId))
 		{
-			handle->_path = newPath;
+			handle->_name = qId;
 			return true;
 		}
 	}
@@ -327,10 +325,12 @@ bool FileResourceIO::read(ResourceNode *node, std::shared_ptr<BaseResource> load
 	if (!handle)
 		return false;
 
-	if (QFileInfo(handle->_path).exists())
+	QString path = fullPath(node);
+
+	if (!QFileInfo(path).exists())
 		return false;
 
-	std::string id = handle->_path.toStdString();
+	std::string id = path.toStdString();
 	std::ifstream in(id, std::ios::in | std::ios::binary);
 	if (!in.good())
 		return false;
@@ -347,13 +347,31 @@ bool FileResourceIO::write(ResourceNode *node, std::shared_ptr<BaseResource> loa
 	if (!handle)
 		return false;
 
-	if (!QFileInfo(handle->_path).exists())
+	QString path = fullPath(node);
+
+	if (!QFileInfo(path).exists())
 		return false;
 
-	std::string id = handle->_path.toStdString();
+	std::string id = path.toStdString();
 	std::ofstream out(id, std::ios::out | std::ios::binary);
 	if (!out.good())
 		return false;
 
 	return loader->save(out, object);
+}
+
+QString FileResourceIO::fullPath(ResourceNode *node)
+{
+	QString groupPath;
+	while (node && node != rootNode())
+	{
+		QString gp = "/" + QString::fromStdString(node->name());
+		groupPath.prepend(gp);
+		node = dynamic_cast<FileResourceGroup *>(node->parent());
+	}
+
+	QString path = QString::fromStdString(basePath());
+	path += groupPath;
+
+	return path;
 }

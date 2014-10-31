@@ -30,6 +30,9 @@ public:
 	bool write(ResourceNode *node, std::shared_ptr<BaseResource> loader, Object *object) override;
 
 private:
+	QString fullPath(ResourceNode *node);
+
+private:
 	FileResourceMeta *_meta;
 
 };

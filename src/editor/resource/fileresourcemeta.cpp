@@ -34,10 +34,10 @@ bool FileResourceMeta::readTree(const QString& meta, ResourceNode *& root)
 
 		ResourceNode::NodeType nodeType =
 			static_cast<ResourceNode::NodeType>(current["node"].as<int>());
+		std::string nodeName = current["name"].as<std::string>();
 		if (nodeType == ResourceNode::NodeType::Group)
 		{
-			std::string groupId = current["path"].as<std::string>();
-			ResourceNode *newGroup = _io->createGroup(parent, groupId);
+			ResourceNode *newGroup = _io->createGroup(parent, nodeName);
 			if (!parent)
 				root = newGroup;
 
@@ -48,9 +48,8 @@ bool FileResourceMeta::readTree(const QString& meta, ResourceNode *& root)
 			if (!parent)
 				continue;
 
-			std::string handleId = current["path"].as<std::string>();
 			std::string handleType = current["type"].as<std::string>();
-			ResourceNode *newHandle = _io->createHandle(parent, handleType, handleId);
+			ResourceNode *newHandle = _io->createHandle(parent, handleType, nodeName);
 
 			currentNode = newHandle;
 		}
@@ -90,17 +89,9 @@ bool FileResourceMeta::writeTree(const QString& meta, ResourceNode *root)
 		node["name"] = current->name();
 		node["node"] = static_cast<int>(current->nodeType());
 
-		if (current->nodeType() == ResourceNode::NodeType::Group)
+		if (current->nodeType() == ResourceNode::NodeType::Handle)
 		{
-			ResourceGroup *group =
-				dynamic_cast<ResourceGroup *>(current);
-			node["path"] = group->name();
-		}
-		else if (current->nodeType() == ResourceNode::NodeType::Handle)
-		{
-			ResourceHandle *handle =
-				dynamic_cast<ResourceHandle *>(current);
-			node["path"] = handle->name();
+			ResourceHandle *handle = dynamic_cast<ResourceHandle *>(current);
 			node["type"] = handle->type();
 		}
 
