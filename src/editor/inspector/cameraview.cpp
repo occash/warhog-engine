@@ -34,7 +34,7 @@ CameraView::~CameraView()
 
 }
 
-void CameraView::inspectComponent(entityx::BaseComponent *component)
+void CameraView::inspect(entityx::BaseComponent *component)
 {
 	CameraComponent *camera = static_cast<CameraComponent *>(component);
 

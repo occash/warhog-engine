@@ -19,7 +19,7 @@ public:
     ~InspectorWidget();
 
 public slots:
-    void inspectEntity(const QModelIndex &index);
+    void inspect(const QModelIndex &index);
 
 private:
     QVBoxLayout *_layout;

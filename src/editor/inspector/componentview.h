@@ -2,9 +2,6 @@
 #define COMPONENTVIEW_H
 
 #include <entityx/entityx.h>
-#include <glm/glm.hpp>
-#include <memory>
-
 #include <QWidget>
 
 class QVBoxLayout;
@@ -23,7 +20,7 @@ public:
 
     void setBody(QWidget *body);
 
-    virtual void inspectComponent(entityx::BaseComponent *component);
+    virtual void inspect(entityx::BaseComponent *component);
 
 private:
     QVBoxLayout *_layout;

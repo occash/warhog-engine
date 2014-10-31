@@ -24,42 +24,29 @@ SceneModel::SceneModel(QObject *parent)
 
 SceneModel::~SceneModel()
 {
-
 }
 
-QVariant SceneModel::data(const QModelIndex &index, int role) const
+int SceneModel::rowCount(const QModelIndex &parent) const
 {
-    if (!index.isValid())
-        return QVariant();
+	if (parent.column() > 0)
+		return 0;
 
-    if (role != Qt::DisplayRole)
-        return QVariant();
+	tree<entityx::Entity>::iterator parentItem;
+	if (!parent.isValid())
+		parentItem = _root;
+	else
+	{
+		tree_node_<entityx::Entity> *node =
+			static_cast<tree_node_<entityx::Entity> *>(parent.internalPointer());
+		parentItem = tree<entityx::Entity>::iterator(node);
+	}
 
-    tree_node_<entityx::Entity> *node =
-        static_cast<tree_node_<entityx::Entity> *>(index.internalPointer());
-    tree<entityx::Entity>::iterator nodeItem(node);
-
-    if (nodeItem == _root || !node->data.valid())
-        return QVariant();
-
-    auto info = node->data.component<InfoComponent>();
-	std::string name = info->name;
-	QString qname = QString::fromStdString(name);
-	QVariant res = QVariant(qname);
-	return res;
+	return parentItem.number_of_children();
 }
 
-Qt::ItemFlags SceneModel::flags(const QModelIndex &index) const
+int SceneModel::columnCount(const QModelIndex &parent) const
 {
-    if (!index.isValid())
-        return 0;
-
-    return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
-}
-
-QVariant SceneModel::headerData(int section, Qt::Orientation orientation, int role) const
-{
-    return QVariant();
+	return 1;
 }
 
 QModelIndex SceneModel::index(int row, int column, const QModelIndex &parent) const
@@ -105,25 +92,47 @@ QModelIndex SceneModel::parent(const QModelIndex &index) const
     return createIndex(_tree.index(parentItem), 0, parent);
 }
 
-int SceneModel::rowCount(const QModelIndex &parent) const
+QVariant SceneModel::data(const QModelIndex &index, int role) const
 {
-    if (parent.column() > 0)
-        return 0;
+	if (!index.isValid())
+		return QVariant();
 
-    tree<entityx::Entity>::iterator parentItem;
-    if (!parent.isValid())
-        parentItem = _root;
-    else
-    {
-        tree_node_<entityx::Entity> *node =
-            static_cast<tree_node_<entityx::Entity> *>(parent.internalPointer());
-        parentItem = tree<entityx::Entity>::iterator(node);
-    }
-    
-    return parentItem.number_of_children();
+	if (role != Qt::DisplayRole)
+		return QVariant();
+
+	tree_node_<entityx::Entity> *node =
+		static_cast<tree_node_<entityx::Entity> *>(index.internalPointer());
+	tree<entityx::Entity>::iterator nodeItem(node);
+
+	if (nodeItem == _root || !node->data.valid())
+		return QVariant();
+
+	auto info = node->data.component<InfoComponent>();
+	std::string name = info->name;
+	QString qname = QString::fromStdString(name);
+	QVariant res = QVariant(qname);
+	return res;
 }
 
-int SceneModel::columnCount(const QModelIndex &parent) const
+Qt::ItemFlags SceneModel::flags(const QModelIndex &index) const
 {
-    return 1;
+	if (!index.isValid())
+		return 0;
+
+	return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
+}
+
+bool SceneModel::setData(const QModelIndex &index, const QVariant &value, int role)
+{
+	if (!index.isValid())
+		return false;
+
+	/*if (role == Qt::EditRole)
+	{
+		const ResourceNode *item =
+			static_cast<const ResourceNode *>(index.internalPointer());
+		return _io->renameNode(const_cast<ResourceNode *>(item), value.toString().toStdString());
+	}*/
+
+	return false;
 }

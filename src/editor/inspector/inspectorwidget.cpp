@@ -25,6 +25,7 @@ InspectorWidget::InspectorWidget(QWidget *parent)
     _layout->setContentsMargins(0, 0, 0, 0);
 
     _cameraView = new CameraView(this);
+	_cameraView->hide();
     _layout->addWidget(_cameraView);
 
     _layout->addStretch();
@@ -36,8 +37,15 @@ InspectorWidget::~InspectorWidget()
 
 }
 
-void InspectorWidget::inspectEntity(const QModelIndex &index)
+void InspectorWidget::inspect(const QModelIndex &index)
 {
+	for (int i = 0; i < _layout->count(); ++i)
+	{
+		QWidget *view = _layout->itemAt(i)->widget();
+		if (view)
+			view->hide();
+	}
+
     tree_node_<entityx::Entity> *node =
         static_cast<tree_node_<entityx::Entity> *>(index.internalPointer());
     if (!node)
@@ -51,7 +59,8 @@ void InspectorWidget::inspectEntity(const QModelIndex &index)
     {
 		entityx::ComponentHandle<CameraComponent> camera =
             entity.component<CameraComponent>();
-        _cameraView->inspectComponent(camera.get());
+        _cameraView->inspect(camera.get());
+		_cameraView->show();
     }
 }
 

@@ -14,7 +14,7 @@ public:
     CameraView(QWidget *parent = 0);
     ~CameraView();
 
-	virtual void inspectComponent(entityx::BaseComponent *component);
+	virtual void inspect(entityx::BaseComponent *component);
 
 private:
     QVBoxLayout *_layout;

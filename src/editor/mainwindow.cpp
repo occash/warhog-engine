@@ -35,6 +35,7 @@ MainWindow::MainWindow(QWidget *parent)
 
 	connect(qApp, SIGNAL(commitDataRequest(QSessionManager&)), 
 		this, SLOT(commitData(QSessionManager&)));
+	connect(_scene, SIGNAL(pressed(const QModelIndex&)), _inspector, SLOT(inspect(const QModelIndex&)));
 }
 
 MainWindow::~MainWindow()

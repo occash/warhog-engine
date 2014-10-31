@@ -25,7 +25,7 @@ ComponentView::~ComponentView()
 
 }
 
-void ComponentView::inspectComponent(entityx::BaseComponent *component)
+void ComponentView::inspect(entityx::BaseComponent *component)
 {
 
 }

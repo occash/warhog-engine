@@ -46,6 +46,7 @@ private slots:
 
 private:
 	//Common
+	bool _maximized;
 	QSettings _settings;
     QMenuBar *_menubar;
     QToolBar *_toolBar;

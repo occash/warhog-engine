@@ -11,6 +11,9 @@ SceneWidget::SceneWidget(QWidget *parent, Qt::WindowFlags f) :
 	_model = new SceneModel(this);
 	_tree->setModel(_model);
 	_tree->setHeaderHidden(true);
+
+	connect(_tree, SIGNAL(pressed(const QModelIndex&)), 
+		this, SIGNAL(pressed(const QModelIndex&)));
 	
 	QVBoxLayout *layout = new QVBoxLayout(this);
 	layout->setMargin(0);

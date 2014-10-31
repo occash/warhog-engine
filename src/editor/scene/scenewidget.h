@@ -14,6 +14,9 @@ class SceneWidget : public QWidget
 	
 public:
 	SceneWidget(QWidget *parent = 0, Qt::WindowFlags f = 0);
+
+signals:
+	void pressed(const QModelIndex&);
 	
 private:
 	QTreeView *_tree;
