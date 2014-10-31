@@ -25,7 +25,8 @@ MainWindow::MainWindow(QWidget *parent)
     _scene(new SceneWidget(this)),
     _inspector(new InspectorWidget(this)),
     _resources(new ResourceWidget(this)),
-	_renderer(new RenderWidget(this))
+	_renderer(new RenderWidget(this)),
+	_maximized(false)
 {
 	readSettings();
     installUi();
@@ -184,11 +185,18 @@ void MainWindow::setProject(Project *project)
 {
 	if (!project)
 	{
-		delete _project;
+		//Uninstall views
 		_resources->setResourceFolder("");
+
+		//Set Title
+		setWindowTitle("");
+
+		//Delete project
+		delete _project;
 	}
 	else
 	{
+		//Add to recent projects
 		QString recentPath = project->projectPath();
 		int index = _recent.indexOf(recentPath);
 		if (index != -1)
@@ -197,6 +205,13 @@ void MainWindow::setProject(Project *project)
 		_recent.append(recentPath);
 		installRecent();
 
+		//Set title
+		/*QString title = qApp->applicationName();
+		title += " - ";
+		title += project->name();*/
+		setWindowTitle(project->name() + " [*]");
+
+		//Setup views
 		_resources->setResourceFolder(project->resources());
 	}
 
@@ -221,7 +236,16 @@ void MainWindow::openProject(const QString& path)
 void MainWindow::keyReleaseEvent(QKeyEvent *event)
 {
 	if (event->key() == Qt::Key_F11)
-		setWindowState(windowState() ^ Qt::WindowFullScreen);
+	{
+		Qt::WindowStates states = windowState();
+		states ^= Qt::WindowFullScreen;
+
+		if (_maximized)
+			states |= Qt::WindowMaximized;
+		_maximized = isMaximized();
+
+		setWindowState(states);
+	}
 }
 
 void MainWindow::newProject()
