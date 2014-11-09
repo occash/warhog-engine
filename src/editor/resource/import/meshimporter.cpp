@@ -127,11 +127,6 @@ QStringList MeshImporter::suffixes()
     return extList;
 }
 
-QStringList MeshImporter::signatures()
-{
-    return QStringList();
-}
-
 void MeshImporter::onUpdate(float val)
 {
 	emit progress(int(val * 100));

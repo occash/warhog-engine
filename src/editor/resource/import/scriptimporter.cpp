@@ -44,8 +44,3 @@ QStringList ScriptImporter::suffixes()
 {
     return QStringList() << "lua" << "py";
 }
-
-QStringList ScriptImporter::signatures()
-{
-    return QStringList();
-}

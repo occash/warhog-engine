@@ -51,6 +51,8 @@ void Engine::start()
 
 int Engine::run()
 {
+	systems.system<RenderSystem>()->window()->show();
+
 	_running = true;
 	while (_running && systems.system<RenderSystem>()->window()->isVisible()) {
 		std::clock_t ticks = std::clock();
@@ -127,6 +129,7 @@ void Engine::configure()
 	//scripting->registerEngine<LuaScriptEngine>();
 	systems.add<RenderSystem>();
 	systems.system<RenderSystem>()->chooseBackend("OpenGL"); //TODO: read from config
+	_window = systems.system<RenderSystem>()->window();
 }
 
 void Engine::initialize()
@@ -241,4 +244,9 @@ void Engine::update(double dt)
 	}
 
 	systems.update<RenderSystem>(dt);
+}
+
+Window *Engine::window() const
+{
+	return _window;
 }

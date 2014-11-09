@@ -121,6 +121,7 @@ TextureImporter::~TextureImporter()
 
 std::shared_ptr<Object> TextureImporter::import(const QString& filename, const QVariantMap& config /*= QVariantMap()*/)
 {
+	emit progress(0);
     int sep = filename.lastIndexOf('/');
     QString shortName = filename.mid(sep + 1);
     QStringList nameExt = shortName.split('.');
@@ -159,6 +160,8 @@ std::shared_ptr<Object> TextureImporter::import(const QString& filename, const Q
 		texture->images[0] = new Image();
 		loadImage(nameBytes.constData(), texture->images[0]);
 	}
+
+	emit progress(100);
     
 	return texture;
 }
@@ -167,9 +170,4 @@ QStringList TextureImporter::suffixes()
 {
     return QStringList() << "bmp" << "png"
         << "jpeg" << "jpg" << "psd" << "gif";
-}
-
-QStringList TextureImporter::signatures()
-{
-    return QStringList();
 }

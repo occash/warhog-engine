@@ -32,11 +32,13 @@ private slots :
 
 private slots:
 	void createGroup();
+	void importResource();
 
 private:
 	std::shared_ptr<ResourceIO> _io;
 	ResourceModel *_model;
-	
+	QList<Importer *> _importers;
+
 	QTreeView *_view;
 	QToolBar *_toolbar;
 	QProgressDialog *_progress;

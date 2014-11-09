@@ -299,7 +299,7 @@ void RenderSystem::chooseBackend(const std::string& name)
 
 	//Create app window with context
 	_window = _renderer->createWindow();
-	_window->show();
+	_window->hide();
 	_window->update();
 	_renderer->createOcclusionQuery();
 

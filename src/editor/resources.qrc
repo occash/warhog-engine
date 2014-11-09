@@ -1,6 +1,7 @@
 <RCC>
     <qresource prefix="/">
         <file alias="splash">resources/splash.png</file>
+		<file alias="icon">resources/icon.png</file>
     </qresource>
     <qresource prefix="/style">
         <file alias="main">style.qss</file>
@@ -8,6 +9,7 @@
     <qresource prefix="/icons">
         <file alias="folder">resources/icons/folder.png</file>
         <file alias="folder_opened">resources/icons/folder-empty.png</file>
+        <file alias="computer">resources/icons/computer.png</file>
         <file alias="mesh">resources/icons/mesh.png</file>
         <file alias="script">resources/icons/mesh.png</file>
         <file alias="texture">resources/icons/texture.png</file>

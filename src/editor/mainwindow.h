@@ -7,9 +7,13 @@
 #include <QMainWindow>
 #include <QSettings>
 
+#include <engine.h>
+
 class QSessionManager;
 class QMenu;
 class QAction;
+class QWinJumpList;
+class QWinThumbnailToolBar;
 
 class InspectorWidget;
 class ResourceWidget;
@@ -25,8 +29,11 @@ public:
     MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
+	void installThumbnail();
+
 protected:
 	void keyReleaseEvent(QKeyEvent *);
+	void timerEvent(QTimerEvent *);
 
 private:
 	void installUi();
@@ -53,6 +60,11 @@ private:
     QStatusBar *_statusBar;
 	QMenu *_recentMenu;
 
+#if defined(Q_OS_WIN)
+	QWinJumpList *_jumpList;
+	QWinThumbnailToolBar *_thumbToolbar;
+#endif
+
 	Project *_project;
 	QStringList _recent;
 
@@ -61,6 +73,7 @@ private:
     ResourceWidget *_resources;
 	RenderWidget *_renderer;
 
+	Engine _engine;
 };
 
 #endif // MAINWINDOW_H

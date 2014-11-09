@@ -30,6 +30,7 @@ int main(int argc, char *argv[])
     MainWindow w;
 	splash.finish(&w);
     w.show();
+	w.installThumbnail();
 
     return a.exec();
 }

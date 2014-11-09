@@ -18,7 +18,6 @@ public:
 
     virtual std::shared_ptr<Object> import(const QString& filename, const QVariantMap& config = QVariantMap()) = 0;
     virtual QStringList suffixes() = 0;
-    virtual QStringList signatures() = 0;
 
 signals:
     void error(QString e);

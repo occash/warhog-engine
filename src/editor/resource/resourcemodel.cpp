@@ -67,7 +67,7 @@ bool ResourceModel::import(const QModelIndex& parent, const QString& filename)
 		return false;
 
 	//Find importer
-	QString extension = fileInfo.suffix();
+	QString extension = fileInfo.suffix().toLower();
 	Importer *importer = _importers.value(extension, nullptr);
 	if (!importer)
 		return false;
@@ -240,13 +240,15 @@ bool ResourceModel::setData(const QModelIndex &index, const QVariant &value, int
 Qt::ItemFlags ResourceModel::flags(const QModelIndex &index) const
 {
 	if (!index.isValid())
-		return Qt::ItemIsDropEnabled;
+		return Qt::NoItemFlags;
 
 	Qt::ItemFlags flags = Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable |
 		Qt::ItemIsDragEnabled;
 	ResourceNode *node = static_cast<ResourceNode *>(index.internalPointer());
 	if (node->nodeType() == ResourceNode::NodeType::Group)
 		flags |= Qt::ItemIsDropEnabled;
+	if (node->nodeType() == ResourceNode::NodeType::Handle)
+		flags |= Qt::ItemNeverHasChildren;
 
 	return flags;
 }
@@ -274,7 +276,7 @@ bool ResourceModel::canDropMimeData(const QMimeData *data, Qt::DropAction action
 			QFileInfo fileInfo(fileName);
 			if (fileInfo.isFile())
 			{
-				QString extension = fileInfo.suffix();
+				QString extension = fileInfo.suffix().toLower();
 				Importer *importer = _importers.value(extension, nullptr);
 				if (importer)
 					canImport = true;
@@ -313,11 +315,26 @@ QStringList ResourceModel::mimeTypes() const
 {
 	QStringList mime;
 	mime << "text/uri-list";
-	mime << "application/x-qabstractitemmodeldatalist";
+	mime << "warhog/resource-node";
 	return mime;
 }
 
 QMimeData *ResourceModel::mimeData(const QModelIndexList &indexes) const
 {
-	return nullptr;
+	if (indexes.count() <= 0)
+		return 0;
+
+	QMimeData *data = new QMimeData();
+	QString format = "warhog/resource-node";
+	QByteArray encoded;
+	encoded.resize(indexes.size() * sizeof(void*));
+	QDataStream stream(&encoded, QIODevice::WriteOnly);
+	foreach(const QModelIndex& index, indexes)
+	{
+		void *pointer = index.internalPointer();
+		char *data = (char*)&pointer;
+		stream.writeBytes(data, sizeof(void*));
+	}
+	data->setData(format, encoded);
+	return data;
 }

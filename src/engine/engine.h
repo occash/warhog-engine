@@ -9,6 +9,7 @@
 #include <ctime>
 
 class Material;
+class Window;
 
 class ENGINE_EXPORT Engine : public entityx::EntityX
 {
@@ -17,6 +18,7 @@ public:
 	int run();
 	void step(double dt);
 	void stop();
+	Window *window() const;
 
 protected:
 	void configure();
@@ -24,6 +26,7 @@ protected:
 	void update(double dt);
 
 private:
+	Window *_window;
 	Material *mat;
 	entityx::Entity _lightNode;
 	double _elapsed;

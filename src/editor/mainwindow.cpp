@@ -8,6 +8,8 @@
 
 #include "dialogs/newproject.h"
 
+#include <window.h>
+
 #include <QMenuBar>
 #include <QToolBar>
 #include <QStatusBar>
@@ -18,6 +20,15 @@
 #include <QKeyEvent>
 #include <QFileDialog>
 #include <QStandardPaths>
+#include <QWindow>
+
+#if defined(Q_OS_WIN)
+#include <QWinJumpList>
+#include <QWinJumpListCategory>
+#include <QWinJumpListItem>
+#include <QWinThumbnailToolBar>
+#include <QWinThumbnailToolButton>
+#endif
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent),
@@ -25,17 +36,16 @@ MainWindow::MainWindow(QWidget *parent)
     _scene(new SceneWidget(this)),
     _inspector(new InspectorWidget(this)),
     _resources(new ResourceWidget(this)),
-	_renderer(new RenderWidget(this)),
+	//_renderer(new RenderWidget(this)),
 	_maximized(false)
 {
+	_engine.start();
+
 	readSettings();
     installUi();
 
-    setCentralWidget(_renderer);
-
-	connect(qApp, SIGNAL(commitDataRequest(QSessionManager&)), 
-		this, SLOT(commitData(QSessionManager&)));
-	connect(_scene, SIGNAL(pressed(const QModelIndex&)), _inspector, SLOT(inspect(const QModelIndex&)));
+	//_renderer = new RenderWidget(renderWidget, this);
+	startTimer(15);
 }
 
 MainWindow::~MainWindow()
@@ -63,6 +73,11 @@ void MainWindow::installUi()
 	
 	//For MacOS only 
 	quitAction->setMenuRole(QAction::QuitRole);
+
+#if defined(Q_OS_WIN)
+	_jumpList = new QWinJumpList(this);
+	_jumpList->setIdentifier("WarhogJumpList");
+#endif
 
 	installRecent();
 
@@ -110,6 +125,31 @@ void MainWindow::installUi()
 	QDockWidget *bottomDock = new QDockWidget("Resources", this);
 	bottomDock->setWidget(_resources);
 	addDockWidget(Qt::LeftDockWidgetArea, bottomDock);
+
+	WId id = reinterpret_cast<WId>(_engine.window()->handle());
+	QWindow *renderWindow = QWindow::fromWinId(id);
+	QWidget *renderWidget = QWidget::createWindowContainer(renderWindow, this);
+
+	setCentralWidget(renderWidget);
+
+	connect(qApp, SIGNAL(commitDataRequest(QSessionManager&)),
+		this, SLOT(commitData(QSessionManager&)));
+	connect(_scene, SIGNAL(pressed(const QModelIndex&)), _inspector, SLOT(inspect(const QModelIndex&)));
+
+	setWindowIcon(QIcon(":/icon"));
+}
+
+void MainWindow::installThumbnail()
+{
+	_thumbToolbar = new QWinThumbnailToolBar(this);
+	_thumbToolbar->setWindow(windowHandle());
+
+	QWinThumbnailToolButton *button = new QWinThumbnailToolButton(this);
+	button->setEnabled(true);
+	button->setVisible(true);
+	button->setToolTip(tr("Default"));
+	button->setIcon(QIcon(":/icon"));
+	_thumbToolbar->addButton(button);
 }
 
 void MainWindow::installRecent()
@@ -121,6 +161,25 @@ void MainWindow::installRecent()
 		QAction *recentAction = new QAction(_recent.at(i), _recentMenu);
 		_recentMenu->addAction(recentAction);
 	}
+
+#if defined(Q_OS_WIN)
+	QWinJumpListCategory *recent = _jumpList->recent();
+	recent->setTitle(tr("Recent"));
+	recent->setVisible(true);
+	//recent->clear();
+
+	for (int i = 0; i < _recent.size(); ++i)
+	{
+		/*QWinJumpListItem *item = 
+			recent->addDestination(_recent.at(i));
+		recent->addItem(item);*/
+		recent->addLink(QIcon(":/icon"), "Lalka", 
+			QCoreApplication::applicationFilePath(),
+			QStringList() << _recent.at(i));
+	}
+
+	//recent->setVisible(true);
+#endif
 }
 
 void MainWindow::commitData(QSessionManager& manager)
@@ -308,4 +367,9 @@ void MainWindow::saveProject()
 void MainWindow::recentProject(QAction *recent)
 {
 	openProject(recent->text());
+}
+
+void MainWindow::timerEvent(QTimerEvent *event)
+{
+	_engine.step(0.015f);
 }

@@ -15,6 +15,8 @@
 #include <QVBoxLayout>
 #include <QApplication>
 #include <QAction>
+#include <QFileDialog>
+#include <QStandardPaths>
 
 ResourceWidget::ResourceWidget(QWidget *parent)
     : QWidget(parent),
@@ -30,20 +32,22 @@ ResourceWidget::ResourceWidget(QWidget *parent)
 	_toolbar->setIconSize(QSize(16, 16));
 	QAction *createGroup = _toolbar->addAction(
 		QIcon(":/icons/folder"), tr("Create group"));
+	QAction *importResource = _toolbar->addAction(
+		QIcon(":/icons/computer"), tr("Import resource"));
 
 	connect(createGroup, SIGNAL(triggered()), this, SLOT(createGroup()));
+	connect(importResource, SIGNAL(triggered()), this, SLOT(importResource()));
 
 	_view = new QTreeView(this);
 	_view->setModel(_model);
 	_view->setAcceptDrops(true);
-	_view->setDefaultDropAction(Qt::CopyAction);
+	_view->setDefaultDropAction(Qt::MoveAction);
 	_view->setDragDropMode(QAbstractItemView::DragDrop);
 	_view->setDragDropOverwriteMode(false);
 	_view->setDragEnabled(true);
 	_view->setDropIndicatorShown(true);
 	_view->setSelectionBehavior(QAbstractItemView::SelectItems);
 	_view->setSelectionMode(QAbstractItemView::SingleSelection);
-	//_view->setAnimated(true);
 	_view->setAutoExpandDelay(400);
 	_view->setHeaderHidden(true);
 
@@ -64,6 +68,7 @@ ResourceWidget::ResourceWidget(QWidget *parent)
 
 ResourceWidget::~ResourceWidget()
 {
+	qDeleteAll(_importers);
 }
 
 void ResourceWidget::addImporter(Importer *importer)
@@ -74,6 +79,7 @@ void ResourceWidget::addImporter(Importer *importer)
 	connect(importer, SIGNAL(success()), this, SLOT(onSuccess()));
 
 	_model->addImporter(importer);
+	_importers.append(importer);
 }
 
 void ResourceWidget::setResourceFolder(const QString& folder)
@@ -87,6 +93,28 @@ void ResourceWidget::createGroup()
 {
 	QModelIndex current = _view->currentIndex();
 	_model->createGroup(current, "New group");
+}
+
+void ResourceWidget::importResource()
+{
+	QString defaultPath = QStandardPaths::writableLocation(
+		QStandardPaths::DocumentsLocation);
+	QString filter;
+	foreach(Importer *importer, _importers)
+	{
+		QStringList suffixList;
+		foreach(QString suffix, importer->suffixes())
+			suffixList << QString("*." + suffix);
+
+		QString name = importer->metaObject()->className();
+		name = name.mid(0, name.indexOf("Importer"));
+		QString f(name + " (%1)");
+		f = f.arg(suffixList.join(" "));
+		filter.append(f + ";;");
+	}
+	QString fileName = QFileDialog::getOpenFileName(this, tr("Import resource"),
+		defaultPath, filter);
+	_model->import(_view->currentIndex(), fileName);
 }
 
 void ResourceWidget::onProgress(int val)

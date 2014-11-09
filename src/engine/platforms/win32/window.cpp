@@ -141,6 +141,11 @@ bool Window::isGrabMouse() const
 	return _data->mouse.grab;
 }
 
+void *Window::handle() const
+{
+	return _data->handle;
+}
+
 void Window::setPosition(int x, int y)
 {
 	_data->x = x;

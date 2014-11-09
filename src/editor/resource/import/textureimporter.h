@@ -15,7 +15,6 @@ public:
 
     std::shared_ptr<Object> import(const QString& filename, const QVariantMap& config = QVariantMap());
     QStringList suffixes();
-    QStringList signatures();
 
 };
 

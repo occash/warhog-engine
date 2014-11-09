@@ -27,6 +27,8 @@ public:
 	bool isVisible() const;
 	bool isGrabMouse() const;
 
+	void *handle() const;
+
 	void setPosition(int x, int y);
 	void setSize(int w, int h);
 	void setTitle(const char *title);
