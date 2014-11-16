@@ -232,8 +232,8 @@ void Engine::update(double dt)
 	_elapsed += dt;
 	if (_elapsed >= 4)
 	{
-		float refractiveIndex = std::rand() % 20;
-		float roughness = 0.1f * (std::rand() % 10);
+		float refractiveIndex = std::rand() % 20 + 0.01;
+		float roughness = 0.1f * (std::rand() % 10) + 0.01;
 		float fresnel0 = ((1.0f - refractiveIndex) / (1.0f + refractiveIndex));
 		fresnel0 = fresnel0 * fresnel0;
 
@@ -242,6 +242,11 @@ void Engine::update(double dt)
 
 		_elapsed = 0.0;
 	}
+
+	auto lightPos = _lightNode.component<TransformComponent>();
+	glm::vec3 rot = lightPos->rotation();
+	rot.y = rot.y + 1;
+	lightPos->setRotation(rot);
 
 	systems.update<RenderSystem>(dt);
 }
