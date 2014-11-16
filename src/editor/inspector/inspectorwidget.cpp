@@ -18,9 +18,10 @@ bool checkComponent(entityx::Entity entity)
 	return result;
 }
 
-InspectorWidget::InspectorWidget(QWidget *parent)
+InspectorWidget::InspectorWidget(/*entityx::EntityManager *manager, */QWidget *parent)
     : QWidget(parent),
     _layout(new QVBoxLayout(this))
+	//_manager(manager)
 {
     _layout->setContentsMargins(0, 0, 0, 0);
 
@@ -46,12 +47,11 @@ void InspectorWidget::inspect(const QModelIndex &index)
 			view->hide();
 	}
 
-    tree_node_<entityx::Entity> *node =
-        static_cast<tree_node_<entityx::Entity> *>(index.internalPointer());
-    if (!node)
-        return;
+	return;
 
-    entityx::Entity entity = node->data;
+    int id = reinterpret_cast<int>(index.internalPointer());
+
+    entityx::Entity entity(_manager, entityx::Entity::Id(id, 1));
     if (!entity.valid())
         return;
 

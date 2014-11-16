@@ -15,7 +15,7 @@ class InspectorWidget : public QWidget
     Q_OBJECT
 
 public:
-    InspectorWidget(QWidget *parent = 0);
+    InspectorWidget(/*entityx::EntityManager *manager, */QWidget *parent = 0);
     ~InspectorWidget();
 
 public slots:
@@ -24,9 +24,10 @@ public slots:
 private:
     QVBoxLayout *_layout;
     CameraView *_cameraView;
+	entityx::EntityManager *_manager;
 
 private:
-    void showComponents(quint32 id, quint32 version);
+    void showComponents(quint32 id, quint32 version);	
 
 };
 

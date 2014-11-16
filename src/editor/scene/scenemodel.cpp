@@ -31,17 +31,18 @@ int SceneModel::rowCount(const QModelIndex &parent) const
 	if (parent.column() > 0)
 		return 0;
 
-	tree<entityx::Entity>::iterator parentItem;
 	if (!parent.isValid())
-		parentItem = _root;
-	else
 	{
-		tree_node_<entityx::Entity> *node =
-			static_cast<tree_node_<entityx::Entity> *>(parent.internalPointer());
-		parentItem = tree<entityx::Entity>::iterator(node);
-	}
+		SceneModel *_this = const_cast<SceneModel *>(this);
+		auto view = _this->_entities.entities_with_components<InfoComponent>();
+		int counter = 0;
+		for (auto i = view.begin(); i != view.end(); ++i)
+			counter++;
 
-	return parentItem.number_of_children();
+		return counter;
+	}
+	else
+		return 0;
 }
 
 int SceneModel::columnCount(const QModelIndex &parent) const
@@ -54,26 +55,16 @@ QModelIndex SceneModel::index(int row, int column, const QModelIndex &parent) co
     if (!hasIndex(row, column, parent))
         return QModelIndex();
 
-    tree<entityx::Entity>::iterator parentItem;
+	SceneModel *_this = const_cast<SceneModel *>(this);
+	auto view = _this->_entities.entities_with_components<InfoComponent>();
+	int counter = 0;
+	for (auto i = view.begin(); i != view.end(); ++i)
+		counter++;
 
-    if (!parent.isValid())
-        parentItem = _root;
-    else
-    {
-        tree_node_<entityx::Entity> *node = 
-            static_cast<tree_node_<entityx::Entity> *>(parent.internalPointer());
-        parentItem = tree<entityx::Entity>::iterator(node);
-    }
-
-    
-    if (parentItem.number_of_children() <= row)
+    if (counter <= row)
         return QModelIndex();
     else
-    {
-        tree<entityx::Entity>::iterator childItem;
-        childItem = _tree.child(parentItem, row);
-        return createIndex(row, column, childItem.node);
-    }
+        return createIndex(row, column, row);
 }
 
 QModelIndex SceneModel::parent(const QModelIndex &index) const
@@ -81,7 +72,7 @@ QModelIndex SceneModel::parent(const QModelIndex &index) const
     if (!index.isValid())
         return QModelIndex();
 
-    tree_node_<entityx::Entity> *node =
+    /*tree_node_<entityx::Entity> *node =
         static_cast<tree_node_<entityx::Entity> *>(index.internalPointer());
     tree_node_<entityx::Entity> *parent = node->parent;
 
@@ -89,7 +80,9 @@ QModelIndex SceneModel::parent(const QModelIndex &index) const
     if (parentItem == _root)
         return QModelIndex();
 
-    return createIndex(_tree.index(parentItem), 0, parent);
+    return createIndex(_tree.index(parentItem), 0, parent);*/
+
+	return QModelIndex();
 }
 
 QVariant SceneModel::data(const QModelIndex &index, int role) const
@@ -100,14 +93,15 @@ QVariant SceneModel::data(const QModelIndex &index, int role) const
 	if (role != Qt::DisplayRole)
 		return QVariant();
 
-	tree_node_<entityx::Entity> *node =
+	/*tree_node_<entityx::Entity> *node =
 		static_cast<tree_node_<entityx::Entity> *>(index.internalPointer());
 	tree<entityx::Entity>::iterator nodeItem(node);
 
 	if (nodeItem == _root || !node->data.valid())
-		return QVariant();
+		return QVariant();*/
 
-	auto info = node->data.component<InfoComponent>();
+	entityx::Entity entity(const_cast<entityx::EntityManager *>(&_entities), entityx::Entity::Id(index.row(), 1));
+	auto info = entity.component<InfoComponent>();
 	std::string name = info->name;
 	QString qname = QString::fromStdString(name);
 	QVariant res = QVariant(qname);

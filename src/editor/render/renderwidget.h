@@ -18,8 +18,7 @@ protected:
     void timerEvent(QTimerEvent *);
 
 private:
-   // GLContext _context;
-    Window _window;
+    QWidget _window;
 };
 
 #endif // RENDERWIDGET_H
