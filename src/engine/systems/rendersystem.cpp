@@ -123,6 +123,8 @@ void RenderSystem::update(EntityManager &entities, EventManager &events, double 
 		cameraUp
 		);
 
+	camera->setAspect(float(_window->width()) / float(_window->height()));
+
     m.modelView = view * model;
     m.projection = glm::perspective(
 		camera->fieldOfView(),
