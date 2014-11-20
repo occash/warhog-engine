@@ -3,8 +3,8 @@
         <file alias="splash">resources/splash.png</file>
 		<file alias="icon">resources/icon.png</file>
     </qresource>
-    <qresource prefix="/style">
-        <file alias="main">style.qss</file>
+    <qresource prefix="/styles">
+        <file alias="dark">resources/styles/dark.qss</file>
     </qresource>
     <qresource prefix="/icons">
         <file alias="folder">resources/icons/folder.png</file>
@@ -13,5 +13,15 @@
         <file alias="mesh">resources/icons/mesh.png</file>
         <file alias="script">resources/icons/mesh.png</file>
         <file alias="texture">resources/icons/texture.png</file>
+    </qresource>
+	<qresource prefix="/controls">
+        <file alias="check">resources/controls/check.png</file>
+        <file alias="check_checked">resources/controls/check_checked.png</file>
+        <file alias="check_indeterminate">resources/controls/check_indeterminate.png</file>
+        <file alias="close">resources/controls/close.png</file>
+        <file alias="down-arrow">resources/controls/down-arrow.png</file>
+        <file alias="radio">resources/controls/radio.png</file>
+		<file alias="radio_checked">resources/controls/radio_checked.png</file>
+		<file alias="up-arrow">resources/controls/up-arrow.png</file>
     </qresource>
 </RCC>
