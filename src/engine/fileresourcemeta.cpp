@@ -1,7 +1,7 @@
 #include "fileresourcemeta.h"
-#include "fileresourceio.h"
+#include "resourceio.h"
+#include "resourcegroup.h"
 
-#include <resourcegroup.h>
 #include <fstream>
 
 #include <stack>

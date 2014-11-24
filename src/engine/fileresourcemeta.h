@@ -3,11 +3,12 @@
 
 #include <memory>
 #include <string>
+#include "global.h"
 
 class ResourceNode;
 class ResourceIO;
 
-class FileResourceMeta
+class ENGINE_EXPORT FileResourceMeta
 {
 public:
 	FileResourceMeta(ResourceIO *io);
