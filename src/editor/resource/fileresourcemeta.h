@@ -7,18 +7,18 @@
 class ResourceNode;
 class ResourceIO;
 
-class FileResourceMeta : public QObject
+class FileResourceMeta
 {
 public:
-	FileResourceMeta(ResourceIO *io, QObject *parent = nullptr);
+	FileResourceMeta(ResourceIO *io);
 	~FileResourceMeta();
 
-	bool readTree(const QString& meta, ResourceNode *& root);
-	bool writeTree(const QString& meta, ResourceNode *root);
+	bool readTree(const std::string & meta, ResourceNode *& root);
+	bool writeTree(const std::string & meta, ResourceNode *root);
 
 private:
 	ResourceIO *_io;
-	QString _metafile;
+	std::string _metafile;
 
 };
 

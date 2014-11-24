@@ -5,11 +5,13 @@
 
 #include <QStack>
 #include <fstream>
+
+#include <stack>
 #include <yaml-cpp/yaml.h>
 
-FileResourceMeta::FileResourceMeta(ResourceIO *io, QObject *parent) :
-	QObject(parent),
-	_io(io)
+using namespace std;
+
+FileResourceMeta::FileResourceMeta(ResourceIO *io) : _io(io)
 {
 }
 
@@ -17,20 +19,25 @@ FileResourceMeta::~FileResourceMeta()
 {
 }
 
-bool FileResourceMeta::readTree(const QString& meta, ResourceNode *& root)
+bool FileResourceMeta::readTree(const std::string& meta, ResourceNode *& root)
 {
-	YAML::Node rootNode = YAML::LoadFile(meta.toStdString());
+	YAML::Node rootNode = YAML::LoadFile(meta);
 	YAML::Node parentNode = rootNode["bundle"];
-	QStack<YAML::Node> parents;
+
+	stack<YAML::Node> parents;
 	parents.push(parentNode);
 
-	QStack<ResourceNode *> groups;
+	stack<ResourceNode *> groups;
 	groups.push(nullptr);
-	while (!parents.isEmpty())
-	{
-		YAML::Node current = parents.pop();
-		ResourceNode *parent = groups.pop();
+
+	while (!parents.empty()) {
+		YAML::Node current = parents.top();
+		parents.pop();
+
+		ResourceNode *parent = groups.top();
+		groups.pop();
 		ResourceNode *currentNode = nullptr;
+
 
 		ResourceNode::NodeType nodeType =
 			static_cast<ResourceNode::NodeType>(current["node"].as<int>());
@@ -64,26 +71,30 @@ bool FileResourceMeta::readTree(const QString& meta, ResourceNode *& root)
 				groups.push(currentNode);
 			}
 		}
+
 	}
 
 	return true;
 }
 
-bool FileResourceMeta::writeTree(const QString& meta, ResourceNode *root)
+bool FileResourceMeta::writeTree(const std::string & meta, ResourceNode *root)
 {
 	YAML::Node rootNode;
 	rootNode["version"] = 1;
 	YAML::Node parentNode = rootNode["bundle"];
-	QStack<YAML::Node> parents;
+	stack<YAML::Node> parents;
 	parents.push(parentNode);
 
-	QStack<ResourceNode *> groups;
+	stack<ResourceNode *> groups;
 	groups.push(root);
 
-	while (!groups.isEmpty())
+	while (!groups.empty())
 	{
-		ResourceNode *current = groups.pop();
-		YAML::Node currentParent = parents.pop();
+		ResourceNode *current = groups.top();
+		groups.pop();
+		
+		YAML::Node currentParent = parents.top();
+		parents.pop();
 
 		YAML::Node node;
 		node["name"] = current->name();
@@ -111,7 +122,7 @@ bool FileResourceMeta::writeTree(const QString& meta, ResourceNode *root)
 		}
 	}
 
-	std::string outPath = meta.toStdString();
+	std::string outPath = meta;
 	std::ofstream fout(outPath);
 	fout << rootNode;
 

@@ -120,7 +120,7 @@ public:
 
 FileResourceIO::FileResourceIO() :
 	ResourceIO(),
-	_meta(new FileResourceMeta(this, this))
+	_meta(new FileResourceMeta(this))
 {
 }
 
@@ -145,7 +145,7 @@ bool FileResourceIO::createTree(const std::string& path, ResourceNode *& root)
 		return true;
 	}
 
-	return _meta->readTree(qPath, root);
+	return _meta->readTree(qPath.toStdString(), root);
 }
 
 bool FileResourceIO::removeTree(ResourceNode *root)
@@ -153,7 +153,7 @@ bool FileResourceIO::removeTree(ResourceNode *root)
 	QString qPath = QString::fromStdString(basePath());
 	qPath = QDir(qPath).absoluteFilePath("resources.meta");
 
-	bool result = _meta->writeTree(qPath, root);
+	bool result = _meta->writeTree(qPath.toStdString(), root);
 	
 	delete root;
 	return true;
