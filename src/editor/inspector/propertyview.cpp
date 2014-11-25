@@ -15,7 +15,7 @@ PropertyView::PropertyView(const QString& name, PropertyEditor *editor, QWidget 
     _editor = editor;
     _editor->setParent(this);
     layout->addWidget(_editor);
-    connect(_editor, SIGNAL(valueChanged(boost::any)), this, SIGNAL(valueChanged(boost::any)));
+    connect(_editor, SIGNAL(valueChanged(Any)), this, SIGNAL(valueChanged(Any)));
 
     setLayout(layout);
 }
@@ -25,7 +25,7 @@ PropertyView::~PropertyView()
 
 }
 
-void PropertyView::setValue(boost::any val)
+void PropertyView::setValue(Any value)
 {
-    _editor->setValue(val);
+    _editor->setValue(value);
 }

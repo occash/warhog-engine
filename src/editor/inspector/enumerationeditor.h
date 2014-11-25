@@ -11,7 +11,7 @@ public:
     EnumerationEditor(QWidget *parent = 0);
     ~EnumerationEditor();
 
-    void setValue(boost::any val);
+    void setValue(Any val);
 
 };
 

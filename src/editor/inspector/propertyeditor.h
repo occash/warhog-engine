@@ -2,8 +2,7 @@
 #define PROPERTYEDITOR_H
 
 #include <QWidget>
-
-#include <boost/any.hpp>
+#include <meta/any.h>
 
 class PropertyEditor : public QWidget
 {
@@ -13,10 +12,10 @@ public:
     PropertyEditor(QWidget *parent = 0);
     ~PropertyEditor();
 
-    virtual void setValue(boost::any val);
+	virtual void setValue(Any value);
 
 signals:
-    void valueChanged(boost::any val);
+	void valueChanged(Any value);
 
 };
 

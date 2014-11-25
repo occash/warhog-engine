@@ -2,8 +2,6 @@
 
 #include <QHBoxLayout>
 #include <QDoubleSpinBox>
-#include <glm/glm.hpp>
-#include <iostream>
 
 FloatEditor::FloatEditor(QWidget *parent)
     : PropertyEditor(parent)
@@ -17,7 +15,8 @@ FloatEditor::FloatEditor(QWidget *parent)
 
     setLayout(layout);
 
-    connect(_spinBox, SIGNAL(valueChanged(double)), this, SLOT(handleValueChange(double)));
+    connect(_spinBox, SIGNAL(valueChanged(double)), 
+		this, SLOT(handleValueChange(double)));
 }
 
 FloatEditor::~FloatEditor()
@@ -25,23 +24,13 @@ FloatEditor::~FloatEditor()
 
 }
 
-void FloatEditor::setValue(boost::any val)
+void FloatEditor::setValue(Any value)
 {
-    glm::float_t v;
-    try
-    {
-        v = boost::any_cast<glm::float_t>(val);
-    }
-    catch (boost::bad_any_cast bac)
-    {
-        std::cout << "Cast error: " << bac.what() << std::endl;
-        return;
-    }
-
-    _spinBox->setValue(v);
+	float f = any_cast<float>(value);
+    _spinBox->setValue(f);
 }
 
 void FloatEditor::handleValueChange(double d)
 {
-    emit valueChanged(boost::any((glm::float_t)d));
+    emit valueChanged(Any(float(d)));
 }

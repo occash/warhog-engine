@@ -11,8 +11,7 @@ PropertyEditor::~PropertyEditor()
 
 }
 
-void PropertyEditor::setValue(boost::any val)
+void PropertyEditor::setValue(Any value)
 {
 
 }
-

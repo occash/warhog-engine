@@ -13,7 +13,7 @@ public:
     FloatEditor(QWidget *parent = 0);
     ~FloatEditor();
 
-    void setValue(boost::any val);
+	void setValue(Any value);
 
 private slots:
     void handleValueChange(double d);

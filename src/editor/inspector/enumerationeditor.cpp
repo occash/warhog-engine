@@ -10,7 +10,7 @@ EnumerationEditor::~EnumerationEditor()
 
 }
 
-void EnumerationEditor::setValue(boost::any val)
+void EnumerationEditor::setValue(Any val)
 {
 
 }

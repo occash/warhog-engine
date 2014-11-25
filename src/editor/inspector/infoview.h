@@ -3,6 +3,8 @@
 
 #include "componentview.h"
 
+class QLineEdit;
+
 class InfoView : public ComponentView
 {
 public:
@@ -14,6 +16,7 @@ private slots:
 	void changeName(const QString& name);
 
 private:
+	QLineEdit *_nameEdit;
 	entityx::BaseComponent *_info;
 };
 
