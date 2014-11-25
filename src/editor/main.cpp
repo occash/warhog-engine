@@ -16,7 +16,7 @@ int main(int argc, char *argv[])
     QApplication a(argc, argv);
 
 	//Load style
-    QFile styleFile(":/style/main");
+    QFile styleFile(":/styles/dark");
     styleFile.open(QIODevice::ReadOnly);
     a.setStyleSheet(styleFile.readAll());
 
@@ -27,9 +27,9 @@ int main(int argc, char *argv[])
 	a.processEvents();
 
 	//Create main window
-    MainWindow w;
+	MainWindow w;
 	splash.finish(&w);
-    w.show();
+	w.show();
 	w.installThumbnail();
 
     return a.exec();
