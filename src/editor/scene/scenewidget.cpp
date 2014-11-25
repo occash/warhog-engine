@@ -4,11 +4,12 @@
 #include <QVBoxLayout>
 #include <QTreeView>
 
-SceneWidget::SceneWidget(QWidget *parent, Qt::WindowFlags f) :
-	QWidget(parent, f)
+SceneWidget::SceneWidget(entityx::EntityManager *manager, 
+	entityx::EventManager *events, QWidget *parent) :
+	QWidget(parent)
 {
 	_tree = new QTreeView(this);
-	_model = new SceneModel(this);
+	_model = new SceneModel(manager, events, this);
 	_tree->setModel(_model);
 	_tree->setHeaderHidden(true);
 
@@ -19,4 +20,9 @@ SceneWidget::SceneWidget(QWidget *parent, Qt::WindowFlags f) :
 	layout->setMargin(0);
 	layout->addWidget(_tree);
 	setLayout(layout);
+}
+
+void SceneWidget::prepare()
+{
+	_model->prepare();
 }

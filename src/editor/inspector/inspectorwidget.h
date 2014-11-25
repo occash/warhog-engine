@@ -2,7 +2,6 @@
 #define INSPECTORWIDGET_H
 
 #include <entityx/Entity.h>
-#include <tree.h>
 
 #include <QWidget>
 #include <QModelIndex>
@@ -15,7 +14,7 @@ class InspectorWidget : public QWidget
     Q_OBJECT
 
 public:
-    InspectorWidget(/*entityx::EntityManager *manager, */QWidget *parent = 0);
+    InspectorWidget(entityx::EntityManager *manager, QWidget *parent = 0);
     ~InspectorWidget();
 
 public slots:

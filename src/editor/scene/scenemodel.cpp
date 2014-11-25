@@ -2,24 +2,26 @@
 #include <components/cameracomponent.h>
 #include <components/infocomponent.h>
 
-SceneModel::SceneModel(QObject *parent)
+SceneModel::SceneModel(entityx::EntityManager *manager,
+	entityx::EventManager *events,
+	QObject *parent)
     : QAbstractItemModel(parent),
-    _events(),
-    _entities(_events)
+    _entities(manager),
+	_events(events)
 {
-    _root = _tree.insert(_tree.end(), entityx::Entity(&_entities, entityx::Entity::INVALID));
+    //_root = _tree.insert(_tree.end(), entityx::Entity(&_entities, entityx::Entity::INVALID));
 
-    entityx::Entity id1 = _entities.create();
+    /*entityx::Entity id1 = _entities->create();
     id1.assign<InfoComponent>("Main camera");
     id1.assign<CameraComponent>();
-    entityx::Entity id2 = _entities.create();
+    entityx::Entity id2 = _entities->create();
     id2.assign<InfoComponent>("New Object");
-    entityx::Entity id3 = _entities.create();
-    id3.assign<InfoComponent>("Trololo");
+    entityx::Entity id3 = _entities->create();
+    id3.assign<InfoComponent>("Trololo");*/
 
-    _tree.append_child(_root, id1);
-    auto iter = _tree.append_child(_root, id2);
-    _tree.append_child(iter, id3);
+    //_tree.append_child(_root, id1);
+    //auto iter = _tree.append_child(_root, id2);
+    //_tree.append_child(iter, id3);
 }
 
 SceneModel::~SceneModel()
@@ -34,10 +36,10 @@ int SceneModel::rowCount(const QModelIndex &parent) const
 	if (!parent.isValid())
 	{
 		SceneModel *_this = const_cast<SceneModel *>(this);
-		auto view = _this->_entities.entities_with_components<InfoComponent>();
-		int counter = 0;
-		for (auto i = view.begin(); i != view.end(); ++i)
-			counter++;
+		//auto view = _this->_entities->entities_with_components<InfoComponent>();
+		int counter = _this->_entities->size();
+		//for (auto i = view.begin(); i != view.end(); ++i)
+			//counter++;
 
 		return counter;
 	}
@@ -56,10 +58,10 @@ QModelIndex SceneModel::index(int row, int column, const QModelIndex &parent) co
         return QModelIndex();
 
 	SceneModel *_this = const_cast<SceneModel *>(this);
-	auto view = _this->_entities.entities_with_components<InfoComponent>();
-	int counter = 0;
-	for (auto i = view.begin(); i != view.end(); ++i)
-		counter++;
+	//auto view = _this->_entities->entities_with_components<InfoComponent>();
+	int counter = _this->_entities->size();
+	//for (auto i = view.begin(); i != view.end(); ++i)
+		//counter++;
 
     if (counter <= row)
         return QModelIndex();
@@ -100,12 +102,17 @@ QVariant SceneModel::data(const QModelIndex &index, int role) const
 	if (nodeItem == _root || !node->data.valid())
 		return QVariant();*/
 
-	entityx::Entity entity(const_cast<entityx::EntityManager *>(&_entities), entityx::Entity::Id(index.row(), 1));
+	entityx::Entity entity(const_cast<entityx::EntityManager *>(_entities), entityx::Entity::Id(index.row(), 1));
 	auto info = entity.component<InfoComponent>();
-	std::string name = info->name;
-	QString qname = QString::fromStdString(name);
-	QVariant res = QVariant(qname);
-	return res;
+	if (info)
+	{
+		std::string name = info->name;
+		QString qname = QString::fromStdString(name);
+		QVariant res = QVariant(qname);
+		return res;
+	}
+	else
+		return "Unnamed";
 }
 
 Qt::ItemFlags SceneModel::flags(const QModelIndex &index) const
@@ -129,4 +136,17 @@ bool SceneModel::setData(const QModelIndex &index, const QVariant &value, int ro
 	}*/
 
 	return false;
+}
+
+void SceneModel::receive(const entityx::EntityCreatedEvent& event)
+{
+	int row = event.entity.id().index();
+	beginInsertRows(QModelIndex(), row, row);
+	//QModelIndex newItem = createIndex(row, 0, row);
+	endInsertRows();
+}
+
+void SceneModel::prepare()
+{
+	_events->subscribe<entityx::EntityCreatedEvent>(*this);
 }

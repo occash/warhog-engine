@@ -33,12 +33,13 @@
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent),
 	_project(nullptr),
-    _scene(new SceneWidget(this)),
-    _inspector(new InspectorWidget(this)),
+    _scene(new SceneWidget(&_engine.entities, &_engine.events, this)),
+	_inspector(new InspectorWidget(&_engine.entities, this)),
     _resources(new ResourceWidget(this)),
 	//_renderer(new RenderWidget(this)),
 	_maximized(false)
 {
+	_scene->prepare();
 	_engine.start();
 
 	readSettings();

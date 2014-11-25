@@ -13,7 +13,11 @@ class SceneWidget : public QWidget
 	Q_OBJECT
 	
 public:
-	SceneWidget(QWidget *parent = 0, Qt::WindowFlags f = 0);
+	SceneWidget(entityx::EntityManager *manager,
+		entityx::EventManager *events, 
+		QWidget *parent = 0);
+
+	void prepare();
 
 signals:
 	void pressed(const QModelIndex&);
