@@ -1,5 +1,5 @@
 #include "fileresourceio.h"
-#include "fileresourcemeta.h"
+#include <fileresourcemeta.h>
 
 #include <resourcegroup.h>
 
