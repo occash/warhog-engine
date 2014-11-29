@@ -22,13 +22,13 @@
 #include <QStandardPaths>
 #include <QWindow>
 
-#if defined(Q_OS_WIN)
+/*#if defined(Q_OS_WIN)
 #include <QWinJumpList>
 #include <QWinJumpListCategory>
 #include <QWinJumpListItem>
 #include <QWinThumbnailToolBar>
 #include <QWinThumbnailToolButton>
-#endif
+#endif*/
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent),
@@ -75,10 +75,10 @@ void MainWindow::installUi()
 	//For MacOS only 
 	quitAction->setMenuRole(QAction::QuitRole);
 
-#if defined(Q_OS_WIN)
+/*#if defined(Q_OS_WIN)
 	_jumpList = new QWinJumpList(this);
 	_jumpList->setIdentifier("WarhogJumpList");
-#endif
+#endif*/
 
 	installRecent();
 
@@ -142,7 +142,7 @@ void MainWindow::installUi()
 
 void MainWindow::installThumbnail()
 {
-	_thumbToolbar = new QWinThumbnailToolBar(this);
+	/*_thumbToolbar = new QWinThumbnailToolBar(this);
 	_thumbToolbar->setWindow(windowHandle());
 
 	QWinThumbnailToolButton *button = new QWinThumbnailToolButton(this);
@@ -150,7 +150,7 @@ void MainWindow::installThumbnail()
 	button->setVisible(true);
 	button->setToolTip(tr("Default"));
 	button->setIcon(QIcon(":/icon"));
-	_thumbToolbar->addButton(button);
+	_thumbToolbar->addButton(button);*/
 }
 
 void MainWindow::installRecent()
@@ -163,7 +163,7 @@ void MainWindow::installRecent()
 		_recentMenu->addAction(recentAction);
 	}
 
-#if defined(Q_OS_WIN)
+/*#if defined(Q_OS_WIN)
 	QWinJumpListCategory *recent = _jumpList->recent();
 	recent->setTitle(tr("Recent"));
 	recent->setVisible(true);
@@ -171,16 +171,13 @@ void MainWindow::installRecent()
 
 	for (int i = 0; i < _recent.size(); ++i)
 	{
-		/*QWinJumpListItem *item = 
-			recent->addDestination(_recent.at(i));
-		recent->addItem(item);*/
 		recent->addLink(QIcon(":/icon"), "Lalka", 
 			QCoreApplication::applicationFilePath(),
 			QStringList() << _recent.at(i));
 	}
 
 	//recent->setVisible(true);
-#endif
+#endif*/
 }
 
 void MainWindow::commitData(QSessionManager& manager)
