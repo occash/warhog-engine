@@ -311,7 +311,7 @@ void GLShaderVariable::set(const Any& value)
 	if (_type != value.type())
 		return;
 
-	void *data = value.object();
+	void *data = value.data();
 	bool smallType = _type.size() <= sizeof(void *);
 
 	//Bind texture unit

@@ -19,7 +19,7 @@ struct Image
 
 class ENGINE_EXPORT Texture : public Object
 {
-	OBJECT(Texture, Object)
+	U_OBJECT(Texture, Object)
 public:
     enum Type 
 	{

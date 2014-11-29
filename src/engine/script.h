@@ -8,7 +8,7 @@
 
 class ENGINE_EXPORT Script : public Object
 {
-	OBJECT(Script, Object)
+	U_OBJECT(Script, Object)
 public:
     Script();
     ~Script();

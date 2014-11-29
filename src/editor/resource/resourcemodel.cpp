@@ -90,7 +90,7 @@ bool ResourceModel::import(const QModelIndex& parent, const QString& filename)
 	int row = node->childCount();
 	emit beginInsertRows(parent, row, row);
 	QString nodeName = fileInfo.baseName();
-	ResourceNode *newNode = _io->createHandle(node, object->api()->name(), nodeName.toStdString());
+	ResourceNode *newNode = _io->createHandle(node, BaseResource::Type(object->api()->name()), nodeName.toStdString());
 	bool res = _io->save(newNode, object);
 	emit endInsertRows();
 	return res;

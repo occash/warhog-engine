@@ -19,7 +19,7 @@ struct Vertex
 
 class ENGINE_EXPORT Mesh : public Object
 {
-	OBJECT(Mesh, Object)
+	U_OBJECT(Mesh, Object)
 public:
 	Mesh();
 	~Mesh();
