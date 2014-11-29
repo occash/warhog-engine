@@ -3,19 +3,30 @@
 
 #include <QWidget>
 #include <meta/any.h>
+#include <meta/property.h>
 
 class PropertyEditor : public QWidget
 {
     Q_OBJECT
 
 public:
-    PropertyEditor(QWidget *parent = 0);
+	PropertyEditor(Property p, QWidget *parent = 0);
     ~PropertyEditor();
 
-	virtual void setValue(Any value);
+	Object *object() const;
+	void setObject(Object *object);
 
-signals:
-	void valueChanged(Any value);
+	Property property() const;
+	void setProperty(Property property);
+
+	Any value() const;
+	void setValue(Any value);
+
+	virtual void update() = 0;
+
+private:
+	Object *_object;
+	Property _property;
 
 };
 

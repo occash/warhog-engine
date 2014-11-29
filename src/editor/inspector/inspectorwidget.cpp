@@ -1,5 +1,5 @@
 #include "inspectorwidget.h"
-#include "cameraview.h"
+#include "componentview.h"
 
 #include <components/cameracomponent.h>
 #include <components/lightcomponent.h>
@@ -23,9 +23,13 @@ InspectorWidget::InspectorWidget(entityx::EntityManager *manager, QWidget *paren
     _layout(new QVBoxLayout(this)),
 	_manager(manager)
 {
-    _layout->setContentsMargins(0, 0, 0, 0);
+    _layout->setContentsMargins(6, 6, 6, 6);
 
-    _cameraView = new CameraView(this);
+	_transformView = new ComponentView(TransformComponent::classApi(), this);
+	_transformView->hide();
+	_layout->addWidget(_transformView);
+
+	_cameraView = new ComponentView(CameraComponent::classApi(), this);
 	_cameraView->hide();
     _layout->addWidget(_cameraView);
 
@@ -35,7 +39,6 @@ InspectorWidget::InspectorWidget(entityx::EntityManager *manager, QWidget *paren
 
 InspectorWidget::~InspectorWidget()
 {
-
 }
 
 void InspectorWidget::inspect(const QModelIndex &index)
@@ -52,6 +55,14 @@ void InspectorWidget::inspect(const QModelIndex &index)
     entityx::Entity entity(_manager, entityx::Entity::Id(id, 1));
     if (!entity.valid())
         return;
+
+	if (checkComponent<TransformComponent>(entity))
+	{
+		entityx::ComponentHandle<TransformComponent> transform =
+			entity.component<TransformComponent>();
+		_transformView->inspect(transform.get());
+		_transformView->show();
+	}
 
     if (checkComponent<CameraComponent>(entity))
     {

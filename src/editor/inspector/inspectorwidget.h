@@ -7,7 +7,7 @@
 #include <QModelIndex>
 
 class QVBoxLayout;
-class CameraView;
+class ComponentView;
 
 class InspectorWidget : public QWidget
 {
@@ -22,7 +22,8 @@ public slots:
 
 private:
     QVBoxLayout *_layout;
-    CameraView *_cameraView;
+	ComponentView *_transformView;
+	ComponentView *_cameraView;
 	entityx::EntityManager *_manager;
 
 private:

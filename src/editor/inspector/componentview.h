@@ -1,10 +1,14 @@
 #ifndef COMPONENTVIEW_H
 #define COMPONENTVIEW_H
 
-#include <entityx/entityx.h>
+#include <meta/api.h>
+#include <meta/property.h>
+
 #include <QWidget>
 
-class QVBoxLayout;
+class PropertyEditor;
+
+class QFormLayout;
 class QPushButton;
 
 class ComponentView : public QWidget
@@ -12,20 +16,18 @@ class ComponentView : public QWidget
     Q_OBJECT
 
 public:
-    ComponentView(const QString& name, QWidget *parent = 0);
+    ComponentView(const Api *api, QWidget *parent = 0);
     ~ComponentView();
 
-    /*static ComponentView *find(entityx::BaseComponent::Family family);
-    static void registerView(ComponentView *view);*/
-
-    void setBody(QWidget *body);
-
-    virtual void inspect(entityx::BaseComponent *component);
+    void inspect(Object *component);
 
 private:
-    QVBoxLayout *_layout;
+	void insertProperty(int index, Property p);
+
+private:
+	QFormLayout *_layout;
     QPushButton *_label;
-    //static QMap<entityx::BaseComponent::Family, entityx::ptr<entityx::BaseComponent> >componentMap;
+	QVector<PropertyEditor *> _editors;
 
 };
 

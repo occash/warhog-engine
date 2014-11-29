@@ -3,34 +3,36 @@
 #include <QHBoxLayout>
 #include <QDoubleSpinBox>
 
-FloatEditor::FloatEditor(QWidget *parent)
-    : PropertyEditor(parent)
+FloatEditor::FloatEditor(Property p, QWidget *parent)
+    : PropertyEditor(p, parent)
 {
     QHBoxLayout *layout = new QHBoxLayout(this);
     layout->setContentsMargins(0, 0, 0, 0);
 
     _spinBox = new QDoubleSpinBox(this);
     _spinBox->setMinimumWidth(100);
+	_spinBox->setMinimum(0.0);
+	_spinBox->setMaximum(1000.0);
     layout->addWidget(_spinBox);
 
     setLayout(layout);
 
     connect(_spinBox, SIGNAL(valueChanged(double)), 
-		this, SLOT(handleValueChange(double)));
+		this, SLOT(updateValue(double)));
 }
 
 FloatEditor::~FloatEditor()
 {
-
 }
 
-void FloatEditor::setValue(Any value)
+void FloatEditor::update()
 {
-	float f = any_cast<float>(value);
-    _spinBox->setValue(f);
+	Any any = value();
+	float value = any_cast<float>(any);
+	_spinBox->setValue(value);
 }
 
-void FloatEditor::handleValueChange(double d)
+void FloatEditor::updateValue(double value)
 {
-    emit valueChanged(Any(float(d)));
+	setValue(float(value));
 }
