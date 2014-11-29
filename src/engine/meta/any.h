@@ -26,15 +26,18 @@ USA.
 #include "type_traits.h"
 #include "type.h"
 #include <new>
+#include <stdexcept>
 
-template<typename T, typename Ptr>
+template<typename T, typename S>
 struct AnyHelper;
 
+//Type helper for small types, such as pointers
 template<typename T>
 struct AnyHelper<T, True>
 {
-	typedef Bool<std::is_pointer<T>::value> is_pointer;
-	typedef typename CheckType<T, is_pointer>::type T_no_cv;
+	typedef typename std::is_pointer<T>::type is_pointer;
+	typedef typename std::decay<T>::type T_dec;
+	typedef typename Pointer<T_dec, is_pointer>::type T_no_cv;
 
 	inline static void clone(const T **src, void **dest)
 	{
@@ -47,11 +50,13 @@ struct AnyHelper<T, True>
 	}
 };
 
+//Type helper for bigger types
 template<typename T>
 struct AnyHelper<T, False>
 {
-	typedef Bool<std::is_pointer<T>::value> is_pointer;
-	typedef typename CheckType<T, is_pointer>::type T_no_cv;
+	typedef typename std::is_pointer<T>::type is_pointer;
+	typedef typename std::decay<T>::type T_dec;
+	typedef typename Pointer<T_dec, is_pointer>::type T_no_cv;
 
 	inline static void clone(const T **src, void **dest)
 	{
@@ -64,31 +69,58 @@ struct AnyHelper<T, False>
 	}
 };
 
+/*! \breif The Any class holds the copy of any data type.
+*/
 class UMOF_EXPORT Any
 {
 public:
+	/*! Constructs invalid Any holder.
+	*/
 	Any();
-	Any(Any const& x);
-	Any(Any &&x);
+
+	/*! Copy value from other holder.
+	*/
+	Any(Any const& other);
+
+	/*! Move value from other holder.
+	*/
+	Any(Any &&other);
+
+	/*! Destroys Any and contained object.
+	*/
 	~Any();
 
+	/*! Constructs Any with the given value.
+	*/
 	template<typename T>
-	Any(T const& x);
+	Any(T const& value);
+
+	/*! Constructs Any with array value.
+		Special constructor for static arrays.
+	*/
 	template<typename T, std::size_t N>
-	Any(T(&x)[N]);
+	Any(T(&value)[N]);
 
+	/*! Destroys containing object and set new value.
+	*/
 	template<typename T>
-	void reset(T const& x);
+	void reset(T const& value);
 
+	/*! Destroys containing object.
+	*/
 	void reset();
+
+	/*! Get containing object type information.
+	*/
 	Type type() const;
-	void *object() const;
+
+	/*! Get containing object.
+	*/
+	void *data() const;
 
 private:
 	template<typename T>
 	friend T* any_cast(Any*);
-	template<typename T>
-	friend bool type_check(Any*);
 
 	TypeTable* _table;
 	void* _object;
@@ -100,7 +132,7 @@ Any::Any(T const& x) :
 	_object(nullptr)
 {
 	const T *src = &x;
-	AnyHelper<T, Table<T>::is_small>::clone(&src, &_object);
+	AnyHelper<T, typename Table<T>::is_small>::clone(&src, &_object);
 }
 
 template<typename T, std::size_t N>
@@ -118,14 +150,14 @@ void Any::reset(T const& x)
 		_table->static_delete(&_object);
 	_table = Table<T>::get();
 	const T *src = &x;
-	AnyHelper<T, Table<T>::is_small>::clone(&src, &_object);
+	AnyHelper<T, typename Table<T>::is_small>::clone(&src, &_object);
 }
 
 template <typename T>
 inline T* any_cast(Any* operand)
 {
-	if (operand && operand->_table == Table<T>::get())
-		return AnyHelper<T, Table<T>::is_small>::cast(&operand->_object);
+	if (operand && operand->_table->get_type() == Table<T>::get()->get_type())
+		return AnyHelper<T, typename Table<T>::is_small>::cast(&operand->_object);
 
 	return nullptr;
 }
@@ -136,6 +168,14 @@ inline T* any_cast(Any const* operand)
 	return any_cast<T>(const_cast<Any*>(operand));
 }
 
+/*! Casts Any container to a given type T.
+	\relates Any
+	Use it as follows:
+	\code{.cpp}
+	Any a{5.0};
+	double d = any_cast<double>(a);
+	\endcode
+*/
 template <typename T>
 inline T any_cast(Any& operand)
 {
@@ -147,6 +187,14 @@ inline T any_cast(Any& operand)
 	return *result;
 }
 
+/*! Casts Any container to a given type T.
+	\relates Any
+	Use it as follows:
+	\code{.cpp}
+	Any a{5.0};
+	double d = any_cast<double>(a);
+	\endcode
+*/
 template <typename T>
 inline T const& any_cast(Any const& operand)
 {

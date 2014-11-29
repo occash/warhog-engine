@@ -25,20 +25,27 @@ USA.
 #include "objectdefs.h"
 #include "api.h"
 
-#define OBJECT_CHECK(Class) \
+#define U_OBJECT_CHECK(Class) \
 	static_assert(std::is_base_of<Object, Class>::value, "Class " #Class " should inherit from Object");
 
-#define OBJECT(Class, Super) \
+/*! This macro makes meta information available for object.
+	\relates Object
+*/
+#define U_OBJECT(Class, Super) \
 public: \
 	static const Api *classApi() \
 	{ \
-		OBJECT_CHECK(Class) \
-		static const Api staticApi( \
+		U_OBJECT_CHECK(Class) \
+		static const ApiTable apiTable \
+		{ \
 			#Class, \
 			Super::classApi(), \
-			expose_method<Class>::exec(), \
-			expose_props_method<Class>::exec() \
-		); \
+			expose_method<Class>::exec().second, \
+			expose_props_method<Class>::exec().second, \
+			expose_method<Class>::exec().first, \
+			expose_props_method<Class>::exec().first \
+		}; \
+		static const Api staticApi(&apiTable); \
 		return &staticApi; \
 	} \
 	virtual const Api *api() const \
@@ -47,38 +54,55 @@ public: \
 	} \
 private:
 
-#define EXPOSE(...) \
+/*! This macro exposes class methods in Api.
+	\relates Object
+*/
+#define U_EXPOSE(...) \
 public: \
-	static const MethodTable *expose() \
+	static const std::pair<int, const MethodTable *> expose() \
 	{ \
 		static const MethodTable methods[] \
 		{ \
-			__VA_ARGS__, \
-			{nullptr, nullptr, 0, nullptr} \
+			__VA_ARGS__ \
 		}; \
-		return methods; \
+		return { sizeof(methods) / sizeof(MethodTable), methods }; \
 	} \
 private:
 
-#define PROPERTIES(...) \
+/*! This macro exposes class properties in Api.
+	\relates Object
+*/
+#define U_PROPERTIES(...) \
 public: \
-	static const PropertyTable *expose_props() \
+	static const std::pair<int, const PropertyTable *> expose_props() \
 	{ \
 		static const PropertyTable props[] \
 		{ \
-			__VA_ARGS__, \
-			{nullptr, nullptr, nullptr, nullptr} \
+			__VA_ARGS__ \
 		}; \
-		return props; \
+		return { sizeof(props) / sizeof(PropertyTable), props }; \
 	} \
 private:
 
+/*! \breif The Object class is the base class of all objects.
+*/
 class UMOF_EXPORT Object
 {
 public:
+	/*! Constructs an object.
+	*/
 	Object();
+
+	/*! Destroys an object.
+	*/
 	virtual ~Object();
+
+	/*! Return the Api of the class.
+	*/
 	static const Api *classApi();
+
+	/*! Returns the Api of this object.
+	*/
 	virtual const Api *api() const;
 };
 

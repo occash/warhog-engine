@@ -23,6 +23,7 @@ USA.
 #define METHOD_H
 
 #include "defines.h"
+#include "conststring.h"
 #include "any.h"
 #include "type.h"
 
@@ -30,30 +31,64 @@ USA.
 
 class Object;
 
+/* \breif Internal struct to store method meta information.
+*/
 struct MethodTable
 {
-	const char *name;
+	ConstString name;
 	InvokeMem invoker;
 	int argc;
 	const TypeTable **types;
 };
 
+/*! \breif The Method class provides meta information for method.
+*/
 class UMOF_EXPORT Method
 {
 public:
+	/*! \breif Constructs a Method with the given table.
+		Method constructor should never be used directly.
+		Please use METHOD() or OVERLOAD() macros instead.
+	*/
 	Method(const MethodTable *table);
 
+	/*! Checks whether Method is valid object.
+		Call to invalid method will result in application crash.
+	*/
 	bool valid() const;
 
-	const char *name() const;
+	/*! Returns the name of the method.
+		\sa signature()
+	*/
+	ConstString name() const;
+
+	/*! Returns the signature of the method.
+		The signature returned in normalized form. This means
+		there is no whitespace between parameters and parameter
+		names described as typeid().name().
+		\sa name()
+	*/
 	std::string signature() const;
 
+	/*! Returns the return type of this method.
+	*/
 	Type returnType() const;
-	int parameterCount() const;
-	//TypeList parameterTypes() const;
-	Type parmaeterType(int index) const;
 
+	/*! Returns the number of arguments.
+	*/
+	int parameterCount() const;
+
+	/*! Returns the type of the argument at given index.
+	*/
+	Type parmaeterType(int index) const;
+	//ConstString parameterName(int index) const; //Not supported
+
+	/*! Invokes the method with given args.
+	*/
 	Any invoke(Object *obj, int argc, const Any *args) const;
+
+	/*! Invokes the method with given args.
+	*/
 	Any invoke(Object *obj, std::initializer_list<Any> args) const;
 
 private:

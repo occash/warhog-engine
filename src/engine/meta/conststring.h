@@ -19,38 +19,37 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
 USA.
 **********************************************************************/
 
-#include "converters.h"
+#ifndef CONSTSTRING_H
+#define CONSTSTRING_H
 
-/*Any Converter<int>::convert(const Any& a)
+#include <cstddef>
+#include <stdexcept>
+#include <cstring>
+
+/*! Compile-time string with known size.
+*/
+class ConstString
 {
-	if (typeid(float) == a.type())
-		return helper<int, double>::convert(a);
-	else if (typeid(const char *) == a.type())
-		return helper<int, const char *>::convert(a);
+public:
+	//Workaround for GCC bug https://gcc.gnu.org/bugzilla/show_bug.cgi?id=59879
+	constexpr ConstString(const char *a) :
+		_string(a), _size(std::strlen(a)) {}
+		
+	template<std::size_t N>
+	constexpr ConstString(const char(&a)[N]) :
+		_string(a), _size(N - 1) {}
 
-	return any_cast<int>(a);
-}
+	constexpr char operator[](std::size_t n) {
+		return n < _size ? _string[n] :
+			throw std::out_of_range("");
+	}
 
-bool Converter<int>::canConvert(const Any& a)
-{
-	return (typeid(int) == a.type()
-		|| typeid(float) == a.type()
-		|| typeid(const char *) == a.type());
-}
+	constexpr operator const char *() const { return _string; }
+	constexpr std::size_t size() const { return _size; }
 
-Any Converter<float>::convert(const Any& a)
-{
-	if (typeid(int) == a.type())
-		return Any(helper<float, int>::convert(a));
-	else if (typeid(const char *) == a.type())
-		return Any(helper<float, const char *>::convert(a));
+private:
+	const char* const _string;
+	const std::size_t _size;
+};
 
-	return any_cast<float>(a);
-}
-
-bool Converter<float>::canConvert(const Any& a)
-{
-	return (typeid(float) == a.type()
-		|| typeid(int) == a.type()
-		|| typeid(const char *) == a.type());
-}*/
+#endif

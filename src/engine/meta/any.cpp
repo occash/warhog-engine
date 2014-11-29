@@ -73,10 +73,10 @@ void Any::reset()
 
 Type Any::type() const
 {
-	return Type(_table);
+	return _table;
 }
 
-void * Any::object() const
+void *Any::data() const
 {
 	return _object;
 }

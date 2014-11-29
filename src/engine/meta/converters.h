@@ -26,7 +26,7 @@ USA.
 
 #include <sstream>
 
-template<class U, class Y>
+/*template<class U, class Y>
 struct helper
 {
 	inline static U convert(Any a)
@@ -51,7 +51,7 @@ struct Converter
 {
 	static Any convert(const Any &a)
 	{
-		return Any_cast<T>(a);
+		return any_cast<T>(a);
 	}
 
 	static bool canConvert(const Any &a)
@@ -72,6 +72,6 @@ struct Converter <float>
 {
 	static Any convert(const Any &a);
 	static bool canConvert(const Any &a);
-};
+};*/
 
 #endif

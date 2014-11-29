@@ -33,7 +33,7 @@ bool Type::operator==(const Type& other)
 
 bool Type::operator!=(const Type& other)
 {
-	return !operator==(other);
+	return _table != other._table;
 }
 
 bool Type::valid() const

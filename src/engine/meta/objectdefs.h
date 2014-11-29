@@ -29,23 +29,24 @@ USA.
 #include "propertydefs.h"
 
 #include <type_traits>
+#include <utility>
 
-#define METHOD(m) \
+#define U_METHOD(m) \
 { \
 	#m, \
-	(InvokeMem)&Invoker<decltype(&m)>::invoke<&m>, \
+	(InvokeMem)&Invoker<decltype(&m)>::template invoke<&m>, \
 	Invoker<decltype(&m)>::argCount(), \
 	Invoker<decltype(&m)>::types() \
 }
-#define OVERLOAD(c, m, r, ...) \
+#define U_OVERLOAD(c, m, s) \
 { \
 	#m, \
-	(InvokeMem)&Invoker<r(c::*)(__VA_ARGS__)>::invoke<&m>, \
-	Invoker<r(c::*)(__VA_ARGS__)>::argCount(), \
-	Invoker<r(c::*)(__VA_ARGS__)>::types() \
+	(InvokeMem)&Invoker<s>::template invoke<&m>, \
+	Invoker<s>::argCount(), \
+	Invoker<s>::types() \
 }
-#define FUNCTION(f) METHOD(f)
-#define PROPERTY(p, r, w) \
+#define U_FUNCTION(f) U_METHOD(f)
+#define U_PROPERTY(p, r, w) \
 { \
 	#p, \
 	Reader<decltype(&r), &r>::type(), \
@@ -69,16 +70,16 @@ private:
 	{
 		return no();
 	}
-	static const MethodTable *exec_impl(std::true_type)
+	static const std::pair<int, const MethodTable *> exec_impl(std::true_type)
 	{
 		return T::expose();
 	}
-	static const MethodTable *exec_impl(...)
+	static const std::pair<int, const MethodTable *> exec_impl(...)
 	{
-		return nullptr;
+		return{ 0, nullptr };
 	}
 public:
-	static const MethodTable *exec()
+	static const std::pair<int, const MethodTable *> exec()
 	{
 		return exec_impl(test<T>(0));
 	}
@@ -101,16 +102,16 @@ private:
 	{
 		return no();
 	}
-	static const PropertyTable *exec_impl(std::true_type)
+	static const std::pair<int, const PropertyTable *> exec_impl(std::true_type)
 	{
 		return T::expose_props();
 	}
-	static const PropertyTable *exec_impl(...)
+	static const std::pair<int, const PropertyTable *> exec_impl(...)
 	{
-		return nullptr;
+		return{ 0, nullptr };
 	}
 public:
-	static const PropertyTable *exec()
+	static const std::pair<int, const PropertyTable *> exec()
 	{
 		return exec_impl(test<T>(0));
 	}
