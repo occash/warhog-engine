@@ -2,13 +2,22 @@
 #define CAMERA_H
 
 #include "../global.h"
+#include "../meta/object.h"
 
 #include <entityx/Entity.h>
 #include <glm/glm.hpp>
 
 class ENGINE_EXPORT CameraComponent : 
-	public entityx::Component<CameraComponent>
+	public entityx::Component<CameraComponent>,
+	public Object
 {
+	U_OBJECT(CameraComponent, Object)
+	U_PROPERTIES(
+	U_PROPERTY(fieldOfView, fieldOfView, setFieldOfView),
+	U_PROPERTY(aspect, aspect, setAspect),
+	U_PROPERTY(nearPlane, nearPlane, setNearPlane),
+	U_PROPERTY(farPlane, farPlane, setFarPlane)
+	)
 public:
 	enum PojectionType
 	{
