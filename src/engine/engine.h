@@ -20,6 +20,9 @@ public:
 	void stop();
 	Window *window() const;
 
+	void createEntity(const std::string& name);
+	void addComponent(entityx::Entity id, const std::string& name);
+
 protected:
 	void configure();
 	void initialize();

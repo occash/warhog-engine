@@ -50,7 +50,8 @@ private slots:
 	void closeProject();
 	void saveProject();
 	void recentProject(QAction *);
-
+	void createEmpty();
+	void addComponent(QAction *);
 private:
 	//Common
 	bool _maximized;

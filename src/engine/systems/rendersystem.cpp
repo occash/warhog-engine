@@ -39,7 +39,6 @@ static std::string readFile(const std::string& fileName)
 	return source;
 }
 
-
 struct RenderInfo
 {
 	RenderInfo() : 
@@ -74,6 +73,15 @@ struct DirectLight
 	glm::vec3 direction;
 	glm::float_t __padding1;
 };
+
+void applyTransform(glm::mat4& block, glm::vec3 move, glm::vec3 rotate, glm::vec3 scale)
+{
+	block = glm::translate(block, move);
+	block = glm::rotate(block, -rotate.x, glm::vec3(0.0f, 1.0f, 0.0f));
+	block = glm::rotate(block, -rotate.y, glm::vec3(1.0f, 0.0f, 0.0f));
+	block = glm::rotate(block, -rotate.z, glm::vec3(0.0f, 0.0f, 1.0f));
+	block = glm::scale(block, scale);
+}
 
 RenderSystem::RenderSystem() :
 	_renderer(nullptr),
@@ -116,7 +124,6 @@ void RenderSystem::update(EntityManager &entities, EventManager &events, double 
     viewDir = glm::rotate(viewDir, -camRot.y, glm::vec3(1.0f, 0.0f, 0.0f));
     viewDir = glm::rotate(viewDir, -camRot.z, glm::vec3(0.0f, 0.0f, 1.0f));
 
-    glm::mat4 model = glm::mat4(1.0f);
     glm::mat4 view = glm::lookAt(
 		camPos,
 		camPos + viewDir,
@@ -125,6 +132,7 @@ void RenderSystem::update(EntityManager &entities, EventManager &events, double 
 
 	camera->setAspect(float(_window->width()) / float(_window->height()));
 
+	glm::mat4 model = glm::mat4(1.0f);
     m.modelView = view * model;
     m.projection = glm::perspective(
 		camera->fieldOfView(),
@@ -175,6 +183,12 @@ void RenderSystem::update(EntityManager &entities, EventManager &events, double 
 		Shader *shader = currentMaterial->shader();
 		shader->bind();
 
+		glm::vec3 pos = transform->position();
+		glm::vec3 rot = transform->rotation();
+		glm::vec3 scl = transform->scale();
+		glm::mat4 model = glm::mat4(1.0f);
+		applyTransform(model, pos, rot, scl);
+		m.modelView = view * model;
         ShaderBlock *matricies = shader->block("MatrixBlock");
         matricies->set(&m, sizeof(MatrixBlock));
 

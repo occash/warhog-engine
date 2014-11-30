@@ -6,6 +6,7 @@
 #include "systems/scriptsystem.h"
 
 //Components
+#include "components/infocomponent.h"
 #include "components/transformcomponent.h"
 #include "components/cameracomponent.h"
 #include "components/meshfiltercomponent.h"
@@ -136,6 +137,7 @@ void Engine::initialize()
 {
 	//Create camera
 	Entity cameraId = entities.create();
+	auto cameraInfo = cameraId.assign<InfoComponent>("Main camera");
 	auto cameraPos = cameraId.assign<TransformComponent>();
 	auto camera = cameraId.assign<CameraComponent>();
 
@@ -148,6 +150,7 @@ void Engine::initialize()
 
 	//Create light
 	Entity lightId = entities.create();
+	lightId.assign<InfoComponent>("Light");
 	_lightNode = lightId;
 	auto lightPos = lightId.assign<TransformComponent>();
 	auto light = lightId.assign<LightComponent>();
@@ -159,6 +162,7 @@ void Engine::initialize()
 
 	//Create model
 	Entity modelId = entities.create();
+	modelId.assign<InfoComponent>("Dragon");
 	modelId.assign<TransformComponent>();
 	auto meshFilter = modelId.assign<MeshFilterComponent>();
 	auto material = modelId.assign<MaterialComponent>();
@@ -246,6 +250,8 @@ void Engine::update(double dt)
 	auto lightPos = _lightNode.component<TransformComponent>();
 	glm::vec3 rot = lightPos->rotation();
 	rot.y = rot.y + 1;
+	if (rot.y == 360)
+		rot.y = 0;
 	lightPos->setRotation(rot);
 
 	systems.update<RenderSystem>(dt);
@@ -254,4 +260,25 @@ void Engine::update(double dt)
 Window *Engine::window() const
 {
 	return _window;
+}
+
+void Engine::createEntity(const std::string& name)
+{
+	Entity entityId = entities.create();
+	entityId.assign<InfoComponent>(name);
+	entityId.assign<TransformComponent>();
+}
+
+void Engine::addComponent(entityx::Entity id, const std::string& name)
+{
+	if (name == "Camera")
+		id.assign<CameraComponent>();
+	if (name == "Light")
+		id.assign<LightComponent>();
+	if (name == "Material")
+		id.assign<MaterialComponent>();
+	if (name == "Mesh")
+		id.assign<MeshFilterComponent>();
+	if (name == "Script")
+		id.assign<ScriptComponent>();
 }

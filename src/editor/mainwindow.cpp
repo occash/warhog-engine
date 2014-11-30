@@ -100,6 +100,28 @@ void MainWindow::installUi()
 	//Create actions for VIEW menu
 	QAction *fullscreenAction = new QAction(tr("Full screen"), viewMenu);
 
+
+	//Create actions for Entity menu
+	QAction *createEmptyAction = new QAction(tr("Create empty"), entityMenu);
+	entityMenu->addAction(createEmptyAction);
+	connect(createEmptyAction, SIGNAL(triggered()), this, SLOT(createEmpty()));
+
+	//Create actions for Component menu
+	QAction *cameraAction = new QAction(tr("Camera"), componentMenu);
+	QAction *lightAction = new QAction(tr("Light"), componentMenu);
+	QAction *materialAction = new QAction(tr("Material"), componentMenu);
+	QAction *meshAction = new QAction(tr("Mesh"), componentMenu);
+	QAction *scriptAction = new QAction(tr("Script"), componentMenu);
+	
+	componentMenu->addAction(cameraAction);
+	componentMenu->addAction(lightAction);
+	componentMenu->addAction(materialAction);
+	componentMenu->addAction(meshAction);
+	componentMenu->addAction(scriptAction);
+
+	connect(componentMenu, SIGNAL(triggered(QAction *)), this, SLOT(addComponent(QAction *)));
+	_inspector->installComponents(componentMenu);
+
 	//Install menus
 	_menubar = new QMenuBar(this);
 	_menubar->addMenu(fileMenu);
@@ -370,4 +392,21 @@ void MainWindow::recentProject(QAction *recent)
 void MainWindow::timerEvent(QTimerEvent *event)
 {
 	_engine.step(0.015f);
+	_inspector->update();
+}
+
+void MainWindow::createEmpty()
+{
+	_engine.createEntity("New entity");
+}
+
+void MainWindow::addComponent(QAction *action)
+{
+	QModelIndex index = _scene->current();
+	int id = reinterpret_cast<int>(index.internalPointer());
+	entityx::Entity entity(&_engine.entities, entityx::Entity::Id(id, 1));
+	if (!entity.valid())
+		return;
+
+	_engine.addComponent(entity, action->text().toStdString());
 }
