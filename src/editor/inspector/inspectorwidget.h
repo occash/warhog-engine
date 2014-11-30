@@ -8,6 +8,8 @@
 
 class QVBoxLayout;
 class ComponentView;
+class QPushButton;
+class QMenu;
 
 class InspectorWidget : public QWidget
 {
@@ -17,11 +19,15 @@ public:
     InspectorWidget(entityx::EntityManager *manager, QWidget *parent = 0);
     ~InspectorWidget();
 
+	void installComponents(QMenu *menu);
+	void update();
+
 public slots:
     void inspect(const QModelIndex &index);
 
 private:
     QVBoxLayout *_layout;
+	QPushButton *_addButton;
 	ComponentView *_transformView;
 	ComponentView *_cameraView;
 	entityx::EntityManager *_manager;

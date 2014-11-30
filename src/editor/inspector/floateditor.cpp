@@ -27,6 +27,9 @@ FloatEditor::~FloatEditor()
 
 void FloatEditor::update()
 {
+	if (!object())
+		return;
+
 	Any any = value();
 	float value = any_cast<float>(any);
 	_spinBox->setValue(value);

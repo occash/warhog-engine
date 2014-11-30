@@ -6,27 +6,39 @@
 
 #include <QPushButton>
 #include <QFormLayout>
+#include <QVBoxLayout>
 #include <QLayoutItem>
 #include <QRegularExpression>
 
 ComponentView::ComponentView(const Api *api, QWidget *parent)
-    : QWidget(parent)
-    //_label(new QPushButton(name, this))
+    : QWidget(parent),
+    _label(nullptr)
 {
-	_layout = new QFormLayout(this);
-    _layout->setContentsMargins(0, 0, 0, 0);
-    _layout->setSpacing(3);
+	_layout = new QVBoxLayout(this);
+	_layout->setContentsMargins(0, 0, 0, 0);
+	setLayout(_layout);
 
-    /*_label->setFlat(true);
-    _label->setCheckable(true);
-    _label->setChecked(true);
-    _layout->addWidget(_label);*/
+	//Create header
+	_label = new QPushButton(QString(api->name()), this);
+	_label->setFlat(true);
+	_label->setCheckable(true);
+	_label->setChecked(true);
+	_layout->addWidget(_label);
+	connect(_label, SIGNAL(toggled(bool)),
+		this, SLOT(toggleState(bool)));
 
+	//Create editors
+	_container = new QWidget(this);
+	_editorsLayout = new QFormLayout(this);
+	_editorsLayout->setContentsMargins(0, 0, 0, 0);
+	_editorsLayout->setSpacing(3);
+	_container->setLayout(_editorsLayout);
+	_layout->addWidget(_container);
+
+	//Fill property editors
 	_editors.resize(api->propertyCount());
 	for (int i = 0; i < api->propertyCount(); ++i)
 		insertProperty(i, api->property(i));
-
-    setLayout(_layout);
 }
 
 ComponentView::~ComponentView()
@@ -62,31 +74,26 @@ void ComponentView::insertProperty(int index, Property p)
 	editorName.append(lastChars);
 	editorName[0] = editorName.at(0).toUpper();
 
-	_layout->addRow(editorName, editor);
+	_editorsLayout->addRow(editorName, editor);
 	_editors[index] = editor;
 }
 
 void ComponentView::inspect(Object *component)
 {
-	for (int i = 0; i < _layout->rowCount(); ++i)
+	for (int i = 0; i < _editorsLayout->rowCount(); ++i)
 	{
 		_editors.at(i)->setObject(component);
 		_editors.at(i)->update();
 	}
 }
 
-/*void ComponentView::setBody(QWidget *body)
+void ComponentView::update()
 {
-    QLayoutItem *item = _layout->itemAt(1);
-    if (item)
-    {
-        item->widget()->hide();
-        item->widget()->setParent(nullptr);
-        _layout->removeItem(item);
-        item->widget()->deleteLater();
-    }
-        
-    body->setParent(this);
-    connect(_label, SIGNAL(clicked(bool)), body, SLOT(setVisible(bool)));
-    _layout->addWidget(body);
-}*/
+	foreach(PropertyEditor *editor, _editors)
+		editor->update();
+}
+
+void ComponentView::toggleState(bool checked)
+{
+	_container->setVisible(checked);
+}

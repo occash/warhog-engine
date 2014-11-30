@@ -2,7 +2,8 @@
 
 PropertyEditor::PropertyEditor(Property p, QWidget *parent)
     : QWidget(parent),
-	_property(p)
+	_property(p),
+	_object(nullptr)
 {
 }
 

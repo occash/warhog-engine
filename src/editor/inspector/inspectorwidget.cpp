@@ -9,6 +9,8 @@
 #include <components/transformcomponent.h>
 
 #include <QVBoxLayout>
+#include <QPushButton>
+#include <QMenu>
 
 template<class C>
 bool checkComponent(entityx::Entity entity)
@@ -33,6 +35,9 @@ InspectorWidget::InspectorWidget(entityx::EntityManager *manager, QWidget *paren
 	_cameraView->hide();
     _layout->addWidget(_cameraView);
 
+	_addButton = new QPushButton(tr("Add component"), this);
+	_layout->addWidget(_addButton);
+
     _layout->addStretch();
     setLayout(_layout);
 }
@@ -49,6 +54,7 @@ void InspectorWidget::inspect(const QModelIndex &index)
 		if (view)
 			view->hide();
 	}
+	_addButton->show();
 
     int id = reinterpret_cast<int>(index.internalPointer());
 
@@ -76,4 +82,15 @@ void InspectorWidget::inspect(const QModelIndex &index)
 void InspectorWidget::showComponents(quint32 id, quint32 version)
 {
 
+}
+
+void InspectorWidget::update()
+{
+	_transformView->update();
+	_cameraView->update();
+}
+
+void InspectorWidget::installComponents(QMenu *menu)
+{
+	_addButton->setMenu(menu);
 }

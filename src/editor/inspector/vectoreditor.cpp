@@ -46,6 +46,9 @@ VectorEditor::~VectorEditor()
 
 void VectorEditor::update()
 {
+	if (!object())
+		return;
+
 	Any any = value();
 	glm::vec3 value = any_cast<glm::vec3>(any);
 	_spinBoxX->setValue(value.x);

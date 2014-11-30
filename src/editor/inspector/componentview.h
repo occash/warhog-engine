@@ -9,6 +9,7 @@
 class PropertyEditor;
 
 class QFormLayout;
+class QVBoxLayout;
 class QPushButton;
 
 class ComponentView : public QWidget
@@ -20,12 +21,18 @@ public:
     ~ComponentView();
 
     void inspect(Object *component);
+	void update();
+
+private slots:
+	void toggleState(bool checked);
 
 private:
 	void insertProperty(int index, Property p);
 
 private:
-	QFormLayout *_layout;
+	QVBoxLayout *_layout;
+	QFormLayout *_editorsLayout;
+	QWidget *_container;
     QPushButton *_label;
 	QVector<PropertyEditor *> _editors;
 
