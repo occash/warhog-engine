@@ -2,6 +2,7 @@
 
 
 TransformComponent::TransformComponent()
+	: _scale(1.0f, 1.0f, 1.0f)
 {
 }
 

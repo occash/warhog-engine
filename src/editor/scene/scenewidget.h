@@ -18,6 +18,7 @@ public:
 		QWidget *parent = 0);
 
 	void prepare();
+	QModelIndex current() const;
 
 signals:
 	void pressed(const QModelIndex&);

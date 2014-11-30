@@ -26,3 +26,8 @@ void SceneWidget::prepare()
 {
 	_model->prepare();
 }
+
+QModelIndex SceneWidget::current() const
+{
+	return _tree->currentIndex();
+}

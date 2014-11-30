@@ -92,27 +92,30 @@ QVariant SceneModel::data(const QModelIndex &index, int role) const
 	if (!index.isValid())
 		return QVariant();
 
-	if (role != Qt::DisplayRole)
-		return QVariant();
-
-	/*tree_node_<entityx::Entity> *node =
-		static_cast<tree_node_<entityx::Entity> *>(index.internalPointer());
-	tree<entityx::Entity>::iterator nodeItem(node);
-
-	if (nodeItem == _root || !node->data.valid())
-		return QVariant();*/
-
-	entityx::Entity entity(const_cast<entityx::EntityManager *>(_entities), entityx::Entity::Id(index.row(), 1));
-	auto info = entity.component<InfoComponent>();
-	if (info)
+	if (role == Qt::DisplayRole)
 	{
-		std::string name = info->name;
-		QString qname = QString::fromStdString(name);
-		QVariant res = QVariant(qname);
-		return res;
+		entityx::Entity entity(const_cast<entityx::EntityManager *>(_entities), entityx::Entity::Id(index.row(), 1));
+		auto info = entity.component<InfoComponent>();
+		if (info)
+		{
+			std::string name = info->name;
+			QString qname = QString::fromStdString(name);
+			QVariant res = QVariant(qname);
+			return res;
+		}
 	}
-	else
-		return "Unnamed";
+	if (role == Qt::EditRole)
+	{
+		int id = reinterpret_cast<int>(index.internalPointer());
+		entityx::Entity entity(_entities, entityx::Entity::Id(id, 1));
+		if (!entity.valid())
+			return QVariant();
+
+		auto entityInfo = entity.component<InfoComponent>();
+		return QString::fromStdString(entityInfo->name);
+	}
+	
+	return QVariant();
 }
 
 Qt::ItemFlags SceneModel::flags(const QModelIndex &index) const
@@ -120,7 +123,7 @@ Qt::ItemFlags SceneModel::flags(const QModelIndex &index) const
 	if (!index.isValid())
 		return 0;
 
-	return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
+	return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable;
 }
 
 bool SceneModel::setData(const QModelIndex &index, const QVariant &value, int role)
@@ -128,12 +131,17 @@ bool SceneModel::setData(const QModelIndex &index, const QVariant &value, int ro
 	if (!index.isValid())
 		return false;
 
-	/*if (role == Qt::EditRole)
+	if (role == Qt::EditRole)
 	{
-		const ResourceNode *item =
-			static_cast<const ResourceNode *>(index.internalPointer());
-		return _io->renameNode(const_cast<ResourceNode *>(item), value.toString().toStdString());
-	}*/
+		int id = reinterpret_cast<int>(index.internalPointer());
+		entityx::Entity entity(_entities, entityx::Entity::Id(id, 1));
+		if (!entity.valid())
+			return false;
+
+		auto entityInfo = entity.component<InfoComponent>();
+		entityInfo->name = value.toString().toStdString();
+		return true;
+	}
 
 	return false;
 }
