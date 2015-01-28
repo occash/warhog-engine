@@ -69,7 +69,7 @@ struct AnyHelper<T, False>
 	}
 };
 
-/*! \breif The Any class holds the copy of any data type.
+/*! \brief The Any class holds the copy of any data type.
 */
 class UMOF_EXPORT Any
 {

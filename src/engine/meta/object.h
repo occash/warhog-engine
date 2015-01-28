@@ -84,7 +84,7 @@ public: \
 	} \
 private:
 
-/*! \breif The Object class is the base class of all objects.
+/*! \brief The Object class is the base class of all objects.
 */
 class UMOF_EXPORT Object
 {

@@ -10,7 +10,7 @@
 class ResourceIO;
 class ResourceNode;
 
-/*! \breif The ResourceManager class allows engine to manage assests
+/*! \brief The ResourceManager class allows engine to manage assests
 */
 class ENGINE_EXPORT ResourceManager
 {
@@ -21,49 +21,61 @@ public:
 	void setBasePath(const std::string& path);
 	std::string basePath() const;
 
-	/*! \breif Add resource loader to manager
+	/*! \brief Add resource loader to manager
+	
 		Use addLoader(Args... args) for convinience. It will create
 		loader automatically.
+		
 		\param loader Pointer to existing resource loader
 		\sa addLoader(Args... args)
 		\sa BaseResource
-		\sa Reource
+		\sa Resource
 	*/
 	void addLoader(std::shared_ptr<BaseResource> loader);
 	void removeLoader(std::shared_ptr<BaseResource> loader);
 
-	/*! \breif Load resource with given id
+	/*! \brief Load resource with given id
 	*/
 	std::shared_ptr<Object> load(const std::string& id);
 
-	/*! \breif Save resource to abstract storage
+	/*! \brief Save resource to abstract storage
+	
 		Use this function to store the resource. 
 		You should explicitly set resource type.
 		If you want the manager to guess the type
-		use save(const std::string& id, std::shared_ptr<T> object) for convinience.
-		Warning: groups not created automatically
-		\param id Resource identificator
+		use save(const std::string& id, std::shared_ptr<T> object)
+		for convenience.
+		
+		\warning Groups not created automatically
+		
+		\param id Resource identifier
 		\param type Resource type
 		\sa load
 		\sa ResourceIO
 	*/
 	bool save(const std::string& id, std::shared_ptr<Object> object);
 
-	/*! \breif Returns resource group by id
+	/*! \brief Returns resource group by id
+	
 		If id is empty method will return root group.
+		
 		\param id Resource group id
 		\sa root()
 	*/
 	//const ResourceGroup *group(const std::string& id = std::string()) const;
 
-	/*! \breif Returns root resource group
+	/*! \brief Returns root resource group
+	
 		Same as group("").
+		
 		\sa group()
 	*/
 	const ResourceNode *root() const;
 
-	/*! \breif Creates new group
+	/*! \brief Creates new group
+	
 		It also creates all subgroups if required.
+		
 		\param id Full path for group
 		\sa group()
 	*/
@@ -71,8 +83,10 @@ public:
 
 	bool createHandle(BaseResource::Type type, const std::string& id);
 
-	/*! \breif Removes group and all resources assotiated with it
+	/*! \brief Removes group and all resources assotiated with it
+	
 		\param id Full path for group
+		
 		\sa group()
 	*/
 	bool deleteNode(const std::string& id);

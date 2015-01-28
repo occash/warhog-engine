@@ -27,7 +27,7 @@ USA.
 
 class Any;
 
-/* \breif The Type class manages types.
+/* \brief The Type class manages types.
 */
 class UMOF_EXPORT Type
 {
