@@ -12,3 +12,10 @@ pages:
 - ['editor/interface/index.md', 'Editor', 'Interface']
 # Localization section
 - ['localization/index.md', 'Localization']
+#Development section
+- ['dev/index.md', 'Development']
+- ['dev/ai.md', 'Development', 'AI']
+- ['dev/animation.md', 'Development', 'Animation']
+- ['dev/graphics.md', 'Development', 'Graphics']
+- ['dev/physics.md', 'Development', 'Physics']
+- ['dev/scripting.md', 'Development', 'Scripting']
