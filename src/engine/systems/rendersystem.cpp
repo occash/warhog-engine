@@ -52,6 +52,52 @@ struct RenderInfo
 	Mesh *mesh;
 };
 
+struct RenderQuad
+{
+	void create()
+	{
+		static const float verticies[] = {
+			-1.0, -1.0, 0.5, 1.0,
+			1.0, -1.0, 0.5, 1.0,
+			-1.0, 1.0, 0.5, 1.0,
+			1.0, 1.0, 0.5, 1.0
+		};
+		glGenVertexArrays(1, &_vao);
+		glBindVertexArray(_vao);
+
+		glGenBuffers(1, &_vbo);
+		glBindBuffer(GL_ARRAY_BUFFER, _vbo);
+		glBufferData(GL_ARRAY_BUFFER, 16 * sizeof(Vertex), verticies, GL_STATIC_DRAW);
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 4, 0);
+		glEnableVertexAttribArray(0);
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+		glBindVertexArray(0);
+	}
+
+	void draw()
+	{
+		glBindVertexArray(_vao);
+		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+		glBindVertexArray(0);
+	}
+
+	void destroy()
+	{
+		glBindVertexArray(_vao);
+
+		glDeleteBuffers(1, &_vbo);
+		glDeleteVertexArrays(1, &_vao);
+
+		glBindVertexArray(0);
+	}
+
+	GLuint _vao;
+	GLuint _vbo;
+};
+
+RenderQuad renderQuad;
+
 struct MatrixBlock
 {
 	glm::mat4 modelView;
@@ -74,6 +120,15 @@ struct DirectLight
 	glm::float_t __padding1;
 };
 
+struct SkyboxBlock
+{
+	glm::mat4 view;
+	float fov;
+	float width;
+	float height;
+	float _padding0;
+};
+
 void applyTransform(glm::mat4& block, glm::vec3 move, glm::vec3 rotate, glm::vec3 scale)
 {
 	block = glm::translate(block, move);
@@ -81,6 +136,15 @@ void applyTransform(glm::mat4& block, glm::vec3 move, glm::vec3 rotate, glm::vec
 	block = glm::rotate(block, -rotate.y, glm::vec3(1.0f, 0.0f, 0.0f));
 	block = glm::rotate(block, -rotate.z, glm::vec3(0.0f, 0.0f, 1.0f));
 	block = glm::scale(block, scale);
+}
+
+void RenderSystem::renderSkyBox()
+{
+	/*_skyShader->bind();
+	ShaderBlock *skyMatrices = _skyShader->block("MatrixBlock");
+	skyMatrices->set(&m, sizeof(MatrixBlock));
+	_skyMesh->draw();
+	_skyShader->unbind();*/
 }
 
 RenderSystem::RenderSystem() :
@@ -91,6 +155,7 @@ RenderSystem::RenderSystem() :
 
 RenderSystem::~RenderSystem()
 {
+	renderQuad.destroy();
 }
 
 void RenderSystem::configure(EventManager &events)
@@ -120,9 +185,13 @@ void RenderSystem::update(EntityManager &entities, EventManager &events, double 
     glm::vec3 viewDir = glm::vec3(0.0f, 0.0f, -1.0f);
     glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
 
-    viewDir = glm::rotate(viewDir, -camRot.x, glm::vec3(0.0f, 1.0f, 0.0f));
-    viewDir = glm::rotate(viewDir, -camRot.y, glm::vec3(1.0f, 0.0f, 0.0f));
-    viewDir = glm::rotate(viewDir, -camRot.z, glm::vec3(0.0f, 0.0f, 1.0f));
+	//yaw
+	viewDir = glm::rotate(viewDir, camRot.x, glm::vec3(0.0f, 1.0f, 0.0f));
+	//pitch
+	viewDir = glm::rotate(viewDir, camRot.y, glm::vec3(1.0f, 0.0f, 0.0f));
+	//roll
+	/*cameraUp = glm::normalize(glm::cross(glm::vec3(1.0f, 0.0f, 0.0f), viewDir));
+	cameraUp = glm::rotate(cameraUp, camRot.z, glm::vec3(0.0f, 0.0f, 1.0f));*/
 
     glm::mat4 view = glm::lookAt(
 		camPos,
@@ -148,9 +217,17 @@ void RenderSystem::update(EntityManager &entities, EventManager &events, double 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	_skyShader->bind();
-	ShaderBlock *skyMatrices = _skyShader->block("MatrixBlock");
-	skyMatrices->set(&m, sizeof(MatrixBlock));
-	_skyMesh->draw();
+	SkyboxBlock sky;
+	sky.fov = camera->fieldOfView();
+	sky.width = _window->width();
+	sky.height = _window->height();
+	sky.view = glm::inverse(view);
+	ShaderBlock *skyMatrices = _skyShader->block("SkyboxBlock");
+	skyMatrices->set(&sky, sizeof(SkyboxBlock));
+	ShaderVariable *tex = _skyShader->variable("skyTexture");
+	tex->set(_skyTexture);
+	//_skyMesh->draw();
+	renderQuad.draw();
 	_skyShader->unbind();
 
 	//Setup lights
@@ -160,11 +237,11 @@ void RenderSystem::update(EntityManager &entities, EventManager &events, double 
     auto lightTransform = (*lightObject).component<TransformComponent>();
     auto light = (*lightObject).component<LightComponent>();
 
-    glm::vec3 lightDir(1.0f, 0.0f, 0.0f);
+    glm::vec3 lightDir(0.0f, 0.0f, 1.0f);
     glm::vec3 lightRot = lightTransform->rotation();
-    lightDir = glm::rotate(lightDir, -lightRot.x, glm::vec3(1.0f, 0.0f, 0.0f));
-    lightDir = glm::rotate(lightDir, -lightRot.y, glm::vec3(0.0f, 1.0f, 0.0f));
-    lightDir = glm::rotate(lightDir, -lightRot.z, glm::vec3(0.0f, 0.0f, 1.0f));
+    lightDir = glm::rotate(lightDir, lightRot.x, glm::vec3(0.0f, 1.0f, 0.0f));
+    lightDir = glm::rotate(lightDir, lightRot.y, glm::vec3(1.0f, 0.0f, 0.0f));
+    lightDir = glm::rotate(lightDir, lightRot.z, glm::vec3(0.0f, 0.0f, 1.0f));
     lightDir = glm::normalize(lightDir);
 
     DirectLight dlight;
@@ -198,7 +275,7 @@ void RenderSystem::update(EntityManager &entities, EventManager &events, double 
 		meshFilter->mesh()->draw();
 		shader->unbind();
 
-		//TODO: make occlusion query (CHC++ ?)
+		//TODO : make occlusion query (CHC++ ?)
 		/*glm::vec3 *boxScale = reinterpret_cast<glm::vec3 *>(meshFilter->mesh()->scale);
 		m.modelView = glm::scale(m.modelView, *boxScale);
 		_boxShader->bind();
@@ -317,12 +394,13 @@ void RenderSystem::chooseBackend(const std::string& name)
 	_window = _renderer->createWindow();
 	_window->hide();
 	_window->update();
-	_renderer->createOcclusionQuery();
+	//_renderer->createOcclusionQuery();
+	renderQuad.create();
 
-	_boxShader = _renderer->createShader();
+	/*_boxShader = _renderer->createShader();
 	_boxShader->vertexSource = readFile("resources/shaders/box.vert");
 	_boxShader->pixelSource = readFile("resources/shaders/box.frag");
-	_boxShader->load();
+	_boxShader->load();*/
 
 	_skyShader = _renderer->createShader();
 	_skyShader->vertexSource = readFile("resources/shaders/skybox.vert");
@@ -333,14 +411,14 @@ void RenderSystem::chooseBackend(const std::string& name)
 	std::ifstream texIn("resources/skybox", std::ios::binary | std::ios::in);
 	Object *texObject = nullptr;
 	texResource.load(texIn, texObject);
-	Texture *tex2d = static_cast<Texture*>(texObject);
-	tex2d->load();
+	_skyTexture = static_cast<Texture*>(texObject);
+	_skyTexture->load();
 
-	Material *skyMat = new Material();
+	/*Material *skyMat = new Material();
 	skyMat->setShader(_skyShader);
-	skyMat->setProperty("skyBox", tex2d);
+	skyMat->setProperty("skyBox", tex2d);*/
 
-	_boxMesh = _renderer->createMesh();
+	/*_boxMesh = _renderer->createMesh();
 	_boxMesh->verticies.assign
 	({
 		Vertex{ { -0.5, -0.5, -0.5 } },
@@ -359,9 +437,9 @@ void RenderSystem::chooseBackend(const std::string& name)
 		0, 4, 1, 5, 
 		2, 6, 3, 7
 	});
-	_boxMesh->load();
+	_boxMesh->load();*/
 
-	float width = 100.0f, height = 100.0f, depth = 100.0f;
+	/*float width = 100.0f, height = 100.0f, depth = 100.0f;
 	_skyMesh = _renderer->createMesh();
 	_skyMesh->verticies.assign
 		({
@@ -389,7 +467,7 @@ void RenderSystem::chooseBackend(const std::string& name)
 		0, 1, 5,
 		0, 5, 4
 	});
-	_skyMesh->load();
+	_skyMesh->load();*/
 }
 
 Renderer *RenderSystem::renderer() const

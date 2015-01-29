@@ -94,6 +94,7 @@ void loadImage(const char *name, Image *image)
 	image->data = new unsigned char[dataSize];
 
 	//Set data
+	//TODO FreeImage_GetRawBits
 	unsigned char *imageData = FreeImage_GetBits(bitmap);
 	memcpy(image->data, imageData, dataSize);
 

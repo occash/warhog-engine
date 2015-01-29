@@ -7,6 +7,7 @@
 #include "render/renderwidget.h"
 
 #include "dialogs/newproject.h"
+#include "editors/scripteditor.h"
 
 #include <window.h>
 
@@ -154,6 +155,9 @@ void MainWindow::installUi()
 	QWidget *renderWidget = QWidget::createWindowContainer(renderWindow, this);
 
 	setCentralWidget(renderWidget);
+
+	/*ScriptEditor *editor = new ScriptEditor(this);
+	setCentralWidget(editor);*/
 
 	connect(qApp, SIGNAL(commitDataRequest(QSessionManager&)),
 		this, SLOT(commitData(QSessionManager&)));

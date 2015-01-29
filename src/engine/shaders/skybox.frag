@@ -1,15 +1,16 @@
-#version 440
+#version 430
 
-uniform samplerCube material_skyBox;
+uniform samplerCube skyTexture;
+const float bright = 1.0;
 
 in Data
 {
-	vec3 cubeCoord;
+	vec3 viewRay;
 } DataIn;
 
 layout(location=0) out vec4 fragColor;
 
 void main()
 {
-	fragColor = texture(material_skyBox, DataIn.cubeCoord);
+	fragColor = vec4(texture(skyTexture, DataIn.viewRay).rgb, 1.0);
 }
