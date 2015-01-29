@@ -6,7 +6,7 @@
 
 class Window;
 
-/*! \breif This class encapsulates OpenGL rendering context.
+/*! \brief This class encapsulates OpenGL rendering context.
 *
 * A context stores all of the state associated with this instance of OpenGL. 
 * The rendering context and framebuffer hints is set in constructor, however

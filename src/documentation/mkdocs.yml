@@ -1,0 +1,21 @@
+site_name: Warhog manual
+site_description: Warhog manual
+site_favicon: logo.png
+theme: cyborg
+docs_dir: 'manual'
+site_dir: '../../doc/manual'
+pages:
+- ['index.md', 'Manual']
+# Editor section
+- ['editor/index.md', 'Editor']
+- ['editor/dvcs.md', 'Editor', 'Version Control']
+- ['editor/interface/index.md', 'Editor', 'Interface']
+# Localization section
+- ['localization/index.md', 'Localization']
+#Development section
+- ['dev/index.md', 'Development']
+- ['dev/ai.md', 'Development', 'AI']
+- ['dev/animation.md', 'Development', 'Animation']
+- ['dev/graphics.md', 'Development', 'Graphics']
+- ['dev/physics.md', 'Development', 'Physics']
+- ['dev/scripting.md', 'Development', 'Scripting']

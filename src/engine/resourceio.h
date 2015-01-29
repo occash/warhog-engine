@@ -10,7 +10,7 @@
 class ResourceNode;
 class ResourceManager;
 
-/*! \breif This class Handle input/output operations of resources
+/*! \brief This class Handle input/output operations of resources
 	ResourceIO stores tree-like group structure 
 	(You can store it internally as you like).
 	It also keep track the types of resources in bundle

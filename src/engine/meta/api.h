@@ -29,7 +29,7 @@ USA.
 
 class Api;
 
-/*! \breif Internal struct to store class meta information.
+/*! \brief Internal struct to store class meta information.
 */
 struct ApiTable
 {
@@ -41,7 +41,7 @@ struct ApiTable
 	int propCount;
 };
 
-/*! \breif The Api class contains meta information about objects.
+/*! \brief The Api class contains meta information about objects.
 	An Api instance is created for every object with U_OBJECT macro
 	defined inside its declaration. The api is available as
 	Object::api() or Object::classApi().
@@ -52,7 +52,7 @@ struct ApiTable
 class UMOF_EXPORT Api
 {
 public:
-	/*! \breif Constructs an Api with the given table.
+	/*! \brief Constructs an Api with the given table.
 		Api constructor should never be used directly. 
 		Please use U_OBJECT() macro instead.
 	*/
