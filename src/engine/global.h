@@ -6,10 +6,30 @@
 template <typename T>
 using Ptr = std::shared_ptr<T>;
 
-#ifdef ENGINE_LIB
-#define ENGINE_EXPORT _declspec(dllexport)
+#if defined(_WIN32) || defined(__CYGWIN__)
+	#if defined ENGINE_LIB
+		#if defined(__GNUC__)
+			#define UMOF_EXPORT __attribute__ ((dllexport))
+		#elif defined(_MSC_VER)
+			#define UMOF_EXPORT __declspec(dllexport)
+		#else
+			#define UMOF_EXPORT
+		#endif
+	#else
+		#if defined(__GNUC__)
+			#define UMOF_EXPORT __attribute__ ((dllimport))
+		#elif defined(_MSC_VER)
+			#define UMOF_EXPORT __declspec(dllimport)
+		#else
+			#define  UMOF_EXPORT
+		#endif
+	#endif
 #else
-#define ENGINE_EXPORT _declspec(dllimport)
+	#if __GNUC__ >= 4
+		#define UMOF_EXPORT __attribute__ ((visibility ("default")))
+	#else
+		#define UMOF_EXPORT
+	#endif
 #endif
 
 #endif
