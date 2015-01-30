@@ -196,3 +196,15 @@ solution 'warhog'
 				'FreeImage',
 				'assimp'
 			}
+			
+	project 'documentation'
+		kind 'Makefile'
+		
+		files { 'src/documentation/**' }
+		
+		buildcommands
+		{
+			'cd '.._MAIN_SCRIPT_DIR..'/src/documentation',
+			'doxygen doxyfile',
+			'mkdocs build --clean'
+		}
