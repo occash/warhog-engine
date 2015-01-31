@@ -32,4 +32,8 @@ using Ptr = std::shared_ptr<T>;
 	#endif
 #endif
 
+
+//For documentation purposes
+#define DOC_PROP(x)
+
 #endif
