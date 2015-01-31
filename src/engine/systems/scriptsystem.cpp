@@ -49,11 +49,11 @@ void ScriptSystem::update(EntityManager &manager, EventManager &events, double d
 
 void ScriptSystem::registerEngine(ScriptEngine *engine)
 {
-    Ptr<ScriptEngine> enginePtr(engine);
+    std::shared_ptr<ScriptEngine> enginePtr(engine);
     _engines.insert(std::make_pair(engine->name(), enginePtr));
 }
 
-bool ScriptSystem::assign(Entity entity, Ptr<Script> script)
+bool ScriptSystem::assign(Entity entity, std::shared_ptr<Script> script)
 {
     auto enginePair = _engines.find(script->engine);
 	if (enginePair == _engines.end())

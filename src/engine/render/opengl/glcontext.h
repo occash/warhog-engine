@@ -26,7 +26,7 @@ public:
         const GLFramebufferHints& frame = GLFramebufferHints());
     ~GLContext();
 
-    bool makeCurrent(Ptr<Window> w);
+    bool makeCurrent(std::shared_ptr<Window> w);
 
 private:
     void setContext(const GLContextHints& context);

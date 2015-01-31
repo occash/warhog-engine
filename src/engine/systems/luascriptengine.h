@@ -21,7 +21,7 @@ public:
 
     bool load(const std::string& name, const std::string& source);
 	BaseScript *instance(const std::string& name);
-    void collect(Ptr<ScriptComponent> script);
+    void collect(std::shared_ptr<ScriptComponent> script);
 
 private:
     lua_State *_state;

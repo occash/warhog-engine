@@ -37,7 +37,7 @@ GLContext::~GLContext()
     //glfwTerminate();
 }
 
-bool GLContext::makeCurrent(Ptr<Window> w)
+bool GLContext::makeCurrent(std::shared_ptr<Window> w)
 {
     /*glfwMakeContextCurrent(w->_handle);
 

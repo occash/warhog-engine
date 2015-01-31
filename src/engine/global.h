@@ -1,10 +1,6 @@
 #ifndef GLOBAL_H
 #define GLOBAL_H
 
-#include <memory>
-
-template <typename T>
-using Ptr = std::shared_ptr<T>;
 
 #if defined(_WIN32) || defined(__CYGWIN__)
 	#if defined(__GNUC__)

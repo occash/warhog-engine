@@ -290,7 +290,7 @@ void RenderSystem::update(EntityManager &entities, EventManager &events, double 
 	_window->update();
 }
 
-/*void RenderSystem::geometryPass(Ptr<EntityManager> entities, MatrixBlock& m)
+/*void RenderSystem::geometryPass(std::shared_ptr<EntityManager> entities, MatrixBlock& m)
 {
     _gbuffer.bind(GBuffer::Write);
 
@@ -352,7 +352,7 @@ void RenderSystem::update(EntityManager &entities, EventManager &events, double 
     glDisable(GL_DEPTH_TEST);
 }
 
-void RenderSystem::lightPass(Ptr<EntityManager> entities, MatrixBlock& m)
+void RenderSystem::lightPass(std::shared_ptr<EntityManager> entities, MatrixBlock& m)
 {
 
 }*/
