@@ -6,7 +6,7 @@
 
 #include <string>
 
-class Object;
+class Plugin;
 
 class ENGINE_EXPORT PluginLoader
 {
@@ -21,7 +21,7 @@ public:
 	bool load();
 	bool unload();
 
-	Object *object() const;
+	Plugin *plugin() const;
 
 private:
 	Library _library;

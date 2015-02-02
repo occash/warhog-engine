@@ -1,8 +1,18 @@
-#include <engine.h>
+//#include <engine.h>
+#include <window.h>
+#include <dispatcher.h>
 
 int main()
 {
-	Engine game;
+	Dispatcher app;
+
+	Window w;
+	w.show();
+
+	while (w.isVisible())
+		app.update();
+	
+	/*Engine game;
 	game.start();
-	return game.run();
+	return game.run();*/
 }

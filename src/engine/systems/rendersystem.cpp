@@ -287,7 +287,7 @@ void RenderSystem::update(EntityManager &entities, EventManager &events, double 
 		_boxShader->unbind();*/
     }
 
-	_window->update();
+	//_window->update();
 }
 
 /*void RenderSystem::geometryPass(std::shared_ptr<EntityManager> entities, MatrixBlock& m)
@@ -393,7 +393,7 @@ void RenderSystem::chooseBackend(const std::string& name)
 	//Create app window with context
 	_window = _renderer->createWindow();
 	_window->hide();
-	_window->update();
+	//_window->update();
 	//_renderer->createOcclusionQuery();
 	renderQuad.create();
 
