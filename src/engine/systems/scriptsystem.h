@@ -25,13 +25,13 @@ public:
     template<class Engine>
     void registerEngine();
 
-	bool assign(entityx::Entity entity, Ptr<Script> script);
+	bool assign(entityx::Entity entity, std::shared_ptr<Script> script);
 
 private:
     void registerEngine(ScriptEngine *engine);
 
 private:
-    typedef std::map<std::string, Ptr<ScriptEngine>> EngineList;
+    typedef std::map<std::string, std::shared_ptr<ScriptEngine>> EngineList;
     EngineList _engines;
 
 };

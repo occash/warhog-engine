@@ -33,6 +33,9 @@ public:
 	void receive(const entityx::ComponentRemovedEvent<MeshFilterComponent>& event);
 
 private:
+	void renderSkyBox();
+
+private:
 	typedef std::map<entityx::Entity::Id, RenderInfo*> RenderMap;
 	Renderer *_renderer;
     Window *_window;
@@ -41,6 +44,7 @@ private:
 	Shader *_skyShader;
 	Mesh *_boxMesh;
 	Mesh *_skyMesh;
+	Texture *_skyTexture;
 
 };
 

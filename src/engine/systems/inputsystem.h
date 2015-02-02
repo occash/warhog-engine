@@ -13,7 +13,7 @@ typedef std::map<std::string, int> KeyMap;
 class InputSystem : public entityx::System<InputSystem>
 {
 public:
-    InputSystem(Ptr<Window> window, const KeyMap& keyMap);
+    InputSystem(std::shared_ptr<Window> window, const KeyMap& keyMap);
     ~InputSystem();
 
     void configure(entityx::EventManager &events) override;

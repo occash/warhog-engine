@@ -3,6 +3,7 @@
 
 #include <list>
 #include <map>
+#include <memory>
 
 #include <glm/glm.hpp>
 
@@ -41,7 +42,7 @@ public:
 private:
     friend class InputSystem;
 
-    static Ptr<Window> _window;
+    static std::shared_ptr<Window> _window;
     static KeyMap _keyMap;
     static double _deltah;
     static double _deltav;

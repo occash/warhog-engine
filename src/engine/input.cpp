@@ -32,4 +32,4 @@ bool Input::button(Button b)
 double Input::_deltav = 0.0;
 double Input::_deltah = 0.0;
 Input::KeyMap Input::_keyMap;
-Ptr<Window> Input::_window;
+std::shared_ptr<Window> Input::_window;

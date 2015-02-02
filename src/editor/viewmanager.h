@@ -9,7 +9,7 @@ class ViewCreator;
 
 class QDockWidget;
 
-/*! \breif This class manages the VIEW menu entries
+/*! \brief This class manages the VIEW menu entries
 */
 class ViewManager : public QObject
 {

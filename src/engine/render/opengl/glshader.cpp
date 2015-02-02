@@ -133,12 +133,12 @@ void GLShader::load()
 	for (int i = 0; i < numBlocks; ++i)
 	{
 		//Query location
-		const GLenum globalParams[] = { GL_LOCATION };
-		GLint location;
-		glGetProgramResourceiv(_program, GL_UNIFORM, i, 1, globalParams, 1, 0, &location);
-		if (location == -1) continue; //Skip block uniforms
+		const GLenum globalParams[] = { GL_BLOCK_INDEX, GL_TYPE, GL_NAME_LENGTH, GL_LOCATION };// { GL_LOCATION };
+		GLint location[4] = {-1, -1, 0, -1};
+		glGetProgramResourceiv(_program, GL_UNIFORM, i, 4, globalParams, 4, 0, location);
+		if (location[3] == -1) continue; //Skip block uniforms
 
-		_globals.push_back(GLGlobalVariable(this, _program, location));
+		_globals.push_back(GLGlobalVariable(this, _program, i/*location[3]*/));
 		_globalNames.insert(std::make_pair((_globals.data() + _globals.size() - 1)->name(), _globals.size() - 1));
 	}
 }

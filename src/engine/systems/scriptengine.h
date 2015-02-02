@@ -21,7 +21,7 @@ public:
 
     virtual bool load(const std::string& name, const std::string& source) = 0;
 	virtual BaseScript *instance(const std::string& name) = 0;
-    virtual void collect(Ptr<ScriptComponent> script) = 0;
+    virtual void collect(std::shared_ptr<ScriptComponent> script) = 0;
 
 };
 

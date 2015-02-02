@@ -31,7 +31,7 @@ USA.
 
 class Object;
 
-/* \breif Internal struct to store method meta information.
+/* \brief Internal struct to store method meta information.
 */
 struct MethodTable
 {
@@ -41,12 +41,12 @@ struct MethodTable
 	const TypeTable **types;
 };
 
-/*! \breif The Method class provides meta information for method.
+/*! \brief The Method class provides meta information for method.
 */
 class UMOF_EXPORT Method
 {
 public:
-	/*! \breif Constructs a Method with the given table.
+	/*! \brief Constructs a Method with the given table.
 		Method constructor should never be used directly.
 		Please use METHOD() or OVERLOAD() macros instead.
 	*/

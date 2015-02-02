@@ -307,7 +307,7 @@ BaseScript *LuaScriptEngine::instance(const std::string& name)
     return script;
 }
 
-void LuaScriptEngine::collect(Ptr<ScriptComponent> script)
+void LuaScriptEngine::collect(std::shared_ptr<ScriptComponent> script)
 {
     script.reset();
     lua_gc(_state, LUA_GCCOLLECT, 0);

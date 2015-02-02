@@ -2,6 +2,13 @@ solution 'warhog'
 	platforms { 'x32', 'x64' }
 	configurations { 'Release', 'Debug' }
 	location 'build'
+	startproject 'editor'
+	
+	filter 'platforms:x32'
+		architecture 'x32'
+		
+	filter 'platforms:x64'
+		architecture 'x64'
 	
 	-- Get dep libs location
 	local dep = os.getenv('DEP_ROOT')
@@ -11,8 +18,9 @@ solution 'warhog'
 		language 'C++'
 		kind 'SharedLib'
 		
-		defines { 'GLEW_STATIC', 'ENGINE_LIB', 'UMOF_LIBRARY' }
+		defines { 'ENGINE_LIB', 'UMOF_LIBRARY' }
 		includedirs { dep..'/include' }
+		vectorextensions 'AVX'
 		
 		links
 		{ 
@@ -42,16 +50,16 @@ solution 'warhog'
 			}
 		end
 		
-		configuration { 'x32', 'Debug' }
+		filter { 'platforms:x32', 'Debug' }
 			libdirs { dep..'/lib/x86/Debug'}
-		configuration { 'x32', 'Release' }
+		filter { 'platforms:x32', 'Release' }
 			libdirs { dep..'/lib/x86/Release'}
-		configuration { 'x64', 'Debug' }
+		filter { 'platforms:x64', 'Debug' }
 			libdirs { dep..'/lib/x64/Debug'}
-		configuration { 'x64', 'Release' }
+		filter { 'platforms:x64', 'Release' }
 			libdirs { dep..'/lib/x64/Release'}
 		
-		configuration 'Debug'
+		filter 'Debug'
 			targetdir 'bin/debug'
 			defines '_DEBUG'
 			flags { 'Symbols' }
@@ -64,7 +72,7 @@ solution 'warhog'
 				'luabind09-d'
 			}
 			
-		configuration 'Release'
+		filter 'Release'
 			targetdir 'bin/release'
 			defines 'NDEBUG'
 			optimize 'On'
@@ -99,21 +107,21 @@ solution 'warhog'
 			'src/launcher/**'
 		}
 		
-		configuration { 'x32', 'Debug' }
+		filter { 'platforms:x32', 'Debug' }
 			libdirs { dep..'/lib/x86/Debug'}
-		configuration { 'x32', 'Release' }
+		filter { 'platforms:x32', 'Release' }
 			libdirs { dep..'/lib/x86/Release'}
-		configuration { 'x64', 'Debug' }
+		filter { 'platforms:x64', 'Debug' }
 			libdirs { dep..'/lib/x64/Debug'}
-		configuration { 'x64', 'Release' }
+		filter { 'platforms:x64', 'Release' }
 			libdirs { dep..'/lib/x64/Release'}
 		
-		configuration 'Debug'
+		filter 'Debug'
 			targetdir 'bin/debug'
 			defines '_DEBUG'
 			flags { 'Symbols' }
 			
-		configuration 'Release'
+		filter 'Release'
 			targetdir 'bin/release'
 			defines 'NDEBUG'
 			optimize 'On'
@@ -123,7 +131,8 @@ solution 'warhog'
 		language 'C++'
 		kind 'WindowedApp'
 		
-		defines { 'FREEIMAGE_LIB' }
+		defines { 'Q_COMPILER_INITIALIZER_LISTS' }
+		
 		includedirs
 		{ 
 			'src/engine',
@@ -134,15 +143,7 @@ solution 'warhog'
 		{ 
 			'engine',
 			'entityx',
-			'libnoise',
-			'LibJPEG',
-			'LibJXR',
-			'LibOpenJPEG',
-			'LibPNG',
-			'LibRawLite',
-			'LibTIFF4',
-			'LibWebP',
-			'OpenEXR',
+			'libnoise'
 		}
 		
 		files
@@ -162,16 +163,16 @@ solution 'warhog'
 		qtmodules { 'core', 'gui', 'widgets', 'opengl', 'concurrent' }
 		qtprefix 'Qt5'
 		
-		configuration { 'x32', 'Debug' }
+		filter { 'platforms:x32', 'Debug' }
 			libdirs { dep..'/lib/x86/Debug'}
-		configuration { 'x32', 'Release' }
+		filter { 'platforms:x32', 'Release' }
 			libdirs { dep..'/lib/x86/Release'}
-		configuration { 'x64', 'Debug' }
+		filter { 'platforms:x64', 'Debug' }
 			libdirs { dep..'/lib/x64/Debug'}
-		configuration { 'x64', 'Release' }
+		filter { 'platforms:x64', 'Release' }
 			libdirs { dep..'/lib/x64/Release'}
 		
-		configuration 'Debug'
+		filter 'Debug'
 			targetdir 'bin/debug'
 			defines '_DEBUG'
 			flags { 'Symbols' }
@@ -184,7 +185,7 @@ solution 'warhog'
 				'assimpd'
 			}
 			
-		configuration 'Release'
+		filter 'Release'
 			targetdir 'bin/release'
 			defines 'NDEBUG'
 			optimize 'On'
@@ -195,3 +196,15 @@ solution 'warhog'
 				'FreeImage',
 				'assimp'
 			}
+			
+	project 'documentation'
+		kind 'Makefile'
+		
+		files { 'src/documentation/**' }
+		
+		buildcommands
+		{
+			'cd '.._MAIN_SCRIPT_DIR..'/src/documentation',
+			'doxygen doxyfile',
+			'mkdocs build --clean'
+		}

@@ -6,7 +6,7 @@
 
 using namespace entityx;
 
-InputSystem::InputSystem(Ptr<Window> window, const KeyMap& keys)
+InputSystem::InputSystem(std::shared_ptr<Window> window, const KeyMap& keys)
 {
     Input::_window = window;
     Input::_keyMap = keys;

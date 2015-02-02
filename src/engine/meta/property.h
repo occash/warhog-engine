@@ -29,7 +29,7 @@ USA.
 
 class Object;
 
-/* \breif Internal struct to store property meta information.
+/* \brief Internal struct to store property meta information.
 */
 struct PropertyTable
 {
@@ -39,12 +39,12 @@ struct PropertyTable
 	WriteMem writer;
 };
 
-/*! \breif The Method class provides meta information for property.
+/*! \brief The Method class provides meta information for property.
 */
 class UMOF_EXPORT Property
 {
 public:
-	/*! \breif Constructs a Property with the given table.
+	/*! \brief Constructs a Property with the given table.
 		Property constructor should never be used directly.
 		Please use PROPERTY() macros instead.
 	*/
