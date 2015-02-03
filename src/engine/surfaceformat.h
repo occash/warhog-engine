@@ -1,14 +1,12 @@
 #ifndef HINTS_H
 #define HINTS_H
 
-#include "../../global.h"
+#include "global.h"
 
-#include <string>
-#include <yaml-cpp/yaml.h>
-
-struct ENGINE_EXPORT GLFormat
+class ENGINE_EXPORT SurfaceFormat
 {
-    GLFormat();
+public:
+	SurfaceFormat();
 
     enum ClientApi
 	{

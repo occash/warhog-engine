@@ -8,7 +8,7 @@ class NativeLoop;
 class NativeScreen;
 class NativeWindow;
 class NativeInput;
-class NativeGLContext;
+class NativeContext;
 
 class PlatformManager
 {
@@ -19,7 +19,7 @@ public:
 	NativeScreen *screen() const;
 	NativeWindow *window() const;
 	NativeInput *input() const;
-	NativeGLContext *glContext() const;
+	NativeContext *glContext() const;
 
 private:
 	PlatformManager();

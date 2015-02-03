@@ -8,7 +8,7 @@ NativeLoop *WindowsInterface::loop() const
 	return new WindowsLoop();
 }
 
-NativeScreen *WindowsInterface::screen() const
+NativeScreen * WindowsInterface::screen(int)
 {
 	return nullptr;
 }
@@ -23,7 +23,7 @@ NativeInput *WindowsInterface::input() const
 	return nullptr;
 }
 
-NativeGLContext *WindowsInterface::glContext() const
+NativeContext *WindowsInterface::context(const char *) const
 {
 	return nullptr;
 }
@@ -46,4 +46,14 @@ const char *WindowsInterface::version() const
 const char *WindowsInterface::author() const
 {
 	return "Warhog Team";
+}
+
+NativeScreen * WindowsInterface::primaryScreen()
+{
+	return nullptr;
+}
+
+int WindowsInterface::screenCount()
+{
+	return 0;
 }

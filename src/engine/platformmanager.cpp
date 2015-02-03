@@ -29,7 +29,7 @@ NativeLoop * PlatformManager::loop() const
 
 NativeScreen * PlatformManager::screen() const
 {
-	return _interface->screen();
+	return nullptr;// _interface->screen();
 }
 
 NativeWindow * PlatformManager::window() const
@@ -42,7 +42,7 @@ NativeInput * PlatformManager::input() const
 	return _interface->input();
 }
 
-NativeGLContext * PlatformManager::glContext() const
+NativeContext * PlatformManager::glContext() const
 {
-	return _interface->glContext();
+	return _interface->context("");
 }

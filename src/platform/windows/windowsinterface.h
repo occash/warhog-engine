@@ -9,10 +9,14 @@ class WindowsInterface : public NativeInterface,
 {
 public:
 	NativeLoop *loop() const override;
-	NativeScreen *screen() const override;
+
+	NativeScreen * screen(int) override;
+	NativeScreen * primaryScreen() override;
+	int screenCount() override;
+
 	NativeWindow *window() const override;
 	NativeInput *input() const override;
-	NativeGLContext *glContext() const override;
+	NativeContext *context(const char *) const override;
 
 	const char *name() const override;
 	const char *description() const override;

@@ -14,8 +14,11 @@ public:
 
 	bool isVisible() const;
 	void show();
-	void showFullscreen();
 	void hide();
+	void showNormal();
+	void showFullscreen();
+	void showMinimized();
+	void showMaximized();
 	void close();
 
 	int x() const;
@@ -27,12 +30,16 @@ public:
 
 	std::string title() const;
 	void setTitle(const std::string& title);
+	
+	bool isMouseGrabbed() const;
+	void grabMouse();
+	void releaseMouse();
 
 	/*static bool platformEvent(Window *, void *, long *);
 
 protected:
-	virtual void create(void *data);
-	virtual void destroy(void *data);
+	virtual void create();
+	virtual void destroy();
 	virtual void closeEvent();
 	virtual void moveEvent(int x, int y);
 	virtual void resizeEvent(int w, int h);
