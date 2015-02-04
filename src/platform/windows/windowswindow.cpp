@@ -5,23 +5,21 @@
 
 struct WindowData
 {
-	HWND handle;
-	ULONG style;
+	HWND handle = HWND();
+	bool visible = false;
+	NativeWindow::Styles styles = NativeWindow::Clozable | NativeWindow::Resizable;
+	NativeWindow::States states = NativeWindow::Normal;
 	char title[256];
-	int x, y;
-	int width;
-	int height;
-	bool fullscreen;
-	bool closed;
-	bool focused;
-	bool minimized;
+	int x = 0, y = 0;
+	int width = 640;
+	int height = 480;
 
 	struct MouseData
 	{
-		int x, y;
-		int button;
-		bool grab;
-		bool show;
+		int x = 0, y = 0;
+		int button = 0;
+		bool grab = false;
+		bool visible = true;
 	} mouse;
 };
 
@@ -33,9 +31,9 @@ struct WindowMsg
 	LPARAM lParam;
 };
 
-static void grabWindow(const HWND& handle)
+static void GrabCursor(const HWND& handle, bool grab)
 {
-	if (handle)
+	if (grab)
 	{
 		RECT rect;
 		GetClientRect(handle, &rect);
@@ -84,22 +82,7 @@ static ATOM appWindowClass = registerWindowClass();
 WindowsWindow::WindowsWindow()
 	: _data(new WindowData)
 {
-	_data->handle = HWND();
-	//_data->style = style;
-	strcpy(_data->title, "Window");
-	_data->x = 0;
-	_data->y = 0;
-	_data->width = 640;
-	_data->height = 480;
-	_data->fullscreen = false;
-	_data->closed = false;
-	_data->focused = true;
-	_data->minimized = false;
-	_data->mouse.show = true;
-	_data->mouse.grab = false;
-	_data->mouse.button = 0;
-	_data->mouse.x = 0;
-	_data->mouse.y = 0;
+	strcpy(_data->title, "Warhog Engine");
 }
 
 WindowsWindow::~WindowsWindow()
@@ -113,9 +96,9 @@ void WindowsWindow::create()
 		destroy();
 
 	ULONG windowStyle = WS_CAPTION | WS_MINIMIZEBOX;
-	//if (_data->style & WindowFlags::Closable)
+	if (_data->styles & NativeWindow::Clozable)
 		windowStyle |= WS_SYSMENU;
-	//if (_data->style & WindowFlags::Resizable)
+	if (_data->styles & NativeWindow::Resizable)
 		windowStyle |= WS_SYSMENU | WS_THICKFRAME | WS_MAXIMIZEBOX;
 
 	_data->handle = CreateWindow(
@@ -146,16 +129,47 @@ void WindowsWindow::destroy()
 
 bool WindowsWindow::isVisible() const
 {
-	return IsWindowVisible(_data->handle);
+	return _data->visible;
 }
 
 void WindowsWindow::setVisible(bool visible)
 {
-	ShowWindow(_data->handle, visible ? SW_SHOW : SW_HIDE);
-	setMouseGrab(visible ? _data->handle : nullptr);
+	int showState = 0;
+	if (_data->states & NativeWindow::Active)
+	{
+		if (_data->states & NativeWindow::Mimimized)
+			showState = SW_SHOWMINIMIZED;
+		else if (_data->states & NativeWindow::Maximized)
+			showState = SW_SHOWMAXIMIZED;
+		else
+			showState = SW_SHOW;
+	}
+	else
+	{
+		if (_data->states & NativeWindow::Normal)
+			showState = SW_SHOWNOACTIVATE;
+		else if (_data->states & NativeWindow::Mimimized)
+			showState = SW_MINIMIZE;
+		else if (_data->states & NativeWindow::Maximized)
+			showState = SW_MAXIMIZE;
+	}
+
+	_data->visible = visible;
+	ShowWindow(_data->handle, visible ? showState : SW_HIDE);
+	setMouseGrab(_data->mouse.grab);
 }
 
-bool WindowsWindow::isFullscreen() const
+NativeWindow::States WindowsWindow::states()
+{
+	return _data->states;
+}
+
+void WindowsWindow::setStates(NativeWindow::States states)
+{
+	_data->states = states;
+}
+
+/*bool WindowsWindow::isFullscreen() const
 {
 	return _data->fullscreen;
 }
@@ -178,13 +192,7 @@ void WindowsWindow::setFullscreen(bool fullscreen)
 	ShowWindow(_data->handle, SW_SHOW);
 
 	_data->fullscreen = fullscreen;
-}
-
-void WindowsWindow::close()
-{
-	setVisible(false);
-	destroy();
-}
+}*/
 
 int WindowsWindow::x() const
 {
@@ -196,6 +204,13 @@ int WindowsWindow::y() const
 	return _data->y;
 }
 
+void WindowsWindow::move(int x, int y)
+{
+	_data->x = x;
+	_data->y = y;
+	SetWindowPos(_data->handle, NULL, x, y, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
+}
+
 int WindowsWindow::width() const
 {
 	return _data->width;
@@ -204,13 +219,6 @@ int WindowsWindow::width() const
 int WindowsWindow::height() const
 {
 	return _data->height;
-}
-
-void WindowsWindow::move(int x, int y)
-{
-	_data->x = x;
-	_data->y = y;
-	SetWindowPos(_data->handle, NULL, x, y, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
 }
 
 void WindowsWindow::resize(int w, int h)
@@ -227,17 +235,30 @@ const char *WindowsWindow::title() const
 
 void WindowsWindow::setTitle(const char *title)
 {
+	strcpy(_data->title, title);
 	SetWindowText(_data->handle, title);
 }
 
-bool WindowsWindow::mouseGrab() const
+bool WindowsWindow::isMouseGrabbed() const
 {
 	return _data->mouse.grab;
 }
 
 void WindowsWindow::setMouseGrab(bool grab)
 {
-	grabWindow(grab ? _data->handle : nullptr);
+	_data->mouse.grab = grab;
+	GrabCursor(_data->handle, grab);
+}
+
+bool WindowsWindow::isCursorVisible() const
+{
+	return _data->mouse.visible;
+}
+
+void WindowsWindow::setCursorVisible(bool visible)
+{
+	_data->mouse.visible = visible;
+	//SetCursor(visible ? LoadCursor(NULL, IDC_ARROW) : NULL);
 }
 
 bool WindowsWindow::platformEvent(WindowsWindow *window, void *msgPtr, long *result)
@@ -262,76 +283,90 @@ bool WindowsWindow::platformEvent(WindowsWindow *window, void *msgPtr, long *res
 			*result = 1;
 			return true;
 		case WM_CLOSE:
-			window->close();
+			window->setVisible(false);
+			window->destroy();
 			//window->closeEvent();
 			*result = 1;
 			return true;
 		case WM_ACTIVATE:
-			if (window->_data->mouse.grab)
+			if (msg->wParam == WA_INACTIVE)
 			{
-				if (msg->wParam == WA_INACTIVE)
-					grabWindow(nullptr);
-				else
-					grabWindow(window->_data->handle);
+				window->_data->states &= ~NativeWindow::Active;
+				if (window->_data->mouse.grab)
+					GrabCursor(nullptr, false);
+			}
+			else
+			{
+				window->_data->states |= NativeWindow::Active;
+				if (window->_data->mouse.grab)
+					GrabCursor(window->_data->handle, true);
 			}
 			*result = 1;
 			return true;
 		case WM_MOVE:
 			if (window->_data->mouse.grab)
-				grabWindow(window->_data->handle);
+				GrabCursor(window->_data->handle, true);
 			//window->moveEvent(LOWORD(msg->lParam), HIWORD(msg->lParam));
 			*result = 1;
 			return true;
 		case WM_SIZE:
 			if (msg->wParam == SIZE_MINIMIZED)
-				window->_data->minimized = true;
-			else if (msg->wParam == SIZE_RESTORED || msg->wParam == SIZE_MAXIMIZED) 
-				if (window->_data->minimized)
-					window->_data->minimized = false;
+				window->_data->states |= NativeWindow::Mimimized;
+			else if (msg->wParam == SIZE_MAXIMIZED)
+				window->_data->states |= NativeWindow::Maximized;
+			else if (msg->wParam == SIZE_RESTORED)
+			{
+				window->_data->states &= ~NativeWindow::Mimimized;
+				window->_data->states &= ~NativeWindow::Maximized;
+			}
 
-			//if (window->_data->style & Window::Resizable) 
-			//{
-				window->_data->width = LOWORD(msg->lParam);
-				window->_data->height = HIWORD(msg->lParam);
-				if (window->_data->width < 1) 
-					window->_data->width = 1;
-				if (window->_data->height < 1) 
-					window->_data->height = 1;
+			window->_data->width = LOWORD(msg->lParam);
+			window->_data->height = HIWORD(msg->lParam);
+			if (window->_data->width < 1) 
+				window->_data->width = 1;
+			if (window->_data->height < 1) 
+				window->_data->height = 1;
 
-				//window->resizeEvent(LOWORD(msg->lParam), HIWORD(msg->lParam));
-			//}
+			//window->resizeEvent(LOWORD(msg->lParam), HIWORD(msg->lParam));
 			if (window->_data->mouse.grab)
-				grabWindow(window->_data->handle);
+				GrabCursor(window->_data->handle, true);
 			*result = 1;
 			return true;
-		case WM_SETFOCUS:
-			window->_data->focused = true;
-			window->_data->mouse.show = true;
+		/*case WM_SETFOCUS:
+			window->_data->states |= NativeWindow::Active;
 			//window->focusInEvent();
 			*result = 1;
 			return true;
 		case WM_KILLFOCUS:
-			window->_data->focused = false;
-			window->_data->mouse.show = false;
+			window->_data->states &= ~NativeWindow::Active;
 			//window->focusOutEvent();
 			//TODO: release all keys
 			*result = 1;
-			return true;
+			return true;*/
 		case WM_ENTERSIZEMOVE:
 			if (window->_data->mouse.grab)
-				grabWindow(nullptr);
+				GrabCursor(nullptr, false);
 			*result = 1;
 			return true;
 		case WM_EXITSIZEMOVE:
 			if (window->_data->mouse.grab)
-				grabWindow(window->_data->handle);
+				GrabCursor(window->_data->handle, true);
 			*result = 1;
 			return true;
 		case WM_SHOWWINDOW:
+			window->_data->visible = (msg->wParam == TRUE);
 			/*if (msg->wParam == TRUE)
 				window->showEvent();
 			else
 				window->hideEvent();*/
+			*result = 1;
+			return true;
+		case WM_SETCURSOR:
+			if (LOWORD(msg->lParam) == HTCLIENT)
+			{
+				SetCursor(window->_data->mouse.visible ?
+					LoadCursor(NULL, IDC_ARROW) : NULL);
+			}
 			*result = 1;
 			return true;
 		default:

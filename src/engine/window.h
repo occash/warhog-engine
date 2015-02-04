@@ -9,15 +9,18 @@ class NativeWindow;
 class ENGINE_EXPORT Window
 {
 public:
-    Window();
+	Window();
     ~Window();
 
 	bool isVisible() const;
 	void show();
-	void hide();
 	void showNormal();
+	void hide();
+	bool isFullscreen() const;
 	void showFullscreen();
+	bool isMinimized() const;
 	void showMinimized();
+	bool isMaximized() const;
 	void showMaximized();
 	void close();
 
@@ -30,10 +33,17 @@ public:
 
 	std::string title() const;
 	void setTitle(const std::string& title);
+
+	bool isActiveWindow() const;
+	void activateWindow();
 	
 	bool isMouseGrabbed() const;
 	void grabMouse();
 	void releaseMouse();
+
+	bool isCursorVisible() const;
+	void showCursor();
+	void hideCursor();
 
 	/*static bool platformEvent(Window *, void *, long *);
 

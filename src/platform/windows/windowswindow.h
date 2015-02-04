@@ -14,22 +14,26 @@ public:
 
 	bool isVisible() const override;
 	void setVisible(bool visible) override;
-	bool isFullscreen() const override;
-	void setFullscreen(bool fullscreen) override;
-	void close() override;
+
+	NativeWindow::States states() override;
+	void setStates(NativeWindow::States) override;
 
 	int x() const override;
 	int y() const override;
+	void move(int x, int y) override;
+
 	int width() const override;
 	int height() const override;
-	void move(int x, int y) override;
 	void resize(int w, int h) override;
 
 	const char *title() const override;
 	void setTitle(const char *title) override;
 
-	bool mouseGrab() const override;
+	bool isMouseGrabbed() const override;
 	void setMouseGrab(bool) override;
+
+	bool isCursorVisible() const override;
+	void setCursorVisible(bool visible) override;
 
 	static bool platformEvent(WindowsWindow *window, void *msgPtr, long *result);
 

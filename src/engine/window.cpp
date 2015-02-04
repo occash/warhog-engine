@@ -10,7 +10,8 @@ Window::Window()
 
 Window::~Window()
 {
-	_window->destroy();
+	releaseMouse();
+	close();
 	delete _window;
 }
 
@@ -24,10 +25,38 @@ void Window::show()
 	_window->setVisible(true);
 }
 
+void Window::showNormal()
+{
+	_window->setStates(NativeWindow::Active);
+	_window->setVisible(true);
+}
+
 void Window::showFullscreen()
 {
+	_window->setStates(NativeWindow::Active | NativeWindow::Fullsceren);
 	_window->setVisible(true);
-	_window->setFullscreen(true);
+}
+
+bool Window::isMinimized() const
+{
+	return _window->states() & NativeWindow::Mimimized;
+}
+
+void Window::showMinimized()
+{
+	_window->setStates(NativeWindow::Active | NativeWindow::Mimimized);
+	_window->setVisible(true);
+}
+
+bool Window::isMaximized() const
+{
+	return _window->states() & NativeWindow::Maximized;
+}
+
+void Window::showMaximized()
+{
+	_window->setStates(NativeWindow::Active | NativeWindow::Maximized);
+	_window->setVisible(true);
 }
 
 void Window::hide()
@@ -35,9 +64,15 @@ void Window::hide()
 	_window->setVisible(false);
 }
 
+bool Window::isFullscreen() const
+{
+	return _window->states() & NativeWindow::Fullsceren;
+}
+
 void Window::close()
 {
-	_window->close();
+	_window->setVisible(false);
+	_window->destroy();
 }
 
 int Window::x() const
@@ -78,4 +113,45 @@ std::string Window::title() const
 void Window::setTitle(const std::string& title)
 {
 	_window->setTitle(title.c_str());
+}
+
+bool Window::isActiveWindow() const
+{
+	return _window->states() & NativeWindow::Active;
+}
+
+void Window::activateWindow()
+{
+	_window->setStates(_window->states() | NativeWindow::Active);
+	_window->setVisible(true);
+}
+
+bool Window::isMouseGrabbed() const
+{
+	return _window->isMouseGrabbed();
+}
+
+void Window::grabMouse()
+{
+	_window->setMouseGrab(true);
+}
+
+void Window::releaseMouse()
+{
+	_window->setMouseGrab(false);
+}
+
+bool Window::isCursorVisible() const
+{
+	return _window->isCursorVisible();
+}
+
+void Window::showCursor()
+{
+	_window->setCursorVisible(true);
+}
+
+void Window::hideCursor()
+{
+	_window->setCursorVisible(false);
 }
