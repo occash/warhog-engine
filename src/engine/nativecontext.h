@@ -8,11 +8,11 @@ class Window;
 class NativeContext
 {
 public:
-	SurfaceFormat format() const;
-	void setFormat(const SurfaceFormat&);
+	virtual SurfaceFormat format() const = 0;
+	virtual void setFormat(const SurfaceFormat&) = 0;
 
-	void makeCurrent(Window *);
-	void doneCUrrent();
+	virtual void makeCurrent(Window *) = 0;
+	virtual void doneCUrrent() = 0;
 
 };
 
