@@ -35,15 +35,19 @@ solution 'warhog'
 			'src/engine/**.cpp'
 		}
 		
+		filter { 'platforms:x32', 'Debug' }
+			libdirs { dep..'/lib/x86/Debug'}
+		filter { 'platforms:x64', 'Debug' }
+			libdirs { dep..'/lib/x64/Debug'}
+		filter { 'platforms:x32', 'Release' }
+			libdirs { dep..'/lib/x86/Release'}
+		filter { 'platforms:x64', 'Release' }
+			libdirs { dep..'/lib/x64/Release'}
+		
 		filter 'Debug'
 			targetdir 'bin/debug'
 			defines '_DEBUG'
 			flags { 'Symbols' }
-			
-			filter 'platforms:x32'
-				libdirs { dep..'/lib/x86/Debug'}
-			filter 'platforms:x64'
-				libdirs { dep..'/lib/x64/Debug'}
 			
 			links 
 			{
@@ -57,11 +61,6 @@ solution 'warhog'
 			targetdir 'bin/release'
 			defines 'NDEBUG'
 			optimize 'On'
-			
-			filter 'platforms:x32'
-				libdirs { dep..'/lib/x86/Release'}
-			filter 'platforms:x64'
-				libdirs { dep..'/lib/x64/Release'}
 			
 			links 
 			{
@@ -119,6 +118,15 @@ solution 'warhog'
 			'src/editor/**.qss'
 		}
 		
+		filter { 'platforms:x32', 'Debug' }
+			libdirs { dep..'/lib/x86/Debug'}
+		filter { 'platforms:x64', 'Debug' }
+			libdirs { dep..'/lib/x64/Debug'}
+		filter { 'platforms:x32', 'Release' }
+			libdirs { dep..'/lib/x86/Release'}
+		filter { 'platforms:x64', 'Release' }
+			libdirs { dep..'/lib/x64/Release'}
+		
 		-- Qt specific
 		include 'qt.lua'
 		local qt = premake.extensions.qt
@@ -134,11 +142,6 @@ solution 'warhog'
 			flags { 'Symbols' }
 			qtsuffix 'd'
 			
-			filter 'platforms:x32'
-				libdirs { dep..'/lib/x86/Debug'}
-			filter 'platforms:x64'
-				libdirs { dep..'/lib/x64/Debug'}
-			
 			links 
 			{
 				'libyaml-cppmdd',
@@ -150,11 +153,6 @@ solution 'warhog'
 			targetdir 'bin/release'
 			defines 'NDEBUG'
 			optimize 'On'
-			
-			filter 'platforms:x32'
-				libdirs { dep..'/lib/x86/Release'}
-			filter 'platforms:x64'
-				libdirs { dep..'/lib/x64/Release'}
 			
 			links 
 			{
