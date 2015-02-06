@@ -2,6 +2,8 @@
 #define ENGINE_H
 
 #include "global.h"
+#include "dispatcher.h"
+
 #include <entityx/Event.h>
 #include <entityx/Entity.h>
 #include <entityx/System.h>
@@ -29,6 +31,7 @@ protected:
 	void update(double dt);
 
 private:
+	Dispatcher _app;
 	Window *_window;
 	Material *mat;
 	entityx::Entity _lightNode;

@@ -35,11 +35,15 @@ public:
 	bool isCursorVisible() const override;
 	void setCursorVisible(bool visible) override;
 
+public:
+	void *handle() const;
+
 	static bool platformEvent(WindowsWindow *window, void *msgPtr, long *result);
 
 private:
 	friend struct WindowData;
 	WindowData *_data;
+
 };
 
 #endif //WINDOWSWINDOW_H

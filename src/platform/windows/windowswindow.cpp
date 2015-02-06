@@ -47,7 +47,7 @@ static void GrabCursor(const HWND& handle, bool grab)
 
 LRESULT CALLBACK windowProc(HWND, UINT, WPARAM, LPARAM);
 
-static ATOM registerWindowClass()
+static bool registerWindowClass()
 {
 	WNDCLASSEX wc;
 	ATOM classAtom;
@@ -71,13 +71,13 @@ static ATOM registerWindowClass()
 	if (!classAtom)
 	{
 		//TODO: handle error
-		return 0;
+		return false;
 	}
 
-	return classAtom;
+	return true;
 }
 
-static ATOM appWindowClass = registerWindowClass();
+static bool classRegistered = false;
 
 WindowsWindow::WindowsWindow()
 	: _data(new WindowData)
@@ -92,6 +92,9 @@ WindowsWindow::~WindowsWindow()
 
 void WindowsWindow::create()
 {
+	if (!classRegistered)
+		classRegistered = registerWindowClass();
+
 	if (_data->handle)
 		destroy();
 
@@ -259,6 +262,11 @@ void WindowsWindow::setCursorVisible(bool visible)
 {
 	_data->mouse.visible = visible;
 	//SetCursor(visible ? LoadCursor(NULL, IDC_ARROW) : NULL);
+}
+
+void * WindowsWindow::handle() const
+{
+	return _data->handle;
 }
 
 bool WindowsWindow::platformEvent(WindowsWindow *window, void *msgPtr, long *result)

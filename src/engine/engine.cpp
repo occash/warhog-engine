@@ -56,7 +56,9 @@ int Engine::run()
 	systems.system<RenderSystem>()->window()->show();
 
 	_running = true;
-	while (_running && systems.system<RenderSystem>()->window()->isVisible()) {
+	while (_running && systems.system<RenderSystem>()->window()->isVisible())
+	{
+		_app.update();
 		std::clock_t ticks = std::clock();
 		update(double(ticks - _timer) / CLOCKS_PER_SEC);
 		_timer = ticks;

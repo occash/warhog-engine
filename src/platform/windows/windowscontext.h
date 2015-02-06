@@ -12,11 +12,18 @@ public:
 	SurfaceFormat format() const override;
 	void setFormat(const SurfaceFormat&) override;
 
-	void makeCurrent(Window *) override;
-	void doneCUrrent() override;
+	void create() override;
+	void destroy() override;
+
+	void makeCurrent(NativeWindow *) override;
+	void doneCurrent() override;
+
+	void swapBuffers() override;
 
 private:
 	SurfaceFormat _format;
+	friend struct ContextData;
+	ContextData *_data;
 
 };
 

@@ -42,7 +42,7 @@ NativeInput * PlatformManager::input() const
 	return _interface->input();
 }
 
-NativeContext * PlatformManager::glContext() const
+NativeContext * PlatformManager::context() const
 {
 	return _interface->context("");
 }

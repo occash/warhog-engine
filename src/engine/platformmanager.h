@@ -19,7 +19,7 @@ public:
 	NativeScreen *screen() const;
 	NativeWindow *window() const;
 	NativeInput *input() const;
-	NativeContext *glContext() const;
+	NativeContext *context() const;
 
 private:
 	PlatformManager();

@@ -2,6 +2,7 @@
 #define HINTS_H
 
 #include "global.h"
+#include "flags.h"
 
 class ENGINE_EXPORT SurfaceFormat
 {
@@ -20,8 +21,9 @@ public:
         Core,
         Compatibility
     };
-	enum Options
+	enum Option
 	{
+		NoOptions,
 		StereoBuffers,
 		DebugContext,
 		DeprecatedFunctions
@@ -33,6 +35,8 @@ public:
 		Double,
 		Triple
 	};
+
+	W_DECLAGE_FLAGS(Options, Option);
 
 public:
 	int major;

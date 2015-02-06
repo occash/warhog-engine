@@ -1,6 +1,7 @@
 #include "windowsinterface.h"
 #include "windowsloop.h"
 #include "windowswindow.h"
+#include "windowscontext.h"
 
 
 NativeLoop *WindowsInterface::loop() const
@@ -25,7 +26,7 @@ NativeInput *WindowsInterface::input() const
 
 NativeContext *WindowsInterface::context(const char *) const
 {
-	return nullptr;
+	return new WindowsContext();;
 }
 
 const char *WindowsInterface::name() const

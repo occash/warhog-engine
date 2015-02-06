@@ -60,6 +60,7 @@ protected:
 	virtual void updateEvent();*/
 
 private:
+	friend class Context;
 	NativeWindow *_window;
 
 };
