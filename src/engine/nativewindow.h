@@ -10,17 +10,17 @@ class NativeWindow
 public:
 	enum Style
 	{
-		Clozable,
-		Resizable
+		Clozable = 1 << 0,
+		Resizable = 1 << 1
 	};
 
 	enum State
 	{
-		Normal,
-		Mimimized,
-		Maximized,
-		Fullsceren,
-		Active
+		Normal = 1 << 0,
+		Mimimized = 1 << 1,
+		Maximized = 1 << 2,
+		Fullsceren = 1 << 3,
+		Active = 1 << 4
 	};
 
 	W_DECLAGE_FLAGS(Styles, Style)

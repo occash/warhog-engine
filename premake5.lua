@@ -75,7 +75,7 @@ solution 'warhog'
 		language 'C++'
 		kind 'WindowedApp'
 		
-		includedirs { 'src/engine' }
+		includedirs { 'src/engine', dep..'/include' }
 		links { 'engine' }
 		files { 'src/launcher/**' }
 		
@@ -168,7 +168,7 @@ solution 'warhog'
 		
 		defines { 'PLATFORM_LIB' }
 		includedirs { 'src/engine' }
-		links { 'engine' }
+		links { 'engine', 'opengl32' }
 		
 		local pluginOS = os.get()
 		
