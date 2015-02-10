@@ -1,14 +1,13 @@
 #ifndef HINTS_H
 #define HINTS_H
 
-#include "../../global.h"
+#include "global.h"
+#include "flags.h"
 
-#include <string>
-#include <yaml-cpp/yaml.h>
-
-struct ENGINE_EXPORT GLFormat
+class ENGINE_EXPORT SurfaceFormat
 {
-    GLFormat();
+public:
+	SurfaceFormat();
 
     enum ClientApi
 	{
@@ -22,8 +21,9 @@ struct ENGINE_EXPORT GLFormat
         Core,
         Compatibility
     };
-	enum Options
+	enum Option
 	{
+		NoOptions,
 		StereoBuffers,
 		DebugContext,
 		DeprecatedFunctions
@@ -35,6 +35,8 @@ struct ENGINE_EXPORT GLFormat
 		Double,
 		Triple
 	};
+
+	W_DECLAGE_FLAGS(Options, Option);
 
 public:
 	int major;

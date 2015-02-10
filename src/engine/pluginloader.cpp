@@ -1,7 +1,7 @@
 #include "pluginloader.h"
-#include "meta/object.h"
+#include "plugin.h"
 
-typedef Object*(*PluginEntry)();
+typedef Plugin*(*PluginEntry)();
 
 PluginLoader::PluginLoader()
 	: _library()
@@ -37,7 +37,7 @@ bool PluginLoader::unload()
 	return _library.unload();
 }
 
-Object * PluginLoader::object() const
+Plugin *PluginLoader::plugin() const
 {
 	PluginEntry entry = (PluginEntry)_library.resolve("pluginEntry");
 	if (!entry)

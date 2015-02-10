@@ -16,12 +16,6 @@ ScriptEditor::ScriptEditor(QWidget *parent)
     setLayout(layout);
 
 	addHighLighter("lua", new LuaHighlighter(this));
-
-	//Test
-	Script *script = new Script;
-	script->engine = "lua";
-	script->source = "";
-	open(script);
 }
 
 ScriptEditor::~ScriptEditor()
@@ -34,17 +28,19 @@ void ScriptEditor::addHighLighter(const QString& engine, SyntaxHighlighter *h)
 }
 
 void ScriptEditor::open(Script *script)
-{
+{	
 	QString engine = QString::fromStdString(script->engine);
 	SyntaxHighlighter *lighter = chooseEngine(engine);
 	if (!lighter)
 		return;
 
-	_currentSyntax->setDocument(nullptr);
-	lighter->setDocument(_scriptArea->document());
+	//_currentSyntax->setDocument(nullptr);
+	
 
 	QString text = QString::fromStdString(script->source);
-	_scriptArea->document()->setPlainText(text);
+	_scriptArea->setPlainText(text);
+
+	lighter->setDocument(_scriptArea->document());
 }
 
 SyntaxHighlighter *ScriptEditor::chooseEngine(const QString& engine)

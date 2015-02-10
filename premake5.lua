@@ -35,27 +35,12 @@ solution 'warhog'
 			'src/engine/**.cpp'
 		}
 		
-		-- Exclude extra platforms from build
-		if os.is('windows') then
-			excludes
-			{ 
-				'src/engine/platforms/null/**',
-				'src/engine/render/opengl/platforms/null/**'
-			}
-		else
-			excludes
-			{
-				'src/engine/platforms/win32/**',
-				'src/engine/render/opengl/platforms/null/**'
-			}
-		end
-		
 		filter { 'platforms:x32', 'Debug' }
 			libdirs { dep..'/lib/x86/Debug'}
-		filter { 'platforms:x32', 'Release' }
-			libdirs { dep..'/lib/x86/Release'}
 		filter { 'platforms:x64', 'Debug' }
 			libdirs { dep..'/lib/x64/Debug'}
+		filter { 'platforms:x32', 'Release' }
+			libdirs { dep..'/lib/x86/Release'}
 		filter { 'platforms:x64', 'Release' }
 			libdirs { dep..'/lib/x64/Release'}
 		
@@ -90,31 +75,9 @@ solution 'warhog'
 		language 'C++'
 		kind 'WindowedApp'
 		
-		includedirs
-		{ 
-			'src/engine',
-			dep..'/include'
-		}
-		
-		links
-		{
-			'engine',
-			'entityx'
-		}
-		
-		files
-		{
-			'src/launcher/**'
-		}
-		
-		filter { 'platforms:x32', 'Debug' }
-			libdirs { dep..'/lib/x86/Debug'}
-		filter { 'platforms:x32', 'Release' }
-			libdirs { dep..'/lib/x86/Release'}
-		filter { 'platforms:x64', 'Debug' }
-			libdirs { dep..'/lib/x64/Debug'}
-		filter { 'platforms:x64', 'Release' }
-			libdirs { dep..'/lib/x64/Release'}
+		includedirs { 'src/engine', dep..'/include' }
+		links { 'engine' }
+		files { 'src/launcher/**' }
 		
 		filter 'Debug'
 			targetdir 'bin/debug'
@@ -155,6 +118,16 @@ solution 'warhog'
 			'src/editor/**.qss'
 		}
 		
+		filter { 'platforms:x32', 'Debug' }
+			libdirs { dep..'/lib/x86/Debug'}
+		filter { 'platforms:x64', 'Debug' }
+			libdirs { dep..'/lib/x64/Debug'}
+		filter { 'platforms:x32', 'Release' }
+			libdirs { dep..'/lib/x86/Release'}
+		filter { 'platforms:x64', 'Release' }
+			libdirs { dep..'/lib/x64/Release'}
+		
+		-- Qt specific
 		include 'qt.lua'
 		local qt = premake.extensions.qt
 		local qtDir = os.getenv('QT_ROOT')
@@ -162,15 +135,6 @@ solution 'warhog'
 		qtpath(qtDir)
 		qtmodules { 'core', 'gui', 'widgets', 'opengl', 'concurrent' }
 		qtprefix 'Qt5'
-		
-		filter { 'platforms:x32', 'Debug' }
-			libdirs { dep..'/lib/x86/Debug'}
-		filter { 'platforms:x32', 'Release' }
-			libdirs { dep..'/lib/x86/Release'}
-		filter { 'platforms:x64', 'Debug' }
-			libdirs { dep..'/lib/x64/Debug'}
-		filter { 'platforms:x64', 'Release' }
-			libdirs { dep..'/lib/x64/Release'}
 		
 		filter 'Debug'
 			targetdir 'bin/debug'
@@ -196,6 +160,33 @@ solution 'warhog'
 				'FreeImage',
 				'assimp'
 			}
+			
+	project 'platform'
+		targetname 'platform'
+		language 'C++'
+		kind 'SharedLib'
+		
+		defines { 'PLATFORM_LIB' }
+		includedirs { 'src/engine' }
+		links { 'engine', 'opengl32' }
+		
+		local pluginOS = os.get()
+		
+		files
+		{
+			'src/platform/'..pluginOS..'/**.h',
+			'src/platform/'..pluginOS..'/**.cpp'
+		}
+		
+		filter 'Debug'
+			targetdir 'bin/debug'
+			defines '_DEBUG'
+			flags { 'Symbols' }
+			
+		filter 'Release'
+			targetdir 'bin/release'
+			defines 'NDEBUG'
+			optimize 'On'
 			
 	project 'documentation'
 		kind 'Makefile'

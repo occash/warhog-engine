@@ -287,7 +287,7 @@ void RenderSystem::update(EntityManager &entities, EventManager &events, double 
 		_boxShader->unbind();*/
     }
 
-	_window->update();
+	_context->swapBuffers();
 }
 
 /*void RenderSystem::geometryPass(std::shared_ptr<EntityManager> entities, MatrixBlock& m)
@@ -391,9 +391,12 @@ void RenderSystem::chooseBackend(const std::string& name)
 	_renderer = new GLRenderer();
 
 	//Create app window with context
-	_window = _renderer->createWindow();
-	_window->hide();
-	_window->update();
+	_window = new Window();// _renderer->createWindow();
+	_context = new Context();
+	_context->makeCurrent(_window);
+	GLExt::init();
+	//_window->hide();
+	//_window->update();
 	//_renderer->createOcclusionQuery();
 	renderQuad.create();
 

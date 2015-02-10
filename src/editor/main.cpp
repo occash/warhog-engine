@@ -1,4 +1,6 @@
 #include "mainwindow.h"
+#include "editors/scripteditor.h"
+#include <script.h>
 
 #include <QApplication>
 #include <QSplashScreen>
@@ -31,6 +33,16 @@ int main(int argc, char *argv[])
 	splash.finish(&w);
 	w.show();
 	w.installThumbnail();
+
+	/*ScriptEditor editor;
+
+	//Test
+	Script *script = new Script;
+	script->engine = "lua";
+	script->source = "";
+
+	editor.open(script);
+	editor.show();*/
 
     return a.exec();
 }

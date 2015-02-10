@@ -2,7 +2,7 @@
 #define GLCONTEXT_H
 
 #include "../../global.h"
-#include "glformat.h"
+#include "../../surfaceformat.h"
 
 class Window;
 
@@ -18,17 +18,17 @@ class Window;
 	TODO: switch to GLFormat?
 */
 
-class ENGINE_EXPORT GLContext
+/*class ENGINE_EXPORT GLContext
 {
 public:
-    GLContext(const GLFormat& context = GLFormat());
+	GLContext(const SurfaceFormat& context = SurfaceFormat());
     ~GLContext();
 
-    bool makeCurrent(std::shared_ptr<Window> w);
+    bool makeCurrent(Window *w);
 
 private:
-    GLFormat _context;
+	SurfaceFormat _context;
 
-};
+};*/
 
 #endif

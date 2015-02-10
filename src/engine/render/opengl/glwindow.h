@@ -11,11 +11,11 @@ public:
 	GLWindow();
 	~GLWindow();
 
-protected:
+/*protected:
 	void resizeEvent(int w, int h);
 	void updateEvent() override;
 	void create(void *data) override;
-	void destroy(void *data) override;
+	void destroy(void *data) override;*/
 
 private:
 	GLWindowData *_data;

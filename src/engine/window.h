@@ -2,50 +2,54 @@
 #define WINDOW_H
 
 #include "global.h"
+#include <string>
 
-struct WindowData;
+class NativeWindow;
 
 class ENGINE_EXPORT Window
 {
 public:
-	enum WindowFlags
-	{
-		Resizable = 1 << 0,
-		Closable = 1 << 1,
-		GrabMouse = 1 << 2,
-		DestroyOnClose = 1 << 3
-	};
+	Window();
+    ~Window();
 
-    Window(int style, char *title = "Warhog", int width = 640, int height = 480);
-    virtual ~Window();
+	bool isVisible() const;
+	void show();
+	void showNormal();
+	void hide();
+	bool isFullscreen() const;
+	void showFullscreen();
+	bool isMinimized() const;
+	void showMinimized();
+	bool isMaximized() const;
+	void showMaximized();
+	void close();
 
 	int x() const;
 	int y() const;
 	int width() const;
 	int height() const;
-	char *title() const;
-	bool isVisible() const;
-	bool isGrabMouse() const;
+	void move(int x, int y);
+	void resize(int w, int h);
 
-	void *handle() const;
+	std::string title() const;
+	void setTitle(const std::string& title);
 
-	void setPosition(int x, int y);
-	void setSize(int w, int h);
-	void setTitle(const char *title);
-	void setVisible(bool v);
-	void setMouseGrab(bool g);
+	bool isActiveWindow() const;
+	void activateWindow();
+	
+	bool isMouseGrabbed() const;
+	void grabMouse();
+	void releaseMouse();
 
-	void show();
-	void hide();
-	void showFullscreen();
-	void close();
-	void update();
+	bool isCursorVisible() const;
+	void showCursor();
+	void hideCursor();
 
-	static bool platformEvent(Window *, void *, long *);
+	/*static bool platformEvent(Window *, void *, long *);
 
 protected:
-	virtual void create(void *data);
-	virtual void destroy(void *data);
+	virtual void create();
+	virtual void destroy();
 	virtual void closeEvent();
 	virtual void moveEvent(int x, int y);
 	virtual void resizeEvent(int w, int h);
@@ -53,11 +57,11 @@ protected:
 	virtual void focusOutEvent();
 	virtual void showEvent();
 	virtual void hideEvent();
-	virtual void updateEvent();
+	virtual void updateEvent();*/
 
 private:
-	friend struct WindowData;
-	WindowData *_data;
+	friend class Context;
+	NativeWindow *_window;
 
 };
 

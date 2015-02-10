@@ -4,6 +4,7 @@
 #include "../components/meshfiltercomponent.h"
 #include "../render/renderer.h"
 #include "../window.h"
+#include "../context.h"
 
 #include <entityx/System.h>
 #include <map>
@@ -39,6 +40,7 @@ private:
 	typedef std::map<entityx::Entity::Id, RenderInfo*> RenderMap;
 	Renderer *_renderer;
     Window *_window;
+	Context *_context;
 	RenderMap _renderMap;
 	Shader *_boxShader;
 	Shader *_skyShader;
