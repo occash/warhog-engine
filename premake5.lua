@@ -69,6 +69,14 @@ solution 'warhog'
 				'libyaml-cppmd',
 				'luabind09'
 			}
+		
+		filter "system:linux"
+			buildoptions {'-std=c++11'}
+			
+			links
+			{
+				'GL'
+			}
 			
 	project 'launcher'
 		targetname 'launcher'
@@ -88,6 +96,14 @@ solution 'warhog'
 			targetdir 'bin/release'
 			defines 'NDEBUG'
 			optimize 'On'
+			
+		filter "system:linux"
+			buildoptions {'-std=c++11'}
+			
+			links
+			{
+				'GL'
+			}
 			
 	project 'editor'
 		targetname 'editor'
@@ -161,6 +177,14 @@ solution 'warhog'
 				'assimp'
 			}
 			
+		filter "system:linux"
+			buildoptions {'-std=c++11'}
+			
+			links
+			{
+				'GL'
+			}
+			
 	project 'platform'
 		targetname 'platform'
 		language 'C++'
@@ -187,6 +211,14 @@ solution 'warhog'
 			targetdir 'bin/release'
 			defines 'NDEBUG'
 			optimize 'On'
+			
+		filter "system:linux"
+			buildoptions {'-std=c++11'}
+			
+			links
+			{
+				'GL'
+			}
 			
 	project 'documentation'
 		kind 'Makefile'

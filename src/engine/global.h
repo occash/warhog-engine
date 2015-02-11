@@ -1,7 +1,7 @@
 #ifndef GLOBAL_H
 #define GLOBAL_H
 
-#if defined(_WIN32) || !defined(__CYGWIN__) //Windows platform (not Posix sygwin)
+#if defined(_WIN32) && !defined(__CYGWIN__) //Windows platform (not Posix sygwin)
 	#define PLATFORM_WINDOWS
 	#define PLATFORM_STR "windows"
 #elif defined(__APPLE__) && defined(__MACH__) //Apple platform (Mac or iOS)
@@ -13,7 +13,7 @@
 		#define PLATFORM_IOS
 		#define PLATFORM_STR "ios"
 	#endif
-#elif defined(__linux__) //Linux kernel
+#elif defined(__gnu_linux__) //Linux kernel
 	#if defined(__ANDROID__) //Android
 		#define PLATFORM_ANDROID
 		#define PLATFORM_STR "android"
