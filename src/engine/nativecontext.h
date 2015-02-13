@@ -2,6 +2,7 @@
 #define NATIVECONTEXT_H
 
 #include "surfaceformat.h"
+#include "context.h"
 
 class NativeWindow;
 
@@ -18,6 +19,8 @@ public:
 	virtual void doneCurrent() = 0;
 
 	virtual void swapBuffers() = 0;
+
+	virtual GLFunction resolve(const char *) const = 0;
 
 };
 

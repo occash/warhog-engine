@@ -6,6 +6,8 @@
 class Window;
 class NativeContext;
 
+typedef void(*GLFunction)();
+
 class ENGINE_EXPORT Context
 {
 public:
@@ -16,6 +18,8 @@ public:
 	void doneCurrent();
 
 	void swapBuffers();
+
+	GLFunction resolve(const char *symbol) const;
 
 private:
 	NativeContext *_context;

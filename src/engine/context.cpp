@@ -28,3 +28,8 @@ void Context::swapBuffers()
 {
 	_context->swapBuffers();
 }
+
+GLFunction Context::resolve(const char *name) const
+{
+	return _context->resolve(name);
+}

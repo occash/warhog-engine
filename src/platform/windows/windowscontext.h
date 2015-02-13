@@ -20,6 +20,8 @@ public:
 
 	void swapBuffers() override;
 
+	GLFunction resolve(const char *) const override;
+
 private:
 	SurfaceFormat _format;
 	friend struct ContextData;

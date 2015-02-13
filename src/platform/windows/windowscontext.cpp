@@ -1,22 +1,20 @@
 #include "windowscontext.h"
 #include "windowswindow.h"
+#include "wgl.h"
 
-#include <Windows.h>
-#include <GL/GL.h>
+#include <gl/GL.h>
 #include "wglext.h"
 
-struct ContextData
-{
-	HWND hwnd = HWND();
-	HDC hdc = HDC();
-	HGLRC context = HGLRC();
-};
+//Resolve wgl functions first
+static WGL wglcontext;
 
+//Extensions
 static PFNWGLCHOOSEPIXELFORMATARBPROC wglChoosePixelFormatARB = NULL;
 static PFNWGLCREATECONTEXTATTRIBSARBPROC wglCreateContextAttribsARB = NULL;
 static PFNWGLSWAPINTERVALEXTPROC wglSwapIntervalEXT = NULL;
 
-static bool resolveWgl(PIXELFORMATDESCRIPTOR *pfd)
+//Resolve extensions
+static bool resolveWglExt(PIXELFORMATDESCRIPTOR *pfd)
 {
 	WindowsWindow w;
 	w.create();
@@ -29,25 +27,19 @@ static bool resolveWgl(PIXELFORMATDESCRIPTOR *pfd)
 	SetPixelFormat(hdc, pixelformat, pfd);
 
 	// create simple context
-	HGLRC context = wglCreateContext(hdc);
-	//wglShareLists(old_context, *context);
-	wglMakeCurrent(hdc, context);
+	HGLRC context = wgl::CreateContext(hdc);
+	wgl::MakeCurrent(hdc, context);
 	//TODO: handle errors
 
-	//resolve opengl functions
-	//GLExt::init();
-
-	wglChoosePixelFormatARB = (PFNWGLCHOOSEPIXELFORMATARBPROC)wglGetProcAddress("wglChoosePixelFormatARB");
-	wglCreateContextAttribsARB = (PFNWGLCREATECONTEXTATTRIBSARBPROC)wglGetProcAddress("wglCreateContextAttribsARB");
-	wglSwapIntervalEXT = (PFNWGLSWAPINTERVALEXTPROC)wglGetProcAddress("wglSwapIntervalEXT");
-	//TODO: handle errors
+	wglChoosePixelFormatARB = (PFNWGLCHOOSEPIXELFORMATARBPROC)wgl::GetProcAddress("wglChoosePixelFormatARB");
+	wglCreateContextAttribsARB = (PFNWGLCREATECONTEXTATTRIBSARBPROC)wgl::GetProcAddress("wglCreateContextAttribsARB");
+	wglSwapIntervalEXT = (PFNWGLSWAPINTERVALEXTPROC)wgl::GetProcAddress("wglSwapIntervalEXT");
 
 	// destroy context
-	wglMakeCurrent(hdc, NULL);
-	wglDeleteContext(context);
+	wgl::MakeCurrent(hdc, NULL);
+	wgl::DeleteContext(context);
 
 	ReleaseDC(handle, hdc);
-
 	w.destroy();
 
 	return true;
@@ -64,11 +56,11 @@ void choosePixelFormat(HDC *hdc, PIXELFORMATDESCRIPTOR *pfd)
 		int *aptr = attributes;
 
 		*aptr++ = WGL_DRAW_TO_WINDOW_ARB;
-		*aptr++ = GL_TRUE;
+		*aptr++ = 1;
 		*aptr++ = WGL_ACCELERATION_ARB;
 		*aptr++ = WGL_FULL_ACCELERATION_ARB;
 		*aptr++ = WGL_DOUBLE_BUFFER_ARB;
-		*aptr++ = GL_TRUE;
+		*aptr++ = 1;
 		*aptr++ = WGL_COLOR_BITS_ARB;
 		*aptr++ = 32;
 		*aptr++ = WGL_DEPTH_BITS_ARB;
@@ -87,6 +79,13 @@ void choosePixelFormat(HDC *hdc, PIXELFORMATDESCRIPTOR *pfd)
 		SetPixelFormat(*hdc, pixelformat, pfd);
 	}
 }
+
+struct ContextData
+{
+	HWND hwnd = HWND();
+	HDC hdc = HDC();
+	HGLRC context = HGLRC();
+};
 
 WindowsContext::WindowsContext()
 	: _data(new ContextData)
@@ -117,7 +116,7 @@ void WindowsContext::create()
 	};
 
 	if (!resolved)
-		resolved = resolveWgl(&pfd);
+		resolved = resolveWglExt(&pfd);
 
 	//Create dummy window
 	WindowsWindow w;
@@ -128,8 +127,8 @@ void WindowsContext::create()
 	choosePixelFormat(&hdc, &pfd);
 
 	HGLRC old_context = _data->context;
-	_data->context = wglCreateContext(hdc);
-	wglShareLists(old_context, _data->context);
+	_data->context = wgl::CreateContext(hdc);
+	wgl::ShareLists(old_context, _data->context);
 
 	// create context attributes
 	if (wglCreateContextAttribsARB)
@@ -154,7 +153,7 @@ void WindowsContext::create()
 
 void WindowsContext::destroy()
 {
-	wglDeleteContext(_data->context);
+	wgl::DeleteContext(_data->context);
 	_data->context = HGLRC();
 }
 
@@ -170,12 +169,12 @@ void WindowsContext::makeCurrent(NativeWindow *window)
 	_data->hdc = GetDC(_data->hwnd);
 
 	choosePixelFormat(&_data->hdc, &pfd);
-	wglMakeCurrent(_data->hdc, _data->context);
+	wgl::MakeCurrent(_data->hdc, _data->context);
 }
 
 void WindowsContext::doneCurrent()
 {
-	wglMakeCurrent(_data->hdc, NULL);
+	wgl::MakeCurrent(_data->hdc, NULL);
 	ReleaseDC(_data->hwnd, _data->hdc);
 	_data->hwnd = HWND();
 	_data->hdc = HDC();
@@ -184,4 +183,14 @@ void WindowsContext::doneCurrent()
 void WindowsContext::swapBuffers()
 {
 	SwapBuffers(_data->hdc);
+}
+
+GLFunction WindowsContext::resolve(const char *symbol) const
+{
+	std::string name = symbol;
+	GLFunction func = (GLFunction)wgl::GetProcAddress(name.c_str());
+	if (!func) func = (GLFunction)wgl::GetProcAddress((name + "ARB").c_str());
+	if (!func) func = (GLFunction)wgl::GetProcAddress((name + "EXT").c_str());
+	if (!func) func = (GLFunction)wglcontext.resolve(name.c_str());
+	return func;
 }
