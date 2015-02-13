@@ -1,18 +1,19 @@
 #include "glextensions.h"
 
-#ifdef _WIN32
-#define GET_PROC_ADDRESS(NAME) { \
-			*((unsigned char**)&NAME) = (unsigned char*)wglGetProcAddress(#NAME); \
-			if(NAME == NULL) *((unsigned char**)&NAME) = (unsigned char*)wglGetProcAddress(#NAME "ARB"); \
-			if(NAME == NULL) *((unsigned char**)&NAME) = (unsigned char*)wglGetProcAddress(#NAME "EXT"); \
-								}
-#else
-#define GET_PROC_ADDRESS(NAME) { \
-			*((unsigned char**)&NAME) = (unsigned char*)glXGetProcAddressARB((const GLubyte*)#NAME); \
-			if(NAME == NULL) *((unsigned char**)&NAME) = (unsigned char*)glXGetProcAddressARB((const GLubyte*)#NAME "ARB"); \
-			if(NAME == NULL) *((unsigned char**)&NAME) = (unsigned char*)glXGetProcAddressARB((const GLubyte*)#NAME "EXT"); \
-								}
-#endif
+
+// OpenGL 1.0
+PFNGLCLEARPROC glClear = NULL;
+PFNGLCLEARCOLORPROC glClearColor = NULL;
+PFNGLCLEARDEPTHPROC glClearDepth = NULL;
+PFNGLTEXPARAMETERIPROC glTexParameteri = NULL;
+PFNGLTEXIMAGE2DPROC glTexImage2D = NULL;
+
+// OpenGL 1.1
+PFNGLGENTEXTURESPROC glGenTextures = NULL;
+PFNGLBINDTEXTUREPROC glBindTexture = NULL;
+PFNGLDELETETEXTURESPROC glDeleteTextures = NULL;
+PFNGLDRAWARRAYSPROC glDrawArrays = NULL;
+PFNGLDRAWELEMENTSPROC glDrawElements = NULL;
 
 // OpenGL 1.2
 PFNGLBLENDCOLORPROC glBlendColor = NULL;
@@ -255,8 +256,25 @@ PFNGLGETPROGRAMINTERFACEIVPROC glGetProgramInterfaceiv = NULL;
 PFNGLGETPROGRAMRESOURCEIVPROC glGetProgramResourceiv = NULL;
 PFNGLGETPROGRAMRESOURCENAMEPROC glGetProgramResourceName = NULL;
 
-void GLExt::init()
+#define GET_PROC_ADDRESS(NAME) \
+	*((unsigned char**)&NAME) = (unsigned char*)context->resolve(#NAME);
+
+void GLExt::init(Context *context)
 {
+	// OpenGL 1.1
+	GET_PROC_ADDRESS(glClear);
+	GET_PROC_ADDRESS(glClearColor);
+	GET_PROC_ADDRESS(glClearDepth);
+	GET_PROC_ADDRESS(glTexParameteri);
+	GET_PROC_ADDRESS(glTexImage2D);
+
+	// OpenGL 1.1
+	GET_PROC_ADDRESS(glGenTextures);
+	GET_PROC_ADDRESS(glBindTexture);
+	GET_PROC_ADDRESS(glDeleteTextures);
+	GET_PROC_ADDRESS(glDrawArrays);
+	GET_PROC_ADDRESS(glDrawElements);
+
 	// OpenGL 1.2
 	GET_PROC_ADDRESS(glBlendColor)
 	GET_PROC_ADDRESS(glBlendEquation)
