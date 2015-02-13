@@ -23,8 +23,7 @@ solution 'warhog'
 		vectorextensions 'AVX'
 		
 		links
-		{ 
-			'opengl32',
+		{
 			'entityx',
 			'lua'
 		}
@@ -168,7 +167,6 @@ solution 'warhog'
 		
 		defines { 'PLATFORM_LIB' }
 		includedirs { 'src/engine' }
-		links { 'engine', 'opengl32' }
 		
 		local pluginOS = os.get()
 		
