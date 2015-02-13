@@ -29,6 +29,13 @@
 
 using namespace entityx;
 
+//Choose the best graphics card available on PC
+extern "C"
+{
+	DECL_EXPORT int AmdPowerXpressRequestHighPerformance = 1;
+	DECL_EXPORT int NvOptimusEnablement = 0x00000001;
+}
+
 std::string readFile(const std::string& fileName)
 {
 	std::string source;
