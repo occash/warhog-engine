@@ -7,15 +7,15 @@ unsigned int colorTypeToGl(unsigned int colorType)
 	switch (colorType)
 	{
 	case 0: //Gray
-		return GL_LUMINANCE;
-	case (2 | 1): //Palette
-		return GL_COLOR_INDEX;
+		return GL_RED;
+	case (2 | 1) : //Palette
+		return GL_RED;// GL_COLOR_INDEX;
 	case 2: //Rgb
 		return GL_BGR;
 	case (2 | 4): //Rgba
 		return GL_BGRA;
 	case 4: //Gray alpha
-		return GL_LUMINANCE_ALPHA;
+		return GL_RG;
 	default:
 		return GL_RGB;
 	}
@@ -82,12 +82,12 @@ void GLTexture::load()
 	glTexParameteri(_textureType, GL_TEXTURE_MAG_FILTER, glFilterMag);
 
 	//Set wrap mode to repeat
-	GLint glWrapMode = GL_CLAMP;
+	GLint glWrapMode = GL_CLAMP_TO_EDGE;
 
 	switch (wrap())
 	{
 	case Clamp:
-		glWrapMode = GL_CLAMP;
+		glWrapMode = GL_CLAMP_TO_EDGE;
 		break;
 	case Repeat:
 		glWrapMode = GL_REPEAT;
@@ -101,7 +101,7 @@ void GLTexture::load()
 	glTexParameteri(_textureType, GL_TEXTURE_WRAP_R, glWrapMode);
 
 	//Set anisotropic filtering
-	glTexParameterf(_textureType, GL_TEXTURE_MAX_ANISOTROPY_EXT, float(anisotropicLevel()));
+	//glTexParameterf(_textureType, GL_TEXTURE_MAX_ANISOTROPY, float(anisotropicLevel()));
 
 	//Set mipmap levels
 	glTexParameteri(_textureType, GL_TEXTURE_MIN_FILTER, glFilterMin);

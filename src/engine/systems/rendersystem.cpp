@@ -394,7 +394,7 @@ void RenderSystem::chooseBackend(const std::string& name)
 	_window = new Window();// _renderer->createWindow();
 	_context = new Context();
 	_context->makeCurrent(_window);
-	GLExt::init();
+	GLExt::init(_context);
 	//_window->hide();
 	//_window->update();
 	//_renderer->createOcclusionQuery();

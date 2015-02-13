@@ -2,7 +2,7 @@
 #include "glextensions.h"
 
 #include <windows.h>
-#include "GL/GL.h"
+//#include "GL/GL.h"
 //#include "wglext.h"
 
 struct GLWindowData
