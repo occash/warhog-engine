@@ -10,7 +10,7 @@ bool Input::key(const std::string& name)
 	return false;
 }
 
-glm::float_t Input::axis(Axis a)
+float Input::axis(Axis a)
 {
     switch (a)
     {

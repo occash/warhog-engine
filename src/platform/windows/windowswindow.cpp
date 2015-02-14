@@ -1,7 +1,10 @@
 #include "windowswindow.h"
+#include "windowsinput.h"
 
 #include <Windows.h>
 #include <winuser.h>
+
+#include <bitset>
 
 struct WindowData
 {
@@ -21,6 +24,11 @@ struct WindowData
 		bool grab = false;
 		bool visible = true;
 	} mouse;
+
+	struct KeyData
+	{
+		std::bitset<Input::NUM_KEYS> keys;
+	} keyboard;
 };
 
 struct WindowMsg
@@ -43,6 +51,51 @@ static void GrabCursor(const HWND& handle, bool grab)
 	}
 	else
 		ClipCursor(NULL);
+}
+
+static unsigned int translateKey(unsigned int vkey)
+{
+	unsigned int ret = 0;
+	switch (vkey)
+	{
+	case VK_ESCAPE: ret = Input::KEY_ESC; break;
+	case VK_TAB: ret = Input::KEY_TAB; break;
+	case VK_RETURN: ret = Input::KEY_RETURN; break;
+	case VK_BACK: ret = Input::KEY_BACKSPACE; break;
+	case VK_DELETE: ret = Input::KEY_DELETE; break;
+	case VK_INSERT: ret = Input::KEY_INSERT; break;
+	case VK_HOME: ret = Input::KEY_HOME; break;
+	case VK_END: ret = Input::KEY_END; break;
+	case VK_PRIOR: ret = Input::KEY_PGUP; break;
+	case VK_NEXT: ret = Input::KEY_PGDOWN; break;
+	case VK_LEFT: ret = Input::KEY_LEFT; break;
+	case VK_RIGHT: ret = Input::KEY_RIGHT; break;
+	case VK_UP: ret = Input::KEY_UP; break;
+	case VK_DOWN: ret = Input::KEY_DOWN; break;
+	case VK_SHIFT: ret = Input::KEY_SHIFT; break;
+	case VK_MENU: ret = Input::KEY_ALT; break;
+	case VK_CONTROL: ret = Input::KEY_CTRL; break;
+	case VK_SCROLL: ret = Input::KEY_SCROLL; break;
+	case VK_CAPITAL: ret = Input::KEY_CAPS; break;
+	case VK_NUMLOCK: ret = Input::KEY_NUM; break;
+	case VK_F1: ret = Input::KEY_F1; break;
+	case VK_F2: ret = Input::KEY_F2; break;
+	case VK_F3: ret = Input::KEY_F3; break;
+	case VK_F4: ret = Input::KEY_F4; break;
+	case VK_F5: ret = Input::KEY_F5; break;
+	case VK_F6: ret = Input::KEY_F6; break;
+	case VK_F7: ret = Input::KEY_F7; break;
+	case VK_F8: ret = Input::KEY_F8; break;
+	case VK_F9: ret = Input::KEY_F9; break;
+	case VK_F10: ret = Input::KEY_F10; break;
+	case VK_F11: ret = Input::KEY_F11; break;
+	case VK_F12: ret = Input::KEY_F12; break;
+	default:
+		ret = MapVirtualKey(vkey, MAPVK_VK_TO_CHAR);
+		if (ret >= Input::KEY_ESC) ret = 0;
+		else if (ret >= 'A' && ret <= 'Z') ret -= 'A' - 'a';
+	}
+	return ret;
 }
 
 LRESULT CALLBACK windowProc(HWND, UINT, WPARAM, LPARAM);
@@ -377,6 +430,22 @@ bool WindowsWindow::platformEvent(WindowsWindow *window, void *msgPtr, long *res
 			}
 			*result = 1;
 			return true;
+		case WM_KEYDOWN:
+		case WM_SYSKEYDOWN:
+		{
+			unsigned int key = translateKey((unsigned int)msg->wParam);
+			window->_data->keyboard.keys.set(key, true);
+			*result = 1;
+			return true;
+		}
+		case WM_KEYUP:
+		case WM_SYSKEYUP:
+		{
+			unsigned int key = translateKey((unsigned int)msg->wParam);
+			window->_data->keyboard.keys.set(key, false);
+			*result = 1;
+			return true;
+		}
 		default:
 			return false;
 		}
