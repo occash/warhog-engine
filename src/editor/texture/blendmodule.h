@@ -12,7 +12,7 @@ public:
     ~BlendModule();
 
 private:
-    
+
 };
 
 #endif // BLENDMODULE_H

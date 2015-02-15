@@ -2,7 +2,7 @@
 
 
 EditorCreator::EditorCreator(QObject *parent /*= 0*/)
-	: QObject(parent)
+    : QObject(parent)
 {
 }
 
@@ -12,5 +12,5 @@ EditorCreator::~EditorCreator()
 
 ResourceEditor *EditorCreator::create()
 {
-	return nullptr;
+    return nullptr;
 }

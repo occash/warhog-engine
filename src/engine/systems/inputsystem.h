@@ -16,8 +16,8 @@ public:
     InputSystem(std::shared_ptr<Window> window, const KeyMap& keyMap);
     ~InputSystem();
 
-    void configure(entityx::EventManager &events) override;
-	void update(entityx::EntityManager &entities, entityx::EventManager &events, double dt) override;
+    void configure(entityx::EventManager& events) override;
+    void update(entityx::EntityManager& entities, entityx::EventManager& events, double dt) override;
 
 private:
     double _horizontal;

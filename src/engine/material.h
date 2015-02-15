@@ -13,18 +13,18 @@ class ShaderBlock;
 class ENGINE_EXPORT Material
 {
 public:
-	Material();
-	~Material();
+    Material();
+    ~Material();
 
-	Shader *shader() const;
-	void setShader(Shader *shader);
+    Shader *shader() const;
+    void setShader(Shader *shader);
 
-	Any property(const char *name) const;
-	void setProperty(const char *name, const Any& value);
+    Any property(const char *name) const;
+    void setProperty(const char *name, const Any& value);
 
 private:
-	Shader *_shader;
-	ShaderBlock *_material;
+    Shader *_shader;
+    ShaderBlock *_material;
 
 };
 

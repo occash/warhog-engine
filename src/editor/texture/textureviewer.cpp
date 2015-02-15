@@ -11,15 +11,15 @@
 #define IND_MAX 128
 
 RenderWorker::RenderWorker(QImage *image, noise::module::Module *module)
-: QObject(nullptr),
-_image(image)
+    : QObject(nullptr),
+      _image(image)
 {
     _plane.SetModule(*module);
 }
 
 RenderWorker::RenderWorker(const RenderWorker& other)
     : _image(other._image),
-    _plane(other._plane)
+      _plane(other._plane)
 {
 }
 
@@ -49,10 +49,10 @@ void RenderWorker::operator()(int idx)
 
 TextureViewer::TextureViewer(BaseModule *module, int w, int h, QWidget *parent)
     : QWidget(parent),
-    _module(module),
-    _image(w, h, QImage::Format_ARGB32),
-    _worker(&_image, module->module()),
-    _jobs(IND_MAX)
+      _module(module),
+      _image(w, h, QImage::Format_ARGB32),
+      _worker(&_image, module->module()),
+      _jobs(IND_MAX)
 {
     setFixedSize(w, h);
     startTimer(10);
@@ -74,9 +74,7 @@ void TextureViewer::generate()
         return;
 
     for (int i = 0; i < _jobs.size(); ++i)
-    {
         _jobs[i] = i;
-    }
 
     QtConcurrent::map(_jobs, _worker);
 }

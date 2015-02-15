@@ -1,28 +1,28 @@
 #include "renderer.h"
 
-const char * Renderer::name() const
+const char *Renderer::name() const
 {
-	return nullptr;
+    return nullptr;
 }
 
 Window *Renderer::createWindow()
 {
-	return nullptr;
+    return nullptr;
 }
 
 Texture *Renderer::createTexture()
 {
-	return nullptr;
+    return nullptr;
 }
 
 Mesh *Renderer::createMesh()
 {
-	return nullptr;
+    return nullptr;
 }
 
 Shader *Renderer::createShader()
 {
-	return nullptr;
+    return nullptr;
 }
 
 void Renderer::createOcclusionQuery()
@@ -37,5 +37,5 @@ void Renderer::beginOcclusionQuery()
 
 bool Renderer::endOcclusionQuery()
 {
-	return false;
+    return false;
 }

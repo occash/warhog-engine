@@ -13,23 +13,23 @@ class QDockWidget;
 */
 class ViewManager : public QObject
 {
-	Q_OBJECT
+    Q_OBJECT
 
 public:
-	ViewManager(QObject *parent);
-	~ViewManager();
+    ViewManager(QObject *parent);
+    ~ViewManager();
 
-	QStringList views() const;
-	bool registerView(const QString& name, ViewCreator *creator);
-	QDockWidget *createView(const QString& name);
-
-private:
-	void readSettings();
-	void writeSettings();
+    QStringList views() const;
+    bool registerView(const QString& name, ViewCreator *creator);
+    QDockWidget *createView(const QString& name);
 
 private:
-	QSettings _settings;
-	QMap<QString, ViewCreator *> _views;
+    void readSettings();
+    void writeSettings();
+
+private:
+    QSettings _settings;
+    QMap<QString, ViewCreator *> _views;
 
 };
 

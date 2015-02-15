@@ -11,21 +11,21 @@
 class Script;
 class ScriptEngine;
 
-class ScriptSystem : 
-	public entityx::System<ScriptSystem>
+class ScriptSystem :
+    public entityx::System<ScriptSystem>
 {
 public:
     ScriptSystem();
     ~ScriptSystem();
 
-    void configure(entityx::EventManager &events) override;
-	void update(entityx::EntityManager &entities, 
-		entityx::EventManager &events, double dt) override;
+    void configure(entityx::EventManager& events) override;
+    void update(entityx::EntityManager& entities,
+                entityx::EventManager& events, double dt) override;
 
     template<class Engine>
     void registerEngine();
 
-	bool assign(entityx::Entity entity, std::shared_ptr<Script> script);
+    bool assign(entityx::Entity entity, std::shared_ptr<Script> script);
 
 private:
     void registerEngine(ScriptEngine *engine);

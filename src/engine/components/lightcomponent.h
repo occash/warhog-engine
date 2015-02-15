@@ -6,8 +6,8 @@
 #include <entityx/Entity.h>
 #include <glm/glm.hpp>
 
-class ENGINE_EXPORT LightComponent : 
-	public entityx::Component<LightComponent>
+class ENGINE_EXPORT LightComponent :
+    public entityx::Component<LightComponent>
 {
 public:
     LightComponent();
@@ -33,7 +33,7 @@ private:
     Type _type;
     glm::vec4 _color;
     float _intensity;
-    
+
 };
 
 #endif // !LIGHT_H

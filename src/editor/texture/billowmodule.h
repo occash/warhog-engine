@@ -39,7 +39,7 @@ public:
 
 private:
     QMap<QString, int> _quality;
-    
+
 };
 
 #endif // BILLOWMODULE_H

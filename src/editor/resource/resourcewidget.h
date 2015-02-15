@@ -21,27 +21,27 @@ public:
     ResourceWidget(QWidget *parent = 0);
     ~ResourceWidget();
 
-	void setResourceFolder(const QString& folder);
-	void addImporter(Importer *importer);
+    void setResourceFolder(const QString& folder);
+    void addImporter(Importer *importer);
 
 private slots :
-	void onProgress(int);
-	void onInfo(QString e);
-	void onError(QString e);
-	void onSuccess();
+    void onProgress(int);
+    void onInfo(QString e);
+    void onError(QString e);
+    void onSuccess();
 
 private slots:
-	void createGroup();
-	void importResource();
+    void createGroup();
+    void importResource();
 
 private:
-	std::shared_ptr<ResourceIO> _io;
-	ResourceModel *_model;
-	QList<Importer *> _importers;
+    std::shared_ptr<ResourceIO> _io;
+    ResourceModel *_model;
+    QList<Importer *> _importers;
 
-	QTreeView *_view;
-	QToolBar *_toolbar;
-	QProgressDialog *_progress;
+    QTreeView *_view;
+    QToolBar *_toolbar;
+    QProgressDialog *_progress;
 
 };
 

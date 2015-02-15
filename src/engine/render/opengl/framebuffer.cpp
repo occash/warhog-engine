@@ -1,32 +1,32 @@
-/*#include "framebuffer.h"
-#include "texture.h"
+/*  #include "framebuffer.h"
+    #include "texture.h"
 
-#include <GL/glew.h>
+    #include <GL/glew.h>
 
-FrameBuffer::FrameBuffer()
+    FrameBuffer::FrameBuffer()
     : _fbo(0)
-{
+    {
     glGenFramebuffers(1, &_fbo);
-}
+    }
 
 
-FrameBuffer::~FrameBuffer()
-{
+    FrameBuffer::~FrameBuffer()
+    {
     glDeleteFramebuffers(1, &_fbo);
-}
+    }
 
-void FrameBuffer::bind()
-{
+    void FrameBuffer::bind()
+    {
     glBindFramebuffer(GL_DRAW_FRAMEBUFFER, _fbo);
-}
+    }
 
-void FrameBuffer::unbind()
-{
+    void FrameBuffer::unbind()
+    {
     glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
-}
+    }
 
-void FrameBuffer::attachTexture(AttachmentType type, const Texture& texture)
-{
+    void FrameBuffer::attachTexture(AttachmentType type, const Texture& texture)
+    {
     glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, type, texture._type, texture._texture, 0);
-}
+    }
 */

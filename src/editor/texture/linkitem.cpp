@@ -6,8 +6,8 @@
 
 LinkItem::LinkItem(BaseModule *linkModule, QGraphicsItem *parent)
     : QGraphicsRectItem(parent),
-    _module(linkModule),
-    _connector(nullptr)
+      _module(linkModule),
+      _connector(nullptr)
 {
     setPen(QPen(QColor(200, 200, 200)));
 }
@@ -24,8 +24,8 @@ void LinkItem::updateConnection()
 }
 
 SourceItem::SourceItem(BaseModule *module, int id, QGraphicsItem *parent)
-: LinkItem(module, parent),
-_id(id)
+    : LinkItem(module, parent),
+      _id(id)
 {
     setBrush(QBrush(QColor(0, 180, 250)));
 }
@@ -35,7 +35,7 @@ SourceItem::~SourceItem()
 }
 
 OutputItem::OutputItem(BaseModule *module, QGraphicsItem *parent)
-: LinkItem(module, parent)
+    : LinkItem(module, parent)
 {
     setBrush(QBrush(QColor(0, 250, 180)));
 }

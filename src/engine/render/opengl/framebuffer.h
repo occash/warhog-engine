@@ -1,13 +1,13 @@
-/*#ifndef FRAMEBUFFER_H
-#define FRAMEBUFFER_H
+/*  #ifndef FRAMEBUFFER_H
+    #define FRAMEBUFFER_H
 
-#include <glm/glm.hpp>
+    #include <glm/glm.hpp>
 
-class Texture;
+    class Texture;
 
-class FrameBuffer
-{
-public:
+    class FrameBuffer
+    {
+    public:
     enum AttachmentType {
         Color = 0x8CE0, //Range to 0x8CEF
         Depth = 0x8D00,
@@ -20,9 +20,9 @@ public:
     void unbind();
     void attachTexture(AttachmentType type, const Texture& texture);
 
-private:
+    private:
     glm::uint _fbo;
 
-};
+    };
 
-#endif*/
+    #endif*/

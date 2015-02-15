@@ -6,10 +6,10 @@
 class WindowsLoop : public NativeLoop
 {
 public:
-	WindowsLoop();
-	~WindowsLoop();
+    WindowsLoop();
+    ~WindowsLoop();
 
-	void update() override;
+    void update() override;
 };
 
 #endif //WINDOWSLOOP_H

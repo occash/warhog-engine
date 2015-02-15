@@ -17,20 +17,20 @@ InputSystem::~InputSystem()
 {
 }
 
-void InputSystem::configure(EventManager &events)
+void InputSystem::configure(EventManager& events)
 {
 
 }
 
-void InputSystem::update(EntityManager &entities, EventManager &events, double dt)
+void InputSystem::update(EntityManager& entities, EventManager& events, double dt)
 {
-    /*double horizontal, vertical;
-    glfwGetCursorPos(Input::_window->_handle,
+    /*  double horizontal, vertical;
+        glfwGetCursorPos(Input::_window->_handle,
         &horizontal,
         &vertical);
 
-    Input::_deltah = horizontal - _horizontal;
-    Input::_deltav = vertical - _vertical;
-    _horizontal = horizontal;
-    _vertical = vertical;*/
+        Input::_deltah = horizontal - _horizontal;
+        Input::_deltav = vertical - _vertical;
+        _horizontal = horizontal;
+        _vertical = vertical;*/
 }

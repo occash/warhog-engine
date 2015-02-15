@@ -4,7 +4,7 @@
 class NativeLoop
 {
 public:
-	virtual void update() = 0;
+    virtual void update() = 0;
 };
 
 #endif //NATIVELOOP_H

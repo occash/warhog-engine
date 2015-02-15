@@ -1,18 +1,27 @@
 #ifndef GLEXTENSIONS_H
 #define GLEXTENSIONS_H
 
-#ifdef _WIN32
-#define NOMINMAX
-#include <windows.h>
-#endif
-
-#include <GL/GL.h>
-#include "glext.h"
+#include "../../context.h"
+#include "glcorearb.h"
 
 namespace GLExt
 {
-	void init();
+    void init(Context *context);
 }
+
+// OpenGL 1.0
+extern PFNGLCLEARPROC glClear;
+extern PFNGLCLEARCOLORPROC glClearColor;
+extern PFNGLCLEARDEPTHPROC glClearDepth;
+extern PFNGLTEXPARAMETERIPROC glTexParameteri;
+extern PFNGLTEXIMAGE2DPROC glTexImage2D;
+
+// OpenGL 1.1
+extern PFNGLGENTEXTURESPROC glGenTextures;
+extern PFNGLBINDTEXTUREPROC glBindTexture;
+extern PFNGLDELETETEXTURESPROC glDeleteTextures;
+extern PFNGLDRAWARRAYSPROC glDrawArrays;
+extern PFNGLDRAWELEMENTSPROC glDrawElements;
 
 // OpenGL 1.2
 extern PFNGLBLENDCOLORPROC glBlendColor;

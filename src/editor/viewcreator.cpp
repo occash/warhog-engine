@@ -15,24 +15,24 @@ ViewCreator::~ViewCreator()
 
 QDockWidget *ViewCreator::createView()
 {
-	QDockWidget *dockWidget = new QDockWidget(name());
-	QWidget *widget = create();
-	widget->setParent(dockWidget);
-	dockWidget->setWidget(widget);
+    QDockWidget *dockWidget = new QDockWidget(name());
+    QWidget *widget = create();
+    widget->setParent(dockWidget);
+    dockWidget->setWidget(widget);
 
-	return dockWidget;
+    return dockWidget;
 }
 
 QAction *ViewCreator::action()
 {
-	QAction *dockAction = new QAction(name(), this);
-	dockAction->setToolTip(description());
-	dockAction->setStatusTip(description());
-	dockAction->setWhatsThis(helpString());
+    QAction *dockAction = new QAction(name(), this);
+    dockAction->setToolTip(description());
+    dockAction->setStatusTip(description());
+    dockAction->setWhatsThis(helpString());
 
-	connect(dockAction, SIGNAL(triggered()), this, SLOT(showDockWidget()));
+    connect(dockAction, SIGNAL(triggered()), this, SLOT(showDockWidget()));
 
-	return dockAction;
+    return dockAction;
 }
 
 void ViewCreator::showDockWidget()

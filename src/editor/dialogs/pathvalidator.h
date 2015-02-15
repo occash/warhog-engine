@@ -5,13 +5,13 @@
 
 class PathValidator : public QValidator
 {
-	Q_OBJECT
+    Q_OBJECT
 
 public:
-	PathValidator(QObject * parent = 0);
+    PathValidator(QObject *parent = 0);
 
-	void fixup(QString & input) const override;
-	State validate(QString & input, int & pos) const override;
+    void fixup(QString& input) const override;
+    State validate(QString& input, int& pos) const override;
 
 };
 

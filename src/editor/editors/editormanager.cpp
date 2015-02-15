@@ -2,7 +2,7 @@
 
 
 EditorManager::EditorManager(QObject *parent /*= 0*/)
-	: QObject(parent)
+    : QObject(parent)
 {
 
 }

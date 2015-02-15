@@ -10,10 +10,10 @@ class ResourceEditor;
 class EditorCreator : public QObject
 {
 public:
-	EditorCreator(QObject *parent = 0);
-	~EditorCreator();
+    EditorCreator(QObject *parent = 0);
+    ~EditorCreator();
 
-	virtual ResourceEditor *create() = 0;
+    virtual ResourceEditor *create() = 0;
 };
 
 #endif //EDITORCREATOR_H

@@ -1,187 +1,199 @@
 #include "windowscontext.h"
 #include "windowswindow.h"
+#include "wgl.h"
 
-#include <Windows.h>
-#include <GL/GL.h>
+#include <gl/GL.h>
 #include "wglext.h"
 
-struct ContextData
-{
-	HWND hwnd = HWND();
-	HDC hdc = HDC();
-	HGLRC context = HGLRC();
-};
+//Resolve wgl functions first
+static WGL wglcontext;
 
+//Extensions
 static PFNWGLCHOOSEPIXELFORMATARBPROC wglChoosePixelFormatARB = NULL;
 static PFNWGLCREATECONTEXTATTRIBSARBPROC wglCreateContextAttribsARB = NULL;
 static PFNWGLSWAPINTERVALEXTPROC wglSwapIntervalEXT = NULL;
 
-static bool resolveWgl(PIXELFORMATDESCRIPTOR *pfd)
+//Resolve extensions
+static bool resolveWglExt(PIXELFORMATDESCRIPTOR *pfd)
 {
-	WindowsWindow w;
-	w.create();
+    WindowsWindow w;
+    w.create();
 
-	HWND handle = (HWND)w.handle();
-	HDC hdc = GetDC(handle);
+    HWND handle = (HWND)w.handle();
+    HDC hdc = GetDC(handle);
 
-	// choose pixel format
-	int pixelformat = ChoosePixelFormat(hdc, pfd);
-	SetPixelFormat(hdc, pixelformat, pfd);
+    // choose pixel format
+    int pixelformat = ChoosePixelFormat(hdc, pfd);
+    SetPixelFormat(hdc, pixelformat, pfd);
 
-	// create simple context
-	HGLRC context = wglCreateContext(hdc);
-	//wglShareLists(old_context, *context);
-	wglMakeCurrent(hdc, context);
-	//TODO: handle errors
+    // create simple context
+    HGLRC context = wgl::CreateContext(hdc);
+    wgl::MakeCurrent(hdc, context);
+    //TODO: handle errors
 
-	//resolve opengl functions
-	//GLExt::init();
+    wglChoosePixelFormatARB = (PFNWGLCHOOSEPIXELFORMATARBPROC)wgl::GetProcAddress("wglChoosePixelFormatARB");
+    wglCreateContextAttribsARB = (PFNWGLCREATECONTEXTATTRIBSARBPROC)wgl::GetProcAddress("wglCreateContextAttribsARB");
+    wglSwapIntervalEXT = (PFNWGLSWAPINTERVALEXTPROC)wgl::GetProcAddress("wglSwapIntervalEXT");
 
-	wglChoosePixelFormatARB = (PFNWGLCHOOSEPIXELFORMATARBPROC)wglGetProcAddress("wglChoosePixelFormatARB");
-	wglCreateContextAttribsARB = (PFNWGLCREATECONTEXTATTRIBSARBPROC)wglGetProcAddress("wglCreateContextAttribsARB");
-	wglSwapIntervalEXT = (PFNWGLSWAPINTERVALEXTPROC)wglGetProcAddress("wglSwapIntervalEXT");
-	//TODO: handle errors
+    // destroy context
+    wgl::MakeCurrent(hdc, NULL);
+    wgl::DeleteContext(context);
 
-	// destroy context
-	wglMakeCurrent(hdc, NULL);
-	wglDeleteContext(context);
+    ReleaseDC(handle, hdc);
+    w.destroy();
 
-	ReleaseDC(handle, hdc);
-
-	w.destroy();
-
-	return true;
+    return true;
 }
 
 static bool resolved = false;
 
 void choosePixelFormat(HDC *hdc, PIXELFORMATDESCRIPTOR *pfd)
 {
-	if (wglChoosePixelFormatARB) {
-		//Create attributes
-		int attributes[128];
-		memset(attributes, 0, sizeof(attributes));
-		int *aptr = attributes;
+    if (wglChoosePixelFormatARB)
+    {
+        //Create attributes
+        int attributes[128];
+        memset(attributes, 0, sizeof(attributes));
+        int *aptr = attributes;
 
-		*aptr++ = WGL_DRAW_TO_WINDOW_ARB;
-		*aptr++ = GL_TRUE;
-		*aptr++ = WGL_ACCELERATION_ARB;
-		*aptr++ = WGL_FULL_ACCELERATION_ARB;
-		*aptr++ = WGL_DOUBLE_BUFFER_ARB;
-		*aptr++ = GL_TRUE;
-		*aptr++ = WGL_COLOR_BITS_ARB;
-		*aptr++ = 32;
-		*aptr++ = WGL_DEPTH_BITS_ARB;
-		*aptr++ = 24;
-		*aptr++ = WGL_STENCIL_BITS_ARB;
-		*aptr++ = 8;
-		//TODO: add multisampling
+        *aptr++ = WGL_DRAW_TO_WINDOW_ARB;
+        *aptr++ = 1;
+        *aptr++ = WGL_ACCELERATION_ARB;
+        *aptr++ = WGL_FULL_ACCELERATION_ARB;
+        *aptr++ = WGL_DOUBLE_BUFFER_ARB;
+        *aptr++ = 1;
+        *aptr++ = WGL_COLOR_BITS_ARB;
+        *aptr++ = 32;
+        *aptr++ = WGL_DEPTH_BITS_ARB;
+        *aptr++ = 24;
+        *aptr++ = WGL_STENCIL_BITS_ARB;
+        *aptr++ = 8;
+        //TODO: add multisampling
 
-		// choose pixel format
-		int pixelformat;
-		unsigned int count;
-		wglChoosePixelFormatARB(*hdc, attributes, NULL, 1, &pixelformat, &count);
-		if (count == 0) pixelformat = ChoosePixelFormat(*hdc, pfd);
+        // choose pixel format
+        int pixelformat;
+        unsigned int count;
+        wglChoosePixelFormatARB(*hdc, attributes, NULL, 1, &pixelformat, &count);
+        if (count == 0) pixelformat = ChoosePixelFormat(*hdc, pfd);
 
-		// set pixel format
-		SetPixelFormat(*hdc, pixelformat, pfd);
-	}
+        // set pixel format
+        SetPixelFormat(*hdc, pixelformat, pfd);
+    }
 }
 
+struct ContextData
+{
+    HWND hwnd = HWND();
+    HDC hdc = HDC();
+    HGLRC context = HGLRC();
+};
+
 WindowsContext::WindowsContext()
-	: _data(new ContextData)
+    : _data(new ContextData)
 {
 }
 
 WindowsContext::~WindowsContext()
 {
-	delete _data;
+    delete _data;
 }
 
 SurfaceFormat WindowsContext::format() const
 {
-	return _format;
+    return _format;
 }
 
 void WindowsContext::setFormat(const SurfaceFormat& format)
 {
-	_format = format;
+    _format = format;
 }
 
 void WindowsContext::create()
 {
-	//TODO set format
-	PIXELFORMATDESCRIPTOR pfd = {
-		sizeof(PIXELFORMATDESCRIPTOR), 1, PFD_DRAW_TO_WINDOW | PFD_SUPPORT_OPENGL | PFD_DOUBLEBUFFER | PFD_SWAP_EXCHANGE,
-		PFD_TYPE_RGBA, 32, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 24, 8, 0, PFD_MAIN_PLANE, 0, 0, 0, 0
-	};
+    //TODO set format
+    PIXELFORMATDESCRIPTOR pfd =
+    {
+        sizeof(PIXELFORMATDESCRIPTOR), 1, PFD_DRAW_TO_WINDOW | PFD_SUPPORT_OPENGL | PFD_DOUBLEBUFFER | PFD_SWAP_EXCHANGE,
+        PFD_TYPE_RGBA, 32, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 24, 8, 0, PFD_MAIN_PLANE, 0, 0, 0, 0
+    };
 
-	if (!resolved)
-		resolved = resolveWgl(&pfd);
+    if (!resolved)
+        resolved = resolveWglExt(&pfd);
 
-	//Create dummy window
-	WindowsWindow w;
-	w.create();
-	HWND hwnd = (HWND)w.handle();
-	HDC hdc = GetDC(hwnd);
+    //Create dummy window
+    WindowsWindow w;
+    w.create();
+    HWND hwnd = (HWND)w.handle();
+    HDC hdc = GetDC(hwnd);
 
-	choosePixelFormat(&hdc, &pfd);
+    choosePixelFormat(&hdc, &pfd);
 
-	HGLRC old_context = _data->context;
-	_data->context = wglCreateContext(hdc);
-	wglShareLists(old_context, _data->context);
+    HGLRC old_context = _data->context;
+    _data->context = wgl::CreateContext(hdc);
+    wgl::ShareLists(old_context, _data->context);
 
-	// create context attributes
-	if (wglCreateContextAttribsARB)
-	{
-		//Create attributes
-		int attributes[128];
-		memset(attributes, 0, sizeof(attributes));
+    // create context attributes
+    if (wglCreateContextAttribsARB)
+    {
+        //Create attributes
+        int attributes[128];
+        memset(attributes, 0, sizeof(attributes));
 
 #ifndef DEBUG
-		int *aptr = attributes;
-		*aptr++ = WGL_CONTEXT_FLAGS_ARB;
-		*aptr++ = WGL_CONTEXT_DEBUG_BIT_ARB;
+        int *aptr = attributes;
+        *aptr++ = WGL_CONTEXT_FLAGS_ARB;
+        *aptr++ = WGL_CONTEXT_DEBUG_BIT_ARB;
 #endif
 
-		// create context attributes
-		_data->context = wglCreateContextAttribsARB(hdc, _data->context, attributes);
-	}
+        // create context attributes
+        _data->context = wglCreateContextAttribsARB(hdc, _data->context, attributes);
+    }
 
-	ReleaseDC(hwnd, hdc);
-	w.destroy();
+    ReleaseDC(hwnd, hdc);
+    w.destroy();
 }
 
 void WindowsContext::destroy()
 {
-	wglDeleteContext(_data->context);
-	_data->context = HGLRC();
+    wgl::DeleteContext(_data->context);
+    _data->context = HGLRC();
 }
 
 void WindowsContext::makeCurrent(NativeWindow *window)
 {
-	PIXELFORMATDESCRIPTOR pfd = {
-		sizeof(PIXELFORMATDESCRIPTOR), 1, PFD_DRAW_TO_WINDOW | PFD_SUPPORT_OPENGL | PFD_DOUBLEBUFFER | PFD_SWAP_EXCHANGE,
-		PFD_TYPE_RGBA, 32, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 24, 8, 0, PFD_MAIN_PLANE, 0, 0, 0, 0
-	};
+    PIXELFORMATDESCRIPTOR pfd =
+    {
+        sizeof(PIXELFORMATDESCRIPTOR), 1, PFD_DRAW_TO_WINDOW | PFD_SUPPORT_OPENGL | PFD_DOUBLEBUFFER | PFD_SWAP_EXCHANGE,
+        PFD_TYPE_RGBA, 32, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 24, 8, 0, PFD_MAIN_PLANE, 0, 0, 0, 0
+    };
 
-	WindowsWindow *w = static_cast<WindowsWindow *>(window);
-	_data->hwnd = (HWND)w->handle();
-	_data->hdc = GetDC(_data->hwnd);
+    WindowsWindow *w = static_cast<WindowsWindow *>(window);
+    _data->hwnd = (HWND)w->handle();
+    _data->hdc = GetDC(_data->hwnd);
 
-	choosePixelFormat(&_data->hdc, &pfd);
-	wglMakeCurrent(_data->hdc, _data->context);
+    choosePixelFormat(&_data->hdc, &pfd);
+    wgl::MakeCurrent(_data->hdc, _data->context);
 }
 
 void WindowsContext::doneCurrent()
 {
-	wglMakeCurrent(_data->hdc, NULL);
-	ReleaseDC(_data->hwnd, _data->hdc);
-	_data->hwnd = HWND();
-	_data->hdc = HDC();
+    wgl::MakeCurrent(_data->hdc, NULL);
+    ReleaseDC(_data->hwnd, _data->hdc);
+    _data->hwnd = HWND();
+    _data->hdc = HDC();
 }
 
 void WindowsContext::swapBuffers()
 {
-	SwapBuffers(_data->hdc);
+    SwapBuffers(_data->hdc);
+}
+
+GLFunction WindowsContext::resolve(const char *symbol) const
+{
+    std::string name = symbol;
+    GLFunction func = (GLFunction)wgl::GetProcAddress(name.c_str());
+    if (!func) func = (GLFunction)wgl::GetProcAddress((name + "ARB").c_str());
+    if (!func) func = (GLFunction)wgl::GetProcAddress((name + "EXT").c_str());
+    if (!func) func = (GLFunction)wglcontext.resolve(name.c_str());
+    return func;
 }

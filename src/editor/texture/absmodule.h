@@ -12,7 +12,7 @@ public:
     ~AbsModule();
 
 private:
-    
+
 };
 
 #endif // ABSMODULE_H

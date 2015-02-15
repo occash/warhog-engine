@@ -6,55 +6,55 @@
 
 NativeLoop *WindowsInterface::loop() const
 {
-	return new WindowsLoop();
+    return new WindowsLoop();
 }
 
-NativeScreen * WindowsInterface::screen(int)
+NativeScreen *WindowsInterface::screen(int)
 {
-	return nullptr;
+    return nullptr;
 }
 
 NativeWindow *WindowsInterface::window() const
 {
-	return new WindowsWindow();
+    return new WindowsWindow();
 }
 
 NativeInput *WindowsInterface::input() const
 {
-	return nullptr;
+    return nullptr;
 }
 
 NativeContext *WindowsInterface::context(const char *) const
 {
-	return new WindowsContext();;
+    return new WindowsContext();;
 }
 
 const char *WindowsInterface::name() const
 {
-	return "WindowsPlatform";
+    return "WindowsPlatform";
 }
 
 const char *WindowsInterface::description() const
 {
-	return "Windows platform interface";
+    return "Windows platform interface";
 }
 
 const char *WindowsInterface::version() const
 {
-	return "1.0";
+    return "1.0";
 }
 
 const char *WindowsInterface::author() const
 {
-	return "Warhog Team";
+    return "Warhog Team";
 }
 
-NativeScreen * WindowsInterface::primaryScreen()
+NativeScreen *WindowsInterface::primaryScreen()
 {
-	return nullptr;
+    return nullptr;
 }
 
 int WindowsInterface::screenCount()
 {
-	return 0;
+    return 0;
 }
