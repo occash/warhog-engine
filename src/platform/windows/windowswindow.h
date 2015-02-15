@@ -15,8 +15,8 @@ public:
     bool isVisible() const override;
     void setVisible(bool visible) override;
 
-    NativeWindow::States states() override;
-    void setStates(NativeWindow::States) override;
+    Window::States states() override;
+    void setStates(Window::States) override;
 
     int x() const override;
     int y() const override;
@@ -34,6 +34,8 @@ public:
 
     bool isCursorVisible() const override;
     void setCursorVisible(bool visible) override;
+
+    void setupInput(NativeInput *) override;
 
 public:
     void *handle() const;

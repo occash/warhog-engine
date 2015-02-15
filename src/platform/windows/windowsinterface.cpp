@@ -1,6 +1,7 @@
 #include "windowsinterface.h"
 #include "windowsloop.h"
 #include "windowswindow.h"
+#include "windowsinput.h"
 #include "windowscontext.h"
 
 
@@ -14,6 +15,16 @@ NativeScreen *WindowsInterface::screen(int)
     return nullptr;
 }
 
+NativeScreen *WindowsInterface::primaryScreen()
+{
+    return nullptr;
+}
+
+int WindowsInterface::screenCount()
+{
+    return 0;
+}
+
 NativeWindow *WindowsInterface::window() const
 {
     return new WindowsWindow();
@@ -21,12 +32,12 @@ NativeWindow *WindowsInterface::window() const
 
 NativeInput *WindowsInterface::input() const
 {
-    return nullptr;
+    return new WindowsInput();
 }
 
 NativeContext *WindowsInterface::context(const char *) const
 {
-    return new WindowsContext();;
+    return new WindowsContext();
 }
 
 const char *WindowsInterface::name() const
@@ -47,14 +58,4 @@ const char *WindowsInterface::version() const
 const char *WindowsInterface::author() const
 {
     return "Warhog Team";
-}
-
-NativeScreen *WindowsInterface::primaryScreen()
-{
-    return nullptr;
-}
-
-int WindowsInterface::screenCount()
-{
-    return 0;
 }

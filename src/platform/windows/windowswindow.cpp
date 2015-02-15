@@ -2,33 +2,29 @@
 #include "windowsinput.h"
 
 #include <Windows.h>
+#include <Windowsx.h>
 #include <winuser.h>
-
-#include <bitset>
 
 struct WindowData
 {
     HWND handle = HWND();
     bool visible = false;
-    NativeWindow::Styles styles = NativeWindow::Clozable | NativeWindow::Resizable;
-    NativeWindow::States states = NativeWindow::Normal;
+    Window::Styles styles = Window::Clozable 
+        | Window::Resizable 
+        | Window::PreventSaver;
+    Window::States states = Window::Normal;
     char title[256];
     int x = 0, y = 0;
     int width = 640;
     int height = 480;
 
-    struct MouseData
+    struct Mouse
     {
-        int x = 0, y = 0;
-        int button = 0;
         bool grab = false;
         bool visible = true;
     } mouse;
 
-	struct KeyData
-	{
-		std::bitset<Input::NUM_KEYS> keys;
-	} keyboard;
+    WindowsInput *input = nullptr;
 };
 
 struct WindowMsg
@@ -58,41 +54,41 @@ static unsigned int translateKey(unsigned int vkey)
 	unsigned int ret = 0;
 	switch (vkey)
 	{
-	case VK_ESCAPE: ret = Input::KEY_ESC; break;
-	case VK_TAB: ret = Input::KEY_TAB; break;
-	case VK_RETURN: ret = Input::KEY_RETURN; break;
-	case VK_BACK: ret = Input::KEY_BACKSPACE; break;
-	case VK_DELETE: ret = Input::KEY_DELETE; break;
-	case VK_INSERT: ret = Input::KEY_INSERT; break;
-	case VK_HOME: ret = Input::KEY_HOME; break;
-	case VK_END: ret = Input::KEY_END; break;
-	case VK_PRIOR: ret = Input::KEY_PGUP; break;
-	case VK_NEXT: ret = Input::KEY_PGDOWN; break;
-	case VK_LEFT: ret = Input::KEY_LEFT; break;
-	case VK_RIGHT: ret = Input::KEY_RIGHT; break;
-	case VK_UP: ret = Input::KEY_UP; break;
-	case VK_DOWN: ret = Input::KEY_DOWN; break;
-	case VK_SHIFT: ret = Input::KEY_SHIFT; break;
-	case VK_MENU: ret = Input::KEY_ALT; break;
-	case VK_CONTROL: ret = Input::KEY_CTRL; break;
-	case VK_SCROLL: ret = Input::KEY_SCROLL; break;
-	case VK_CAPITAL: ret = Input::KEY_CAPS; break;
-	case VK_NUMLOCK: ret = Input::KEY_NUM; break;
-	case VK_F1: ret = Input::KEY_F1; break;
-	case VK_F2: ret = Input::KEY_F2; break;
-	case VK_F3: ret = Input::KEY_F3; break;
-	case VK_F4: ret = Input::KEY_F4; break;
-	case VK_F5: ret = Input::KEY_F5; break;
-	case VK_F6: ret = Input::KEY_F6; break;
-	case VK_F7: ret = Input::KEY_F7; break;
-	case VK_F8: ret = Input::KEY_F8; break;
-	case VK_F9: ret = Input::KEY_F9; break;
-	case VK_F10: ret = Input::KEY_F10; break;
-	case VK_F11: ret = Input::KEY_F11; break;
-	case VK_F12: ret = Input::KEY_F12; break;
+	case VK_ESCAPE: ret = Input::KeyEsc; break;
+	case VK_TAB: ret = Input::KeyTab; break;
+	case VK_RETURN: ret = Input::KeyReturn; break;
+	case VK_BACK: ret = Input::KeyBackspace; break;
+	case VK_DELETE: ret = Input::KeyDelete; break;
+	case VK_INSERT: ret = Input::KeyInsert; break;
+	case VK_HOME: ret = Input::KeyHome; break;
+	case VK_END: ret = Input::KeyEnd; break;
+	case VK_PRIOR: ret = Input::KeyPgup; break;
+	case VK_NEXT: ret = Input::KeyPgdown; break;
+	case VK_LEFT: ret = Input::KeyLeft; break;
+	case VK_RIGHT: ret = Input::KeyRight; break;
+	case VK_UP: ret = Input::KeyUp; break;
+	case VK_DOWN: ret = Input::KeyDown; break;
+	case VK_SHIFT: ret = Input::KeyShift; break;
+	case VK_MENU: ret = Input::KeyAlt; break;
+	case VK_CONTROL: ret = Input::KeyCtrl; break;
+	case VK_SCROLL: ret = Input::KeyScroll; break;
+	case VK_CAPITAL: ret = Input::KeyCaps; break;
+	case VK_NUMLOCK: ret = Input::KeyNum; break;
+	case VK_F1: ret = Input::KeyF1; break;
+    case VK_F2: ret = Input::KeyF2; break;
+    case VK_F3: ret = Input::KeyF3; break;
+    case VK_F4: ret = Input::KeyF4; break;
+    case VK_F5: ret = Input::KeyF5; break;
+    case VK_F6: ret = Input::KeyF6; break;
+    case VK_F7: ret = Input::KeyF7; break;
+    case VK_F8: ret = Input::KeyF8; break;
+    case VK_F9: ret = Input::KeyF9; break;
+    case VK_F10: ret = Input::KeyF10; break;
+    case VK_F11: ret = Input::KeyF11; break;
+    case VK_F12: ret = Input::KeyF12; break;
 	default:
 		ret = MapVirtualKey(vkey, MAPVK_VK_TO_CHAR);
-		if (ret >= Input::KEY_ESC) ret = 0;
+		if (ret >= Input::KeyEsc) ret = 0;
 		else if (ret >= 'A' && ret <= 'Z') ret -= 'A' - 'a';
 	}
 	return ret;
@@ -152,9 +148,9 @@ void WindowsWindow::create()
         destroy();
 
     ULONG windowStyle = WS_CAPTION | WS_MINIMIZEBOX;
-    if (_data->styles & NativeWindow::Clozable)
+    if (_data->styles & Window::Clozable)
         windowStyle |= WS_SYSMENU;
-    if (_data->styles & NativeWindow::Resizable)
+    if (_data->styles & Window::Resizable)
         windowStyle |= WS_SYSMENU | WS_THICKFRAME | WS_MAXIMIZEBOX;
 
     _data->handle = CreateWindow(
@@ -191,22 +187,22 @@ bool WindowsWindow::isVisible() const
 void WindowsWindow::setVisible(bool visible)
 {
     int showState = 0;
-    if (_data->states & NativeWindow::Active)
+    if (_data->states & Window::Active)
     {
-        if (_data->states & NativeWindow::Mimimized)
+        if (_data->states & Window::Mimimized)
             showState = SW_SHOWMINIMIZED;
-        else if (_data->states & NativeWindow::Maximized)
+        else if (_data->states & Window::Maximized)
             showState = SW_SHOWMAXIMIZED;
         else
             showState = SW_SHOW;
     }
     else
     {
-        if (_data->states & NativeWindow::Normal)
+        if (_data->states & Window::Normal)
             showState = SW_SHOWNOACTIVATE;
-        else if (_data->states & NativeWindow::Mimimized)
+        else if (_data->states & Window::Mimimized)
             showState = SW_MINIMIZE;
-        else if (_data->states & NativeWindow::Maximized)
+        else if (_data->states & Window::Maximized)
             showState = SW_MAXIMIZE;
     }
 
@@ -215,12 +211,12 @@ void WindowsWindow::setVisible(bool visible)
     setMouseGrab(_data->mouse.grab);
 }
 
-NativeWindow::States WindowsWindow::states()
+Window::States WindowsWindow::states()
 {
     return _data->states;
 }
 
-void WindowsWindow::setStates(NativeWindow::States states)
+void WindowsWindow::setStates(Window::States states)
 {
     _data->states = states;
 }
@@ -322,6 +318,11 @@ void *WindowsWindow::handle() const
     return _data->handle;
 }
 
+void WindowsWindow::setupInput(NativeInput *input)
+{
+    _data->input = static_cast<WindowsInput *>(input);
+}
+
 bool WindowsWindow::platformEvent(WindowsWindow *window, void *msgPtr, long *result)
 {
     WindowMsg *msg = reinterpret_cast<WindowMsg *>(msgPtr);
@@ -339,6 +340,20 @@ bool WindowsWindow::platformEvent(WindowsWindow *window, void *msgPtr, long *res
     {
         switch (msg->uMsg)
         {
+        case WM_SYSCOMMAND:
+        {
+            //Prevent screen saver
+            DWORD command = (msg->wParam & 0xfff0);
+            if (command == SC_SCREENSAVE || command == SC_MONITORPOWER)
+            {
+                if (window->_data->styles & Window::PreventSaver)
+                {
+                    *result = 1;
+                    return true;
+                }
+            }
+            return false;
+        }
         case WM_DESTROY:
             //window->destroy(window->_data->handle);
             *result = 1;
@@ -352,13 +367,13 @@ bool WindowsWindow::platformEvent(WindowsWindow *window, void *msgPtr, long *res
         case WM_ACTIVATE:
             if (msg->wParam == WA_INACTIVE)
             {
-                window->_data->states &= ~NativeWindow::Active;
+                window->_data->states &= ~Window::Active;
                 if (window->_data->mouse.grab)
                     GrabCursor(nullptr, false);
             }
             else
             {
-                window->_data->states |= NativeWindow::Active;
+                window->_data->states |= Window::Active;
                 if (window->_data->mouse.grab)
                     GrabCursor(window->_data->handle, true);
             }
@@ -372,13 +387,13 @@ bool WindowsWindow::platformEvent(WindowsWindow *window, void *msgPtr, long *res
             return true;
         case WM_SIZE:
             if (msg->wParam == SIZE_MINIMIZED)
-                window->_data->states |= NativeWindow::Mimimized;
+                window->_data->states |= Window::Mimimized;
             else if (msg->wParam == SIZE_MAXIMIZED)
-                window->_data->states |= NativeWindow::Maximized;
+                window->_data->states |= Window::Maximized;
             else if (msg->wParam == SIZE_RESTORED)
             {
-                window->_data->states &= ~NativeWindow::Mimimized;
-                window->_data->states &= ~NativeWindow::Maximized;
+                window->_data->states &= ~Window::Mimimized;
+                window->_data->states &= ~Window::Maximized;
             }
 
             window->_data->width = LOWORD(msg->lParam);
@@ -430,11 +445,85 @@ bool WindowsWindow::platformEvent(WindowsWindow *window, void *msgPtr, long *res
             }
             *result = 1;
             return true;
+        case WM_MOUSEMOVE:
+        {
+            if (window->_data->input)
+            {
+                int xPos = GET_X_LPARAM(msg->lParam);
+                int yPos = GET_Y_LPARAM(msg->lParam);
+                window->_data->input->mouseMove(xPos, yPos);
+            }
+        }
+        case WM_LBUTTONDOWN:
+            if (window->_data->input)
+                window->_data->input->buttonDown(Input::Left);
+            *result = 1;
+            return true;
+        case WM_LBUTTONUP:
+            if (window->_data->input)
+                window->_data->input->buttonUp(Input::Left);
+            *result = 1;
+            return true;
+        case WM_MBUTTONDOWN:
+            if (window->_data->input)
+                window->_data->input->buttonDown(Input::Middle);
+            *result = 1;
+            return true;
+        case WM_MBUTTONUP:
+            if (window->_data->input)
+                window->_data->input->buttonUp(Input::Middle);
+            *result = 1;
+            return true;
+        case WM_RBUTTONDOWN:
+            if (window->_data->input)
+                window->_data->input->buttonDown(Input::Right);
+            *result = 1;
+            return true;
+        case WM_RBUTTONUP:
+            if (window->_data->input)
+                window->_data->input->buttonUp(Input::Right);
+            *result = 1;
+            return true;
+        case WM_XBUTTONDOWN:
+            if (window->_data->input)
+            {
+                int xButton = GET_XBUTTON_WPARAM(msg->wParam);
+                Input::Button button;
+                switch (xButton)
+                {
+                case XBUTTON1:
+                    button = Input::Special1;
+                    break;
+                case XBUTTON2:
+                    button = Input::Special2;
+                    break;
+                }
+                window->_data->input->buttonDown(button);
+            }
+            *result = 1;
+            return true;
+        case WM_XBUTTONUP:
+            if (window->_data->input)
+            {
+                int xButton = GET_XBUTTON_WPARAM(msg->wParam);
+                Input::Button button;
+                switch (xButton)
+                {
+                case XBUTTON1:
+                    button = Input::Special1;
+                case XBUTTON2:
+                    button = Input::Special2;
+                }
+                window->_data->input->buttonUp(button);
+            }
+            *result = 1;
+            return true;
 		case WM_KEYDOWN:
 		case WM_SYSKEYDOWN:
 		{
 			unsigned int key = translateKey((unsigned int)msg->wParam);
-			window->_data->keyboard.keys.set(key, true);
+            if (window->_data->input)
+                window->_data->input->keyDown(key);
 			*result = 1;
 			return true;
 		}
@@ -442,7 +531,8 @@ bool WindowsWindow::platformEvent(WindowsWindow *window, void *msgPtr, long *res
 		case WM_SYSKEYUP:
 		{
 			unsigned int key = translateKey((unsigned int)msg->wParam);
-			window->_data->keyboard.keys.set(key, false);
+            if (window->_data->input)
+                window->_data->input->keyUp(key);
 			*result = 1;
 			return true;
 		}

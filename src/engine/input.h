@@ -4,12 +4,11 @@
 #include "global.h"
 
 #include <string>
-#include <map>
-#include <memory>
 
 class Window;
+class NativeInput;
 
-class Input
+class ENGINE_EXPORT Input
 {
 public:
     enum Axis
@@ -30,55 +29,53 @@ public:
     };
 	enum Keys
 	{
-		KEY_ESC = 256,
-		KEY_TAB,
-		KEY_BACKSPACE,
-		KEY_RETURN,
-		KEY_DELETE,
-		KEY_INSERT,
-		KEY_HOME,
-		KEY_END,
-		KEY_PGUP,
-		KEY_PGDOWN,
-		KEY_LEFT,
-		KEY_RIGHT,
-		KEY_UP,
-		KEY_DOWN,
-		KEY_SHIFT,
-		KEY_CTRL,
-		KEY_ALT,
-		KEY_SCROLL,
-		KEY_CAPS,
-		KEY_NUM,
-		KEY_F1,
-		KEY_F2,
-		KEY_F3,
-		KEY_F4,
-		KEY_F5,
-		KEY_F6,
-		KEY_F7,
-		KEY_F8,
-		KEY_F9,
-		KEY_F10,
-		KEY_F11,
-		KEY_F12,
-		NUM_KEYS
+		KeyEsc = 256,
+		KeyTab,
+		KeyBackspace,
+		KeyReturn,
+		KeyDelete,
+		KeyInsert,
+		KeyHome,
+		KeyEnd,
+		KeyPgup,
+		KeyPgdown,
+		KeyLeft,
+		KeyRight,
+		KeyUp,
+		KeyDown,
+		KeyShift,
+		KeyCtrl,
+		KeyAlt,
+		KeyScroll,
+		KeyCaps,
+		KeyNum,
+		KeyF1,
+		KeyF2,
+		KeyF3,
+		KeyF4,
+		KeyF5,
+		KeyF6,
+		KeyF7,
+		KeyF8,
+		KeyF9,
+		KeyF10,
+		KeyF11,
+		KeyF12,
+		NumKeys
 	};
 
-    typedef std::map<std::string, int> KeyMap;
-
 public:
-    static bool key(const std::string& name);
-    static bool button(Button b);
-    static float axis(Axis a);
+    Input(Window *);
+    ~Input();
+
+    bool key(const std::string& name) const;
+    bool button(Button b) const;
+    float axis(Axis a) const;
+    float mouseX() const;
+    float mouseY() const;
 
 private:
-    friend class InputSystem;
-
-    static std::shared_ptr<Window> _window;
-    static KeyMap _keyMap;
-    static double _deltah;
-	static double _deltav;
+    NativeInput *_input;
 
 };
 

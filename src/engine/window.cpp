@@ -27,35 +27,35 @@ void Window::show()
 
 void Window::showNormal()
 {
-    _window->setStates(NativeWindow::Active);
+    _window->setStates(Active);
     _window->setVisible(true);
 }
 
 void Window::showFullscreen()
 {
-    _window->setStates(NativeWindow::Active | NativeWindow::Fullsceren);
+    _window->setStates(Active | Fullsceren);
     _window->setVisible(true);
 }
 
 bool Window::isMinimized() const
 {
-    return _window->states() & NativeWindow::Mimimized;
+    return _window->states() & Mimimized;
 }
 
 void Window::showMinimized()
 {
-    _window->setStates(NativeWindow::Active | NativeWindow::Mimimized);
+    _window->setStates(Active | Mimimized);
     _window->setVisible(true);
 }
 
 bool Window::isMaximized() const
 {
-    return _window->states() & NativeWindow::Maximized;
+    return _window->states() & Maximized;
 }
 
 void Window::showMaximized()
 {
-    _window->setStates(NativeWindow::Active | NativeWindow::Maximized);
+    _window->setStates(Active | Maximized);
     _window->setVisible(true);
 }
 
@@ -66,7 +66,7 @@ void Window::hide()
 
 bool Window::isFullscreen() const
 {
-    return _window->states() & NativeWindow::Fullsceren;
+    return _window->states() & Fullsceren;
 }
 
 void Window::close()
@@ -117,12 +117,12 @@ void Window::setTitle(const std::string& title)
 
 bool Window::isActiveWindow() const
 {
-    return _window->states() & NativeWindow::Active;
+    return _window->states() & Active;
 }
 
 void Window::activateWindow()
 {
-    _window->setStates(_window->states() | NativeWindow::Active);
+    _window->setStates(_window->states() | Active);
     _window->setVisible(true);
 }
 

@@ -2,12 +2,33 @@
 #define WINDOW_H
 
 #include "global.h"
+#include "flags.h"
 #include <string>
 
 class NativeWindow;
 
 class ENGINE_EXPORT Window
 {
+public:
+    enum Style
+    {
+        Clozable = 1 << 0,
+        Resizable = 1 << 1,
+        PreventSaver = 1 << 2
+    };
+
+    enum State
+    {
+        Normal = 1 << 0,
+        Mimimized = 1 << 1,
+        Maximized = 1 << 2,
+        Fullsceren = 1 << 3,
+        Active = 1 << 4
+    };
+
+    W_DECLAGE_FLAGS(Styles, Style)
+    W_DECLAGE_FLAGS(States, State)
+
 public:
     Window();
     ~Window();
@@ -61,6 +82,7 @@ public:
 
 private:
     friend class Context;
+    friend class Input;
     NativeWindow *_window;
 
 };
