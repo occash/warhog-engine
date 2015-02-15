@@ -1,7 +1,6 @@
 #include "engine.h"
 
 //Systems
-#include "systems/inputsystem.h"
 #include "systems/rendersystem.h"
 #include "systems/scriptsystem.h"
 #include "systems/luascriptengine.h"
