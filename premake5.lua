@@ -117,15 +117,6 @@ solution 'warhog'
 			'src/editor/**.qss'
 		}
 		
-		filter { 'platforms:x32', 'Debug' }
-			libdirs { dep..'/lib/x86/Debug'}
-		filter { 'platforms:x64', 'Debug' }
-			libdirs { dep..'/lib/x64/Debug'}
-		filter { 'platforms:x32', 'Release' }
-			libdirs { dep..'/lib/x86/Release'}
-		filter { 'platforms:x64', 'Release' }
-			libdirs { dep..'/lib/x64/Release'}
-		
 		-- Qt specific
 		include 'qt.lua'
 		local qt = premake.extensions.qt
@@ -134,6 +125,15 @@ solution 'warhog'
 		qtpath(qtDir)
 		qtmodules { 'core', 'gui', 'widgets', 'opengl', 'concurrent' }
 		qtprefix 'Qt5'
+		
+		filter { 'platforms:x32', 'Debug' }
+			libdirs { dep..'/lib/x86/Debug'}
+		filter { 'platforms:x64', 'Debug' }
+			libdirs { dep..'/lib/x64/Debug'}
+		filter { 'platforms:x32', 'Release' }
+			libdirs { dep..'/lib/x86/Release'}
+		filter { 'platforms:x64', 'Release' }
+			libdirs { dep..'/lib/x64/Release'}
 		
 		filter 'Debug'
 			targetdir 'bin/debug'
