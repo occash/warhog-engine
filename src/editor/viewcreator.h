@@ -9,29 +9,29 @@ class QAction;
 
 class ViewCreator : QObject
 {
-	Q_OBJECT
+    Q_OBJECT
 
 public:
-	ViewCreator();
-	~ViewCreator();
+    ViewCreator();
+    ~ViewCreator();
 
-	virtual QString name() const = 0;
-	virtual QString description() const = 0;
-	virtual QString helpString() const = 0;
-	virtual QWidget *create() const = 0;
+    virtual QString name() const = 0;
+    virtual QString description() const = 0;
+    virtual QString helpString() const = 0;
+    virtual QWidget *create() const = 0;
 
 private:
-	friend class ViewManager;
+    friend class ViewManager;
 
-	QAction *action();
-	QDockWidget *createView();
+    QAction *action();
+    QDockWidget *createView();
 
 private slots:
-	void showDockWidget();
+    void showDockWidget();
 
 private:
-	QAction *_action;
-	QDockWidget *_dock;
+    QAction *_action;
+    QDockWidget *_dock;
 
 };
 

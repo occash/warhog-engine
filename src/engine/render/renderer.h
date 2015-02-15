@@ -11,16 +11,16 @@ class Shader;
 class ENGINE_EXPORT Renderer
 {
 public:
-	virtual const char *name() const;
+    virtual const char *name() const;
 
-	virtual Window *createWindow();
-	virtual Texture *createTexture();
-	virtual Mesh *createMesh();
-	virtual Shader *createShader();
+    virtual Window *createWindow();
+    virtual Texture *createTexture();
+    virtual Mesh *createMesh();
+    virtual Shader *createShader();
 
-	virtual void createOcclusionQuery();
-	virtual void beginOcclusionQuery();
-	virtual bool endOcclusionQuery();
+    virtual void createOcclusionQuery();
+    virtual void beginOcclusionQuery();
+    virtual bool endOcclusionQuery();
 
 };
 

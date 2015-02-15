@@ -6,13 +6,13 @@
 class WGL
 {
 public:
-	WGL();
-	~WGL();
+    WGL();
+    ~WGL();
 
-	void *resolve(const char *);
+    void *resolve(const char *);
 
 private:
-	HMODULE _handle;
+    HMODULE _handle;
 
 };
 
@@ -26,13 +26,13 @@ typedef BOOL(WINAPI *PFNWGLSHARELISTS)(HGLRC, HGLRC);
 
 namespace wgl
 {
-	extern PFNWGLCREATECONTEXT CreateContext;
-	extern PFNWGLDELETECONTEXT DeleteContext;
-	extern PFNWGLGETCURRENTCONTEXT GetCurrentContext;
-	extern PFNWGLGETCURRENTDC GetCurrentDC;
-	extern PFNWGLGETPROCADDRESS GetProcAddress;
-	extern PFNWGLMAKECURRENT MakeCurrent;
-	extern PFNWGLSHARELISTS ShareLists;
+    extern PFNWGLCREATECONTEXT CreateContext;
+    extern PFNWGLDELETECONTEXT DeleteContext;
+    extern PFNWGLGETCURRENTCONTEXT GetCurrentContext;
+    extern PFNWGLGETCURRENTDC GetCurrentDC;
+    extern PFNWGLGETPROCADDRESS GetProcAddress;
+    extern PFNWGLMAKECURRENT MakeCurrent;
+    extern PFNWGLSHARELISTS ShareLists;
 };
 
 #endif //WGL_H

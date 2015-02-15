@@ -7,8 +7,8 @@ bool ScriptResource::load(std::istream& in, Object *&resource) const
     Script *script = new Script();
 
     unsigned int engineSize = 0,
-        nameSize = 0,
-        sourceSize = 0;
+                 nameSize = 0,
+                 sourceSize = 0;
 
     in.read((char *)&engineSize, sizeof(unsigned int));
     script->engine.resize(engineSize);
@@ -30,8 +30,8 @@ bool ScriptResource::save(std::ostream& out, Object *resource) const
     const Script *script = reinterpret_cast<const Script *>(resource);
 
     unsigned int engineSize = script->engine.size(),
-        nameSize = script->name.size(), 
-        sourceSize = script->source.size();
+                 nameSize = script->name.size(),
+                 sourceSize = script->source.size();
 
     out.write((char *)&engineSize, sizeof(unsigned int));
     out.write(script->engine.c_str(), script->engine.size());

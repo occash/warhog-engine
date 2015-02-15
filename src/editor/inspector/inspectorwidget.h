@@ -19,21 +19,21 @@ public:
     InspectorWidget(entityx::EntityManager *manager, QWidget *parent = 0);
     ~InspectorWidget();
 
-	void installComponents(QMenu *menu);
-	void update();
+    void installComponents(QMenu *menu);
+    void update();
 
 public slots:
-    void inspect(const QModelIndex &index);
+    void inspect(const QModelIndex& index);
 
 private:
     QVBoxLayout *_layout;
-	QPushButton *_addButton;
-	ComponentView *_transformView;
-	ComponentView *_cameraView;
-	entityx::EntityManager *_manager;
+    QPushButton *_addButton;
+    ComponentView *_transformView;
+    ComponentView *_cameraView;
+    entityx::EntityManager *_manager;
 
 private:
-    void showComponents(quint32 id, quint32 version);	
+    void showComponents(quint32 id, quint32 version);
 
 };
 

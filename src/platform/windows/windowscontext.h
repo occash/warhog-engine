@@ -6,26 +6,26 @@
 class WindowsContext : public NativeContext
 {
 public:
-	WindowsContext();
-	~WindowsContext();
+    WindowsContext();
+    ~WindowsContext();
 
-	SurfaceFormat format() const override;
-	void setFormat(const SurfaceFormat&) override;
+    SurfaceFormat format() const override;
+    void setFormat(const SurfaceFormat&) override;
 
-	void create() override;
-	void destroy() override;
+    void create() override;
+    void destroy() override;
 
-	void makeCurrent(NativeWindow *) override;
-	void doneCurrent() override;
+    void makeCurrent(NativeWindow *) override;
+    void doneCurrent() override;
 
-	void swapBuffers() override;
+    void swapBuffers() override;
 
-	GLFunction resolve(const char *) const override;
+    GLFunction resolve(const char *) const override;
 
 private:
-	SurfaceFormat _format;
-	friend struct ContextData;
-	ContextData *_data;
+    SurfaceFormat _format;
+    friend struct ContextData;
+    ContextData *_data;
 
 };
 

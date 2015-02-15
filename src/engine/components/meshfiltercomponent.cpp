@@ -3,7 +3,7 @@
 
 
 MeshFilterComponent::MeshFilterComponent()
-	: _mesh(nullptr)
+    : _mesh(nullptr)
 {
 }
 
@@ -14,10 +14,10 @@ MeshFilterComponent::~MeshFilterComponent()
 
 Mesh *MeshFilterComponent::mesh() const
 {
-	return _mesh;
+    return _mesh;
 }
 
 void MeshFilterComponent::setMesh(Mesh *mesh)
 {
-	_mesh = mesh;
+    _mesh = mesh;
 }

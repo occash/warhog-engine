@@ -8,10 +8,10 @@ class BaseResource;
 class ResourceEditor : public QWidget
 {
 public:
-	ResourceEditor(QWidget *parent = 0);
-	~ResourceEditor();
+    ResourceEditor(QWidget *parent = 0);
+    ~ResourceEditor();
 
-	virtual void edit(BaseResource *) = 0;
+    virtual void edit(BaseResource *) = 0;
 };
 
 #endif //RESOURCEEDITOR_H

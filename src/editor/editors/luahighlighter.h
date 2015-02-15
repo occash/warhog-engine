@@ -5,14 +5,14 @@
 
 class LuaHighlighter : public SyntaxHighlighter
 {
-	Q_OBJECT
+    Q_OBJECT
 
 public:
-	LuaHighlighter(QObject *parent = 0);
-	~LuaHighlighter();
+    LuaHighlighter(QObject *parent = 0);
+    ~LuaHighlighter();
 
-	void highlightBlock(const QString &text);
-	virtual QStringList keywords() const;
+    void highlightBlock(const QString& text);
+    virtual QStringList keywords() const;
 
 };
 

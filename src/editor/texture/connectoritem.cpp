@@ -6,9 +6,9 @@
 #include <QPen>
 
 ConnectorItem::ConnectorItem(OutputItem *output, SourceItem *source)
-: QGraphicsLineItem(),
-_output(output),
-_source(source)
+    : QGraphicsLineItem(),
+      _output(output),
+      _source(source)
 {
     setPen(QPen(QColor(200, 200, 200)));
     setZValue(-1);

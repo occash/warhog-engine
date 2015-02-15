@@ -16,28 +16,28 @@ class Window;
 class ENGINE_EXPORT Engine : public entityx::EntityX
 {
 public:
-	void start();
-	int run();
-	void step(double dt);
-	void stop();
-	Window *window() const;
+    void start();
+    int run();
+    void step(double dt);
+    void stop();
+    Window *window() const;
 
-	void createEntity(const std::string& name);
-	void addComponent(entityx::Entity id, const std::string& name);
+    void createEntity(const std::string& name);
+    void addComponent(entityx::Entity id, const std::string& name);
 
 protected:
-	void configure();
-	void initialize();
-	void update(double dt);
+    void configure();
+    void initialize();
+    void update(double dt);
 
 private:
-	Dispatcher _app;
-	Window *_window;
-	Material *mat;
-	entityx::Entity _lightNode;
-	double _elapsed;
-	std::clock_t _timer;
-	bool _running = false;
+    Dispatcher _app;
+    Window *_window;
+    Material *mat;
+    entityx::Entity _lightNode;
+    double _elapsed;
+    std::clock_t _timer;
+    bool _running = false;
 
 };
 

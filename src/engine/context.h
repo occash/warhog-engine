@@ -11,18 +11,18 @@ typedef void(*GLFunction)();
 class ENGINE_EXPORT Context
 {
 public:
-	Context();
-	~Context();
+    Context();
+    ~Context();
 
-	void makeCurrent(Window *window);
-	void doneCurrent();
+    void makeCurrent(Window *window);
+    void doneCurrent();
 
-	void swapBuffers();
+    void swapBuffers();
 
-	GLFunction resolve(const char *symbol) const;
+    GLFunction resolve(const char *symbol) const;
 
 private:
-	NativeContext *_context;
+    NativeContext *_context;
 
 };
 

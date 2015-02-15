@@ -16,7 +16,7 @@ public:
     void setConstValue(qreal f);
 
 private:
-    
+
 };
 
 #endif // CONSTMODULE_H

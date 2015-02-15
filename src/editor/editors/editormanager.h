@@ -11,17 +11,17 @@ class EditorCreator;
 class EditorManager : QObject
 {
 public:
-	EditorManager(QObject *parent = 0);
-	~EditorManager();
+    EditorManager(QObject *parent = 0);
+    ~EditorManager();
 
-	void open(BaseResource *resource);
-	//void close(BaseResource *);
-	//void close(const QString&);
-	//void close(int);
+    void open(BaseResource *resource);
+    //void close(BaseResource *);
+    //void close(const QString&);
+    //void close(int);
 
-	void addCreator(const QString&, EditorCreator *);
-	//void removeCreator(const QString&);
-	//void removeCreator(EditorCreator *);
+    void addCreator(const QString&, EditorCreator *);
+    //void removeCreator(const QString&);
+    //void removeCreator(EditorCreator *);
 };
 
 #endif //EDITORMANAGER_H

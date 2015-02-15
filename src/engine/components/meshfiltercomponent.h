@@ -6,18 +6,18 @@
 
 class Mesh;
 
-class ENGINE_EXPORT MeshFilterComponent : 
-	public entityx::Component<MeshFilterComponent>
+class ENGINE_EXPORT MeshFilterComponent :
+    public entityx::Component<MeshFilterComponent>
 {
 public:
-	MeshFilterComponent();
-	~MeshFilterComponent();
+    MeshFilterComponent();
+    ~MeshFilterComponent();
 
-	Mesh *mesh() const;
-	void setMesh(Mesh *mesh);
+    Mesh *mesh() const;
+    void setMesh(Mesh *mesh);
 
 private:
-	Mesh *_mesh;
+    Mesh *_mesh;
 
 };
 

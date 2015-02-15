@@ -39,19 +39,19 @@ ScriptArea::~ScriptArea()
 }
 void ScriptArea::setCompleter(QCompleter *completer)
 {
-	if (!_completer)
-		return;
+    if (!_completer)
+        return;
 
     QObject::disconnect(_completer, 0, this, 0);
     _completer = completer;
 
     _completer->setWidget(this);
-	_completer->setModelSorting(QCompleter::CaseInsensitivelySortedModel);
+    _completer->setModelSorting(QCompleter::CaseInsensitivelySortedModel);
     _completer->setCompletionMode(QCompleter::PopupCompletion);
     _completer->setCaseSensitivity(Qt::CaseInsensitive);
 
     QObject::connect(_completer, SIGNAL(activated(QString)),
-        this, SLOT(insertCompletion(QString)));
+                     this, SLOT(insertCompletion(QString)));
 }
 
 QCompleter *ScriptArea::completer() const
@@ -61,12 +61,12 @@ QCompleter *ScriptArea::completer() const
 
 void ScriptArea::setHighlighter(SyntaxHighlighter *h)
 {
-	_highlighter = h;
+    _highlighter = h;
 }
 
 SyntaxHighlighter *ScriptArea::highlighter() const
 {
-	return _highlighter;
+    return _highlighter;
 }
 
 void ScriptArea::insertCompletion(const QString& completion)
@@ -98,9 +98,11 @@ void ScriptArea::focusInEvent(QFocusEvent *e)
 
 void ScriptArea::keyPressEvent(QKeyEvent *e)
 {
-    if (_completer && _completer->popup()->isVisible()) {
+    if (_completer && _completer->popup()->isVisible())
+    {
         // The following keys are forwarded by the completer to the widget
-        switch (e->key()) {
+        switch (e->key())
+        {
         case Qt::Key_Enter:
         case Qt::Key_Return:
         case Qt::Key_Escape:
@@ -125,20 +127,22 @@ void ScriptArea::keyPressEvent(QKeyEvent *e)
     bool hasModifier = (e->modifiers() != Qt::NoModifier) && !ctrlOrShift;
     QString completionPrefix = textUnderCursor();
 
-    if (!isShortcut && (hasModifier || e->text().isEmpty()|| completionPrefix.length() < 1
-        || eow.contains(e->text().right(1)))) {
-            _completer->popup()->hide();
-            return;
+    if (!isShortcut && (hasModifier || e->text().isEmpty() || completionPrefix.length() < 1
+                        || eow.contains(e->text().right(1))))
+    {
+        _completer->popup()->hide();
+        return;
     }
 
-    if (completionPrefix != _completer->completionPrefix()) {
+    if (completionPrefix != _completer->completionPrefix())
+    {
         _completer->setCompletionPrefix(completionPrefix);
         _completer->popup()->setCurrentIndex(_completer->completionModel()->index(0, 0));
     }
 
     QRect cr = cursorRect();
     cr.setWidth(_completer->popup()->sizeHintForColumn(0)
-        + _completer->popup()->verticalScrollBar()->sizeHint().width());
+                + _completer->popup()->verticalScrollBar()->sizeHint().width());
     _completer->complete(cr); // popup it up!
 }
 
@@ -146,7 +150,8 @@ int ScriptArea::lineNumberAreaWidth()
 {
     int digits = 1;
     int max = qMax(1, document()->blockCount());
-    while (max >= 10) {
+    while (max >= 10)
+    {
         max /= 10;
         ++digits;
     }
@@ -161,7 +166,7 @@ void ScriptArea::updateLineNumberAreaWidth(int /* newBlockCount */)
     setViewportMargins(lineNumberAreaWidth(), 0, 0, 0);
 }
 
-void ScriptArea::updateLineNumberArea(const QRect &rect, int dy)
+void ScriptArea::updateLineNumberArea(const QRect& rect, int dy)
 {
     if (dy)
         _lineNumberArea->scroll(0, dy);
@@ -184,7 +189,8 @@ void ScriptArea::highlightCurrentLine()
 {
     QList<QTextEdit::ExtraSelection> extraSelections;
 
-    if (!isReadOnly()) {
+    if (!isReadOnly())
+    {
         QTextEdit::ExtraSelection selection;
 
         QColor lineColor = QColor(60, 60, 60);
@@ -201,16 +207,16 @@ void ScriptArea::highlightCurrentLine()
 
 void ScriptArea::lineNumberAreaPaintEvent(QPaintEvent *event)
 {
-	QPainter painter(_lineNumberArea);
-	painter.fillRect(event->rect(), Qt::lightGray);
+    QPainter painter(_lineNumberArea);
+    painter.fillRect(event->rect(), Qt::lightGray);
 
-	QTextBlock block = document()->begin();
-	while (block.isValid() && block.isVisible())
-	{
-		QString number = QString::number(block.blockNumber() + 1);
-		painter.setPen(Qt::black);
-		painter.drawText(0, 10, _lineNumberArea->width(), fontMetrics().height(),
-			Qt::AlignRight, number);
-		block = block.next();
-	}
+    QTextBlock block = document()->begin();
+    while (block.isValid() && block.isVisible())
+    {
+        QString number = QString::number(block.blockNumber() + 1);
+        painter.setPen(Qt::black);
+        painter.drawText(0, 10, _lineNumberArea->width(), fontMetrics().height(),
+                         Qt::AlignRight, number);
+        block = block.next();
+    }
 }

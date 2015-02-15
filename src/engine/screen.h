@@ -6,11 +6,11 @@
 class ENGINE_EXPORT Screen
 {
 public:
-	~Screen();
+    ~Screen();
 
-	static Screen *primary();
-	static int screenCount();
-	static Screen *screen(int);
+    static Screen *primary();
+    static int screenCount();
+    static Screen *screen(int);
 
 private:
     Screen();

@@ -7,18 +7,18 @@ class ScriptArea;
 
 class LineNumberArea : public QWidget
 {
-	Q_OBJECT
+    Q_OBJECT
 
 public:
-	LineNumberArea(ScriptArea *editor);
+    LineNumberArea(ScriptArea *editor);
 
-	QSize sizeHint() const;
+    QSize sizeHint() const;
 
 protected:
-	void paintEvent(QPaintEvent *event);
+    void paintEvent(QPaintEvent *event);
 
 private:
-	ScriptArea *codeEditor;
+    ScriptArea *codeEditor;
 };
 
 #endif //LINENUMBERAREA_H

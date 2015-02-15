@@ -16,29 +16,29 @@ BaseScript::~BaseScript()
 
 }
 
-CameraComponent * BaseScript::getCamera()
+CameraComponent *BaseScript::getCamera()
 {
-	return entity.component<CameraComponent>().get();
+    return entity.component<CameraComponent>().get();
 }
 
-LightComponent * BaseScript::getLight()
+LightComponent *BaseScript::getLight()
 {
-	return entity.component<LightComponent>().get();
+    return entity.component<LightComponent>().get();
 }
 
-MaterialComponent * BaseScript::getMaterial()
+MaterialComponent *BaseScript::getMaterial()
 {
-	return entity.component<MaterialComponent>().get();
+    return entity.component<MaterialComponent>().get();
 }
 
-MeshFilterComponent * BaseScript::getMeshFilter()
+MeshFilterComponent *BaseScript::getMeshFilter()
 {
-	return entity.component<MeshFilterComponent>().get();
+    return entity.component<MeshFilterComponent>().get();
 }
 
-TransformComponent * BaseScript::getTransform()
+TransformComponent *BaseScript::getTransform()
 {
-	return entity.component<TransformComponent>().get();
+    return entity.component<TransformComponent>().get();
 }
 
 ScriptComponent::ScriptComponent()

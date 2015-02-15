@@ -17,17 +17,19 @@ ScriptSystem::ScriptSystem()
 ScriptSystem::~ScriptSystem()
 {
     auto _state = _engines.begin();
-    for (; _state != _engines.end(); ++_state) {
+    for (; _state != _engines.end(); ++_state)
+    {
         auto engine = _state->second;
 
         engine->shutdown();
     }
 }
 
-void ScriptSystem::configure(EventManager &events)
+void ScriptSystem::configure(EventManager& events)
 {
     auto _state = _engines.begin();
-    for (; _state != _engines.end(); ++_state) {
+    for (; _state != _engines.end(); ++_state)
+    {
         auto engine = _state->second;
 
         engine->init();
@@ -35,16 +37,16 @@ void ScriptSystem::configure(EventManager &events)
     }
 }
 
-void ScriptSystem::update(EntityManager &manager, EventManager &events, double dt)
+void ScriptSystem::update(EntityManager& manager, EventManager& events, double dt)
 {
-	auto entities = manager.entities_with_components<ScriptComponent>();
+    auto entities = manager.entities_with_components<ScriptComponent>();
 
-	for (auto i = entities.begin(); i != entities.end(); ++i)
-	{
-		auto script = (*i).component<ScriptComponent>();
-		for (BaseScript *base : script->scripts)
-			base->update();
-	}
+    for (auto i = entities.begin(); i != entities.end(); ++i)
+    {
+        auto script = (*i).component<ScriptComponent>();
+        for (BaseScript *base : script->scripts)
+            base->update();
+    }
 }
 
 void ScriptSystem::registerEngine(ScriptEngine *engine)
@@ -56,23 +58,23 @@ void ScriptSystem::registerEngine(ScriptEngine *engine)
 bool ScriptSystem::assign(Entity entity, std::shared_ptr<Script> script)
 {
     auto enginePair = _engines.find(script->engine);
-	if (enginePair == _engines.end())
-		return false;
+    if (enginePair == _engines.end())
+        return false;
 
     auto engine = enginePair->second;
-	if (!entity.has_component<ScriptComponent>())
-		entity.assign<ScriptComponent>();
+    if (!entity.has_component<ScriptComponent>())
+        entity.assign<ScriptComponent>();
 
-	if (!engine->load(script->name, script->source))
-		return false;
+    if (!engine->load(script->name, script->source))
+        return false;
 
-	auto component = entity.component<ScriptComponent>();
-	auto scriptObject = engine->instance(script->name);
-	if (!scriptObject)
-		return false;
+    auto component = entity.component<ScriptComponent>();
+    auto scriptObject = engine->instance(script->name);
+    if (!scriptObject)
+        return false;
 
-	scriptObject->entity = entity;
-	component->scripts.push_back(scriptObject);
+    scriptObject->entity = entity;
+    component->scripts.push_back(scriptObject);
 
-	return true;
+    return true;
 }

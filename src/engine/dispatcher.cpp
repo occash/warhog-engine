@@ -4,16 +4,16 @@
 
 
 Dispatcher::Dispatcher()
-	: _loop(PlatformManager::instance()->loop())
+    : _loop(PlatformManager::instance()->loop())
 {
 }
 
 Dispatcher::~Dispatcher()
 {
-	delete _loop;
+    delete _loop;
 }
 
 void Dispatcher::update()
 {
-	_loop->update();
+    _loop->update();
 }

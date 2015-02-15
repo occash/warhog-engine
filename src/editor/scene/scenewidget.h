@@ -10,21 +10,21 @@ class SceneModel;
 
 class SceneWidget : public QWidget
 {
-	Q_OBJECT
-	
-public:
-	SceneWidget(entityx::EntityManager *manager,
-		entityx::EventManager *events, 
-		QWidget *parent = 0);
+    Q_OBJECT
 
-	void prepare();
-	QModelIndex current() const;
+public:
+    SceneWidget(entityx::EntityManager *manager,
+                entityx::EventManager *events,
+                QWidget *parent = 0);
+
+    void prepare();
+    QModelIndex current() const;
 
 signals:
-	void pressed(const QModelIndex&);
-	
+    void pressed(const QModelIndex&);
+
 private:
-	QTreeView *_tree;
+    QTreeView *_tree;
     SceneModel *_model;
 
 };

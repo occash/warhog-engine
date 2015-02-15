@@ -10,11 +10,11 @@
 class BaseResource
 {
 public:
-	typedef std::string Type;
+    typedef std::string Type;
 
-	virtual Type type() const = 0;
-	virtual bool load(std::istream& in, Object *&resource) const = 0;
-	virtual bool save(std::ostream& out, Object *resource) const = 0;
+    virtual Type type() const = 0;
+    virtual bool load(std::istream& in, Object *&resource) const = 0;
+    virtual bool save(std::ostream& out, Object *resource) const = 0;
 
 };
 
@@ -22,15 +22,15 @@ template<typename T>
 class Resource : public BaseResource
 {
 public:
-	static Type staticType()
-	{
-		return T::classApi()->name();
-	}
+    static Type staticType()
+    {
+        return T::classApi()->name();
+    }
 
-	Type type() const override
-	{
-		return staticType();
-	}
+    Type type() const override
+    {
+        return staticType();
+    }
 
 };
 

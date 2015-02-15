@@ -10,23 +10,23 @@ typedef void(*FunctionPointer)();
 class ENGINE_EXPORT Library
 {
 public:
-	Library();
-	Library(const std::string& name);
-	~Library();
+    Library();
+    Library(const std::string& name);
+    ~Library();
 
-	std::string name() const;
-	void setName(const std::string& name);
+    std::string name() const;
+    void setName(const std::string& name);
 
-	bool load();
-	bool unload();
+    bool load();
+    bool unload();
 
-	FunctionPointer resolve(const char *symbol) const;
+    FunctionPointer resolve(const char *symbol) const;
 
-	DOC_PROP(std::string name)
+    DOC_PROP(std::string name)
 
 private:
-	std::string _name;
-	void *_handle;
+    std::string _name;
+    void *_handle;
 
 };
 

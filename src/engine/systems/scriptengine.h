@@ -20,7 +20,7 @@ public:
     virtual bool shutdown() = 0;
 
     virtual bool load(const std::string& name, const std::string& source) = 0;
-	virtual BaseScript *instance(const std::string& name) = 0;
+    virtual BaseScript *instance(const std::string& name) = 0;
     virtual void collect(std::shared_ptr<ScriptComponent> script) = 0;
 
 };

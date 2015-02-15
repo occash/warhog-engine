@@ -13,10 +13,10 @@ public:
     FloatEditor(Property p, QWidget *parent = 0);
     ~FloatEditor();
 
-	void update() override;
+    void update() override;
 
 private slots:
-	void updateValue(double value);
+    void updateValue(double value);
 
 private:
     QDoubleSpinBox *_spinBox;

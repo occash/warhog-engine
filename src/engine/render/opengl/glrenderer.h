@@ -7,22 +7,22 @@
 class GLRenderer : public Renderer
 {
 public:
-	GLRenderer();
-	~GLRenderer();
+    GLRenderer();
+    ~GLRenderer();
 
-	const char *name() const override;
+    const char *name() const override;
 
-	Window *createWindow() override;
-	Texture *createTexture() override;
-	Mesh *createMesh() override;
-	Shader *createShader() override;
+    Window *createWindow() override;
+    Texture *createTexture() override;
+    Mesh *createMesh() override;
+    Shader *createShader() override;
 
-	void createOcclusionQuery() override;
-	void beginOcclusionQuery() override;
-	bool endOcclusionQuery() override;
+    void createOcclusionQuery() override;
+    void beginOcclusionQuery() override;
+    bool endOcclusionQuery() override;
 
 private:
-	GLQuery *occlusionQuery;
+    GLQuery *occlusionQuery;
 
 };
 

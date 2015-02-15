@@ -4,18 +4,18 @@
 class GLQuery
 {
 public:
-	GLQuery(unsigned int target);
-	~GLQuery();
+    GLQuery(unsigned int target);
+    ~GLQuery();
 
-	void begin();
-	void end();
+    void begin();
+    void end();
 
-	bool ready() const;
-	int result() const;
+    bool ready() const;
+    int result() const;
 
 private:
-	unsigned int _query;
-	unsigned int _target;
+    unsigned int _query;
+    unsigned int _target;
 };
 
 #endif

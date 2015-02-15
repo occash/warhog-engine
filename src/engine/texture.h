@@ -8,82 +8,82 @@
 
 struct Image
 {
-	unsigned char *data;
-	unsigned char **rowPtrs;
-	unsigned int width;
-	unsigned int height;
-	unsigned int bitDepth;
-	unsigned int channels;
-	unsigned int colorType;
+    unsigned char *data;
+    unsigned char **rowPtrs;
+    unsigned int width;
+    unsigned int height;
+    unsigned int bitDepth;
+    unsigned int channels;
+    unsigned int colorType;
 };
 
 class ENGINE_EXPORT Texture : public Object
 {
-	U_OBJECT(Texture, Object)
+    U_OBJECT(Texture, Object)
 public:
-    enum Type 
-	{
+    enum Type
+    {
         Texture1D,
         Texture2D,
         Texture3D,
         CubeMap
     };
 
-    enum Filter 
-	{
-        Point, 
+    enum Filter
+    {
+        Point,
         Bilinear,
         Trilinear
     };
 
-    enum Wrap 
-	{
+    enum Wrap
+    {
         Repeat,
         Clamp
     };
 
-	enum Format 
-	{
-		RGB,
-		RGBA
-	};
+    enum Format
+    {
+        RGB,
+        RGBA
+    };
 
-	Texture();
-	~Texture();
+    Texture();
+    ~Texture();
 
     Type type() const;
-	void setType(Type type);
+    void setType(Type type);
 
-	Filter filter() const;
-	void setFilter(Filter filter);
+    Filter filter() const;
+    void setFilter(Filter filter);
 
-	Wrap wrap() const;
-	void setWrap(Wrap wrap);
+    Wrap wrap() const;
+    void setWrap(Wrap wrap);
 
-	Format format() const;
-	void setFormat(Format format);
+    Format format() const;
+    void setFormat(Format format);
 
-	int anisotropicLevel() const;
-	void setAnisotropicLevel(int level);
+    int anisotropicLevel() const;
+    void setAnisotropicLevel(int level);
 
-	int mipmapCount() const;
-	void setMipmapCount(int count);
+    int mipmapCount() const;
+    void setMipmapCount(int count);
 
-	virtual void load();
-	virtual void unload();
+    virtual void load();
+    virtual void unload();
 
-	virtual void bind();
-	virtual void unbind();
+    virtual void bind();
+    virtual void unbind();
 
 public:
-	std::array<Image *, 6> images;
+    std::array<Image *, 6> images;
 
 private:
     Type _type;
     Filter _filter;
     Wrap _wrap;
-	Format _format;
-	int _anisoLevel;
+    Format _format;
+    int _anisoLevel;
     int _mipmaps;
 
 };

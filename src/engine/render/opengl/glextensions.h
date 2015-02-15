@@ -6,7 +6,7 @@
 
 namespace GLExt
 {
-	void init(Context *context);
+    void init(Context *context);
 }
 
 // OpenGL 1.0

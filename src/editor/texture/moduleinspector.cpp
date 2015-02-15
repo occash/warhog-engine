@@ -10,7 +10,7 @@
 
 ModuleInspector::ModuleInspector(QWidget *parent)
     : QWidget(parent),
-    _layout(new QFormLayout(this))
+      _layout(new QFormLayout(this))
 {
     setLayout(_layout);
 }
@@ -61,7 +61,7 @@ void ModuleInspector::inspectModule(QObject *module)
     _module = module;
 }
 
-QWidget * ModuleInspector::setupBool(QObject *meta, QMetaProperty prop)
+QWidget *ModuleInspector::setupBool(QObject *meta, QMetaProperty prop)
 {
     QCheckBox *box = new QCheckBox();
     box->setChecked(prop.read(meta).toBool());
@@ -69,7 +69,7 @@ QWidget * ModuleInspector::setupBool(QObject *meta, QMetaProperty prop)
     return box;
 }
 
-QWidget * ModuleInspector::setupInt(QObject *meta, QMetaProperty prop)
+QWidget *ModuleInspector::setupInt(QObject *meta, QMetaProperty prop)
 {
     QSpinBox *slider = new QSpinBox();
     slider->setValue(prop.read(meta).toInt());
@@ -85,7 +85,7 @@ QWidget * ModuleInspector::setupInt(QObject *meta, QMetaProperty prop)
     return slider;
 }
 
-QWidget * ModuleInspector::setupDouble(QObject *meta, QMetaProperty prop)
+QWidget *ModuleInspector::setupDouble(QObject *meta, QMetaProperty prop)
 {
     QDoubleSpinBox *slider = new QDoubleSpinBox();
     slider->setValue(prop.read(meta).toDouble());
@@ -101,7 +101,7 @@ QWidget * ModuleInspector::setupDouble(QObject *meta, QMetaProperty prop)
     return slider;
 }
 
-QWidget * ModuleInspector::setupEnum(QObject *meta, QMetaProperty prop)
+QWidget *ModuleInspector::setupEnum(QObject *meta, QMetaProperty prop)
 {
     QComboBox *box = new QComboBox();
     QVariant vrange = meta->property((QString(prop.name()) + "Range").toLatin1().constData());
@@ -166,9 +166,9 @@ void ModuleInspector::clearLayout()
     if (!layout())
         return;
 
-    while(!layout()->isEmpty())
+    while (!layout()->isEmpty())
     {
-        QLayoutItem* item = layout()->takeAt(0);
+        QLayoutItem *item = layout()->takeAt(0);
         delete item->widget();
         delete item;
     }

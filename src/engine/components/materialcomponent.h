@@ -6,18 +6,18 @@
 
 class Material;
 
-class ENGINE_EXPORT MaterialComponent : 
-	public entityx::Component<MaterialComponent>
+class ENGINE_EXPORT MaterialComponent :
+    public entityx::Component<MaterialComponent>
 {
 public:
     MaterialComponent();
     ~MaterialComponent();
 
-	Material *material() const;
-	void setMaterial(Material *);
+    Material *material() const;
+    void setMaterial(Material *);
 
 private:
-	Material *_material;
+    Material *_material;
 
 };
 

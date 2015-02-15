@@ -16,7 +16,7 @@ class BaseModule : public QObject
 public:
     BaseModule(QString name, noise::module::Module *module, QObject *parent = nullptr);
     ~BaseModule();
-    
+
     BaseModule *source(int id) const;
     void setSource(int id, BaseModule *source);
     bool isValid() const;

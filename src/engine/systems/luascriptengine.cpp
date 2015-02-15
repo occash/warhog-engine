@@ -24,9 +24,9 @@ struct ScriptComponentWrapper : BaseScript, luabind::wrap_base
         call<void>("start");
     }
 
-	void default_start(BaseScript *ptr)
+    void default_start(BaseScript *ptr)
     {
-		ptr->BaseScript::start();
+        ptr->BaseScript::start();
     }
 
     void update()
@@ -34,9 +34,9 @@ struct ScriptComponentWrapper : BaseScript, luabind::wrap_base
         call<void>("update");
     }
 
-	void default_update(BaseScript *ptr)
+    void default_update(BaseScript *ptr)
     {
-		ptr->BaseScript::update();
+        ptr->BaseScript::update();
     }
 
     void stop()
@@ -44,15 +44,15 @@ struct ScriptComponentWrapper : BaseScript, luabind::wrap_base
         call<void>("stop");
     }
 
-	void default_stop(BaseScript *ptr)
+    void default_stop(BaseScript *ptr)
     {
-		ptr->BaseScript::stop();
+        ptr->BaseScript::stop();
     }
 
     void proxyObject() const
     {
         wrapped_self_t selfRef = luabind::detail::wrap_access::ref(*this);
-        lua_State* l = selfRef.state();
+        lua_State *l = selfRef.state();
         selfRef.get(l);
 
         luabind::object selfObj(luabind::from_stack(l, -1));
@@ -78,14 +78,14 @@ struct ScriptComponentWrapper : BaseScript, luabind::wrap_base
                     lua_pushnumber(l, arg * 0.5);
                     lua_rawset(l, -4);
                 }
-                    break;
+                break;
                 case LUA_TUSERDATA:
                 {
-                    /*Vector3d *val = object_cast<Vector3d *>(tmpVal);
-                    std::cout << "Vector3(" << val->x << ", " << val->y << ", " << val->z << ")";*/
+                    /*  Vector3d *val = object_cast<Vector3d *>(tmpVal);
+                        std::cout << "Vector3(" << val->x << ", " << val->y << ", " << val->z << ")";*/
                     lua_pop(l, 1);
                 }
-                    break;
+                break;
                 default:
                     lua_pop(l, 1);
                     break;
@@ -100,13 +100,13 @@ struct ScriptComponentWrapper : BaseScript, luabind::wrap_base
 };
 
 //TODO: Lua panic handler
-/*static jmp_buf lua_panic_jump;
-static int lua_atpanic(lua_State *lua)
-{
+/*  static jmp_buf lua_panic_jump;
+    static int lua_atpanic(lua_State *lua)
+    {
     longjmp(lua_panic_jump, 1);
     // will never return
     return 0;
-}*/
+    }*/
 
 LuaScriptEngine::LuaScriptEngine()
 {
@@ -142,17 +142,17 @@ bool LuaScriptEngine::bind()
     [
         class_<BaseScript, ScriptComponentWrapper>("BaseComponent")
         .def(constructor<>())
-		.def("start", &BaseScript::start,
-        &ScriptComponentWrapper::default_start)
-		.def("update", &BaseScript::update,
-        &ScriptComponentWrapper::default_update)
-		.def("stop", &BaseScript::stop,
-        &ScriptComponentWrapper::default_stop)
-		.property("camera", &BaseScript::getCamera)
-		.property("light", &BaseScript::getLight)
-		.property("material", &BaseScript::getMaterial)
-		.property("meshFilter", &BaseScript::getMeshFilter)
-		.property("transform", &BaseScript::getTransform),
+        .def("start", &BaseScript::start,
+             &ScriptComponentWrapper::default_start)
+        .def("update", &BaseScript::update,
+             &ScriptComponentWrapper::default_update)
+        .def("stop", &BaseScript::stop,
+             &ScriptComponentWrapper::default_stop)
+        .property("camera", &BaseScript::getCamera)
+        .property("light", &BaseScript::getLight)
+        .property("material", &BaseScript::getMaterial)
+        .property("meshFilter", &BaseScript::getMeshFilter)
+        .property("transform", &BaseScript::getTransform),
 
         class_<Input>("Input")
         .scope
@@ -195,35 +195,35 @@ bool LuaScriptEngine::bind()
             value("Ortho", CameraComponent::Ortho),
             value("Custom", CameraComponent::Custom)
         ]
-        .property("progectionType", 
-        &CameraComponent::projectionType, 
-        &CameraComponent::setProjectionType)
+        .property("progectionType",
+                  &CameraComponent::projectionType,
+                  &CameraComponent::setProjectionType)
         .property("fieldOfView",
-        &CameraComponent::fieldOfView,
-        &CameraComponent::setFieldOfView)
+                  &CameraComponent::fieldOfView,
+                  &CameraComponent::setFieldOfView)
         .property("aspect",
-        &CameraComponent::aspect,
-        &CameraComponent::setAspect)
+                  &CameraComponent::aspect,
+                  &CameraComponent::setAspect)
         .property("nearPlane",
-        &CameraComponent::nearPlane,
-        &CameraComponent::setNearPlane)
+                  &CameraComponent::nearPlane,
+                  &CameraComponent::setNearPlane)
         .property("farPlane",
-        &CameraComponent::farPlane,
-        &CameraComponent::setFarPlane)
+                  &CameraComponent::farPlane,
+                  &CameraComponent::setFarPlane)
         .property("clearColor",
-        &CameraComponent::clearColor,
-        &CameraComponent::setClearColor),
+                  &CameraComponent::clearColor,
+                  &CameraComponent::setClearColor),
 
         class_<TransformComponent>("Transform")
-        .property("position", 
-        &TransformComponent::position,
-        &TransformComponent::setPosition)
+        .property("position",
+                  &TransformComponent::position,
+                  &TransformComponent::setPosition)
         .property("rotation",
-        &TransformComponent::rotation,
-        &TransformComponent::setRotation)
+                  &TransformComponent::rotation,
+                  &TransformComponent::setRotation)
         .property("scale",
-        &TransformComponent::scale,
-        &TransformComponent::setScale)
+                  &TransformComponent::scale,
+                  &TransformComponent::setScale)
     ];
 
     return true;
@@ -249,14 +249,14 @@ bool LuaScriptEngine::load(const std::string& name, const std::string& source)
         lua_pop(_state, 1);
     }
 
-    /*obj = globals(_state)[name];
-    if (!obj.is_valid() || obj == object())
+    /*  obj = globals(_state)[name];
+        if (!obj.is_valid() || obj == object())
         return false;
-    
-    obj.push(_state);
-    if (detail::is_class_rep(_state, -1))
-    {
-        detail::class_rep *crep = 
+
+        obj.push(_state);
+        if (detail::is_class_rep(_state, -1))
+        {
+        detail::class_rep *crep =
             (detail::class_rep *)lua_touserdata(_state, -1);
         crep->get_table(_state);
         object ctable(from_stack(_state, -1));
@@ -279,7 +279,7 @@ bool LuaScriptEngine::load(const std::string& name, const std::string& source)
             object value = *i;
             std::cout << key << (type(value) == LUA_TFUNCTION) << std::endl;
         }
-    }*/
+        }*/
 
     return result == 0;
 }
@@ -287,15 +287,15 @@ bool LuaScriptEngine::load(const std::string& name, const std::string& source)
 BaseScript *LuaScriptEngine::instance(const std::string& name)
 {
     object obj;
-	BaseScript *script;
-    try 
+    BaseScript *script;
+    try
     {
         obj = call_function<object>(_state, name.c_str());
-		script = object_cast<BaseScript *>(obj);
-        /*scr->proxyObject();
-        object tmpObj = obj["lol"];
-        double val = object_cast<double>(tmpObj);
-        std::cout << "Test.lol = " << val << std::endl;*/
+        script = object_cast<BaseScript *>(obj);
+        /*  scr->proxyObject();
+            object tmpObj = obj["lol"];
+            double val = object_cast<double>(tmpObj);
+            std::cout << "Test.lol = " << val << std::endl;*/
     }
     catch (const error& e)
     {

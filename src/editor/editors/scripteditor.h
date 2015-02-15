@@ -18,17 +18,17 @@ public:
     ScriptEditor(QWidget *parent = 0);
     ~ScriptEditor();
 
-	void addHighLighter(const QString& engine, SyntaxHighlighter *h);
-	void open(Script *script);
+    void addHighLighter(const QString& engine, SyntaxHighlighter *h);
+    void open(Script *script);
 
 private:
-	SyntaxHighlighter *chooseEngine(const QString& engine);
+    SyntaxHighlighter *chooseEngine(const QString& engine);
 
 private:
-	ScriptArea *_scriptArea;
-	LineNumberArea *_lineArea;
-	SyntaxHighlighter *_currentSyntax;
-	QMap<QString, SyntaxHighlighter *> _syntaxes;
+    ScriptArea *_scriptArea;
+    LineNumberArea *_lineArea;
+    SyntaxHighlighter *_currentSyntax;
+    QMap<QString, SyntaxHighlighter *> _syntaxes;
 
 };
 

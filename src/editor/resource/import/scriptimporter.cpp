@@ -37,7 +37,7 @@ std::shared_ptr<Object> ScriptImporter::import(const QString& filename, const QV
     script->name = nameBytes.constData();
     script->source = sourceBytes.constData();
 
-	return script;
+    return script;
 }
 
 QStringList ScriptImporter::suffixes()

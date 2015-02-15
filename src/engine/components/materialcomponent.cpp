@@ -12,10 +12,10 @@ MaterialComponent::~MaterialComponent()
 
 Material *MaterialComponent::material() const
 {
-	return _material;
+    return _material;
 }
 
 void MaterialComponent::setMaterial(Material *material)
 {
-	_material = material;
+    _material = material;
 }

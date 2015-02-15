@@ -8,13 +8,13 @@ class NativeLoop;
 class ENGINE_EXPORT Dispatcher
 {
 public:
-	Dispatcher();
-	~Dispatcher();
+    Dispatcher();
+    ~Dispatcher();
 
-	void update();
+    void update();
 
 private:
-	NativeLoop *_loop;
+    NativeLoop *_loop;
 };
 
 #endif //DISPATCHER_H
