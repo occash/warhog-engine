@@ -9,9 +9,9 @@ struct WindowData
 {
     HWND handle = HWND();
     bool visible = false;
-    Window::Styles styles = Window::Clozable 
-        | Window::Resizable 
-        | Window::PreventSaver;
+    Window::Styles styles = Window::Clozable
+                            | Window::Resizable
+                            | Window::PreventSaver;
     Window::States states = Window::Normal;
     char title[256];
     int x = 0, y = 0;
@@ -51,30 +51,30 @@ static void GrabCursor(const HWND& handle, bool grab)
 
 static unsigned int translateKey(unsigned int vkey)
 {
-	unsigned int ret = 0;
-	switch (vkey)
-	{
-	case VK_ESCAPE: ret = Input::KeyEsc; break;
-	case VK_TAB: ret = Input::KeyTab; break;
-	case VK_RETURN: ret = Input::KeyReturn; break;
-	case VK_BACK: ret = Input::KeyBackspace; break;
-	case VK_DELETE: ret = Input::KeyDelete; break;
-	case VK_INSERT: ret = Input::KeyInsert; break;
-	case VK_HOME: ret = Input::KeyHome; break;
-	case VK_END: ret = Input::KeyEnd; break;
-	case VK_PRIOR: ret = Input::KeyPgup; break;
-	case VK_NEXT: ret = Input::KeyPgdown; break;
-	case VK_LEFT: ret = Input::KeyLeft; break;
-	case VK_RIGHT: ret = Input::KeyRight; break;
-	case VK_UP: ret = Input::KeyUp; break;
-	case VK_DOWN: ret = Input::KeyDown; break;
-	case VK_SHIFT: ret = Input::KeyShift; break;
-	case VK_MENU: ret = Input::KeyAlt; break;
-	case VK_CONTROL: ret = Input::KeyCtrl; break;
-	case VK_SCROLL: ret = Input::KeyScroll; break;
-	case VK_CAPITAL: ret = Input::KeyCaps; break;
-	case VK_NUMLOCK: ret = Input::KeyNum; break;
-	case VK_F1: ret = Input::KeyF1; break;
+    unsigned int ret = 0;
+    switch (vkey)
+    {
+    case VK_ESCAPE: ret = Input::KeyEsc; break;
+    case VK_TAB: ret = Input::KeyTab; break;
+    case VK_RETURN: ret = Input::KeyReturn; break;
+    case VK_BACK: ret = Input::KeyBackspace; break;
+    case VK_DELETE: ret = Input::KeyDelete; break;
+    case VK_INSERT: ret = Input::KeyInsert; break;
+    case VK_HOME: ret = Input::KeyHome; break;
+    case VK_END: ret = Input::KeyEnd; break;
+    case VK_PRIOR: ret = Input::KeyPgup; break;
+    case VK_NEXT: ret = Input::KeyPgdown; break;
+    case VK_LEFT: ret = Input::KeyLeft; break;
+    case VK_RIGHT: ret = Input::KeyRight; break;
+    case VK_UP: ret = Input::KeyUp; break;
+    case VK_DOWN: ret = Input::KeyDown; break;
+    case VK_SHIFT: ret = Input::KeyShift; break;
+    case VK_MENU: ret = Input::KeyAlt; break;
+    case VK_CONTROL: ret = Input::KeyCtrl; break;
+    case VK_SCROLL: ret = Input::KeyScroll; break;
+    case VK_CAPITAL: ret = Input::KeyCaps; break;
+    case VK_NUMLOCK: ret = Input::KeyNum; break;
+    case VK_F1: ret = Input::KeyF1; break;
     case VK_F2: ret = Input::KeyF2; break;
     case VK_F3: ret = Input::KeyF3; break;
     case VK_F4: ret = Input::KeyF4; break;
@@ -86,12 +86,12 @@ static unsigned int translateKey(unsigned int vkey)
     case VK_F10: ret = Input::KeyF10; break;
     case VK_F11: ret = Input::KeyF11; break;
     case VK_F12: ret = Input::KeyF12; break;
-	default:
-		ret = MapVirtualKey(vkey, MAPVK_VK_TO_CHAR);
-		if (ret >= Input::KeyEsc) ret = 0;
-		else if (ret >= 'A' && ret <= 'Z') ret -= 'A' - 'a';
-	}
-	return ret;
+    default:
+        ret = MapVirtualKey(vkey, MAPVK_VK_TO_CHAR);
+        if (ret >= Input::KeyEsc) ret = 0;
+        else if (ret >= 'A' && ret <= 'Z') ret -= 'A' - 'a';
+    }
+    return ret;
 }
 
 LRESULT CALLBACK windowProc(HWND, UINT, WPARAM, LPARAM);
@@ -518,24 +518,24 @@ bool WindowsWindow::platformEvent(WindowsWindow *window, void *msgPtr, long *res
             }
             *result = 1;
             return true;
-		case WM_KEYDOWN:
-		case WM_SYSKEYDOWN:
-		{
-			unsigned int key = translateKey((unsigned int)msg->wParam);
+        case WM_KEYDOWN:
+        case WM_SYSKEYDOWN:
+        {
+            unsigned int key = translateKey((unsigned int)msg->wParam);
             if (window->_data->input)
                 window->_data->input->keyDown(key);
-			*result = 1;
-			return true;
-		}
-		case WM_KEYUP:
-		case WM_SYSKEYUP:
-		{
-			unsigned int key = translateKey((unsigned int)msg->wParam);
+            *result = 1;
+            return true;
+        }
+        case WM_KEYUP:
+        case WM_SYSKEYUP:
+        {
+            unsigned int key = translateKey((unsigned int)msg->wParam);
             if (window->_data->input)
                 window->_data->input->keyUp(key);
-			*result = 1;
-			return true;
-		}
+            *result = 1;
+            return true;
+        }
         default:
             return false;
         }
