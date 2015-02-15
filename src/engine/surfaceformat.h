@@ -1,14 +1,11 @@
 #ifndef HINTS_H
 #define HINTS_H
 
-#include "global.h"
 #include "flags.h"
 
-class ENGINE_EXPORT SurfaceFormat
+class SurfaceFormat
 {
 public:
-    SurfaceFormat();
-
     enum ClientApi
     {
         Default,
@@ -39,21 +36,21 @@ public:
     W_DECLAGE_FLAGS(Options, Option);
 
 public:
-    int major;
-    int minor;
+    int major = 4;
+    int minor = 3;
 
-    ClientApi api;
-    Profile profile;
-    Options options;
-    SwapBehaviour behaviour;
+    ClientApi api = Desktop;
+    Profile profile = Core;
+    Options options = NoOptions;
+    SwapBehaviour behaviour = Double;
 
-    int redBits;
-    int greenBits;
-    int blueBits;
-    int alphaBits;
+    int redBits = 8;
+    int greenBits = 8;
+    int blueBits = 8;
+    int alphaBits = 8;
 
-    int depthBits;
-    int stensilBits;
+    int depthBits = 24;
+    int stensilBits = 8;
 
     int samples;
     int interval;
