@@ -155,3 +155,8 @@ void Window::hideCursor()
 {
     _window->setCursorVisible(false);
 }
+
+void *Window::handle() const
+{
+    return _window->handle();
+}

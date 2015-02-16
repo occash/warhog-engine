@@ -37,6 +37,8 @@ public:
 
     virtual void setupInput(NativeInput *) = 0;
 
+    virtual void *handle() const = 0;
+
 };
 
 #endif //NATIVEWINDOW_H

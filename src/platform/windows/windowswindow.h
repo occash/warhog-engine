@@ -37,9 +37,9 @@ public:
 
     void setupInput(NativeInput *) override;
 
-public:
     void *handle() const;
 
+public:
     static bool platformEvent(WindowsWindow *window, void *msgPtr, long *result);
 
 private:

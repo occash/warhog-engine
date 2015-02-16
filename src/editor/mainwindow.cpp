@@ -150,7 +150,7 @@ void MainWindow::installUi()
     bottomDock->setWidget(_resources);
     addDockWidget(Qt::LeftDockWidgetArea, bottomDock);
 
-    //WId id = reinterpret_cast<WId>(_engine.window()->handle());
+    WId id = reinterpret_cast<WId>(_engine.window()->handle());
     QWindow *renderWindow = QWindow::fromWinId(id);
     QWidget *renderWidget = QWidget::createWindowContainer(renderWindow, this);
 
