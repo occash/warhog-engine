@@ -6,25 +6,25 @@
 
 #include <string>
 
-class Object;
+class Plugin;
 
 class ENGINE_EXPORT PluginLoader
 {
 public:
-	PluginLoader();
-	PluginLoader(const std::string& name);
-	~PluginLoader();
+    PluginLoader();
+    PluginLoader(const std::string& name);
+    ~PluginLoader();
 
-	std::string name() const;
-	void setName(const std::string& name);
+    std::string name() const;
+    void setName(const std::string& name);
 
-	bool load();
-	bool unload();
+    bool load();
+    bool unload();
 
-	Object *object() const;
+    Plugin *plugin() const;
 
 private:
-	Library _library;
+    Library _library;
 
 };
 

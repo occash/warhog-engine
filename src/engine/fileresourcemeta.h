@@ -11,15 +11,15 @@ class ResourceIO;
 class ENGINE_EXPORT FileResourceMeta
 {
 public:
-	FileResourceMeta(ResourceIO *io);
-	~FileResourceMeta();
+    FileResourceMeta(ResourceIO *io);
+    ~FileResourceMeta();
 
-	bool readTree(const std::string & meta, ResourceNode *& root);
-	bool writeTree(const std::string & meta, ResourceNode *root);
+    bool readTree(const std::string& meta, ResourceNode *&root);
+    bool writeTree(const std::string& meta, ResourceNode *root);
 
 private:
-	ResourceIO *_io;
-	std::string _metafile;
+    ResourceIO *_io;
+    std::string _metafile;
 
 };
 

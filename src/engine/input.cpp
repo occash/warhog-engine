@@ -1,35 +1,41 @@
 #include "input.h"
-#include "window.h"
+#include "platformmanager.h"
+#include "nativeinput.h"
+#include "nativewindow.h"
 
-//#include <GLFW/glfw3.h>
-#include <iostream>
-
-bool Input::key(const std::string& name)
+Input::Input(Window *window)
+    : _input(PlatformManager::instance()->input())
 {
-    //return glfwGetKey(_window->_handle, _keyMap.at(name)) == GLFW_PRESS;
-	return false;
+    window->_window->setupInput(_input);
 }
 
-glm::float_t Input::axis(Axis a)
+Input::~Input()
 {
-    switch (a)
-    {
-    case Input::Horizontal:
-        return _deltah;
-    case Input::Vertical:
-        return _deltav;
-    default:
-        return 0.0;
-    }
+    delete _input;
 }
 
-bool Input::button(Button b)
+bool Input::key(const std::string& name) const
 {
-    //return glfwGetMouseButton(_window->_handle, b) == GLFW_PRESS;
-	return false;
+    //TODO: InputManager
+    return _input->key('w');
 }
 
-double Input::_deltav = 0.0;
-double Input::_deltah = 0.0;
-Input::KeyMap Input::_keyMap;
-std::shared_ptr<Window> Input::_window;
+float Input::axis(Axis a) const
+{
+    return _input->axis(a);
+}
+
+bool Input::button(Button b) const
+{
+    return _input->button(b);
+}
+
+float Input::mouseX() const
+{
+    return _input->mouseX();
+}
+
+float Input::mouseY() const
+{
+    return _input->mouseY();
+}

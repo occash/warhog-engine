@@ -6,22 +6,22 @@
 class GLMesh : public Mesh
 {
 public:
-	GLMesh();
-	~GLMesh();
+    GLMesh();
+    ~GLMesh();
 
-	void bind() override;
-	void unbind() override;
+    void bind() override;
+    void unbind() override;
 
-	void load() override;
-	void unload() override;
+    void load() override;
+    void unload() override;
 
-	void draw() override;
-	void drawBox() override;
+    void draw() override;
+    void drawBox() override;
 
 private:
-	unsigned int _vao;
-	unsigned int _vbo;
-	unsigned int _ebo;
+    unsigned int _vao;
+    unsigned int _vbo;
+    unsigned int _ebo;
 
 };
 

@@ -3,7 +3,7 @@
 
 Settings::Settings(std::string filename, Format format)
     : _filename(filename),
-    _format(format)
+      _format(format)
 {
 }
 

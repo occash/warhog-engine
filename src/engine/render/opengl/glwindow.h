@@ -8,17 +8,17 @@ struct GLWindowData;
 class GLWindow : public Window
 {
 public:
-	GLWindow();
-	~GLWindow();
+    GLWindow();
+    ~GLWindow();
 
-protected:
-	void resizeEvent(int w, int h);
-	void updateEvent() override;
-	void create(void *data) override;
-	void destroy(void *data) override;
+    /*  protected:
+        void resizeEvent(int w, int h);
+        void updateEvent() override;
+        void create(void *data) override;
+        void destroy(void *data) override;*/
 
 private:
-	GLWindowData *_data;
+    GLWindowData *_data;
 
 };
 

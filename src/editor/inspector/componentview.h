@@ -21,20 +21,20 @@ public:
     ~ComponentView();
 
     void inspect(Object *component);
-	void update();
+    void update();
 
 private slots:
-	void toggleState(bool checked);
+    void toggleState(bool checked);
 
 private:
-	void insertProperty(int index, Property p);
+    void insertProperty(int index, Property p);
 
 private:
-	QVBoxLayout *_layout;
-	QFormLayout *_editorsLayout;
-	QWidget *_container;
+    QVBoxLayout *_layout;
+    QFormLayout *_editorsLayout;
+    QWidget *_container;
     QPushButton *_label;
-	QVector<PropertyEditor *> _editors;
+    QVector<PropertyEditor *> _editors;
 
 };
 

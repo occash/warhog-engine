@@ -33,8 +33,8 @@ public:
 
 ModuleScene::ModuleScene(QObject *parent)
     : QGraphicsScene(parent),
-    _temp(nullptr),
-    _menu()
+      _temp(nullptr),
+      _menu()
 {
     _outputModule = new OutputModule();
     QGraphicsItem *item = new ModuleItem(_outputModule);
@@ -68,13 +68,13 @@ ModuleScene::~ModuleScene()
 
 void ModuleScene::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
-    if(!_temp)
+    if (!_temp)
     {
         QList<QGraphicsItem *> itms = items(event->scenePos());
-        foreach(QGraphicsItem *itm, itms)
+        foreach (QGraphicsItem *itm, itms)
         {
             OutputItem *out = dynamic_cast<OutputItem *>(itm);
-            if(out)
+            if (out)
                 _temp = out;
         }
     }
@@ -84,21 +84,21 @@ void ModuleScene::mousePressEvent(QGraphicsSceneMouseEvent *event)
 
 void ModuleScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 {
-    if(_temp)
+    if (_temp)
     {
         QList<QGraphicsItem *> itms = items(event->scenePos());
-        foreach(QGraphicsItem *itm, itms)
+        foreach (QGraphicsItem *itm, itms)
         {
             SourceItem *src = dynamic_cast<SourceItem *>(itm);
-            if(src)
+            if (src)
             {
                 //Already connected
-                if(src->connector()
-                    && _temp->connector()
-                    && src->connector() == _temp->connector())
+                if (src->connector()
+                        && _temp->connector()
+                        && src->connector() == _temp->connector())
                     return;
 
-                if(src->connector())
+                if (src->connector())
                 {
                     ConnectorItem *connector = src->connector();
                     connector->disconnect();
@@ -106,7 +106,7 @@ void ModuleScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
                     delete connector;
                 }
 
-                if(_temp->connector())
+                if (_temp->connector())
                 {
                     ConnectorItem *connector = _temp->connector();
                     connector->disconnect();
@@ -151,7 +151,7 @@ void ModuleScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
                         module = new BlendModule();
                     else if (action->text() == "Select")
                         module = new SelectModule();
-                    
+
 
                     ModuleItem *item = new ModuleItem(module);
                     connect(item, SIGNAL(changed()), this, SIGNAL(generate()));

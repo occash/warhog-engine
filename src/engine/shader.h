@@ -7,38 +7,38 @@
 class ShaderVariable
 {
 public:
-	virtual const char *name() const;
-	virtual Type type() const;
+    virtual const char *name() const;
+    virtual Type type() const;
 
-	virtual Any get() const;
-	virtual void set(const Any&);
+    virtual Any get() const;
+    virtual void set(const Any&);
 };
 
 class ShaderBlock
 {
 public:
-	virtual const char *name() const;
-	virtual ShaderVariable *variable(const char *name) const;
+    virtual const char *name() const;
+    virtual ShaderVariable *variable(const char *name) const;
 
-	virtual void get(void *, int);
-	virtual void set(void *, int);
+    virtual void get(void *, int);
+    virtual void set(void *, int);
 
 };
 
 class Shader
 {
 public:
-	virtual void bind();
-	virtual void unbind();
+    virtual void bind();
+    virtual void unbind();
 
-	virtual void load();
-	virtual void unload();
+    virtual void load();
+    virtual void unload();
 
-	virtual ShaderVariable *variable(const char *) const;
-	virtual ShaderBlock *block(const char *) const;
+    virtual ShaderVariable *variable(const char *) const;
+    virtual ShaderBlock *block(const char *) const;
 
-	std::string vertexSource;
-	std::string pixelSource;
+    std::string vertexSource;
+    std::string pixelSource;
 };
 
 #endif

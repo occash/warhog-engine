@@ -7,7 +7,7 @@
 #include <QSizeF>
 
 PerlinModule::PerlinModule(QObject *parent)
-: BaseModule("Perlin", new noise::module::Perlin(), parent)
+    : BaseModule("Perlin", new noise::module::Perlin(), parent)
 {
     _quality.insert("Fast", noise::QUALITY_FAST);
     _quality.insert("Standard", noise::QUALITY_STD);

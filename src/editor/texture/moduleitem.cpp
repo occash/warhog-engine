@@ -21,10 +21,10 @@
 
 ModuleItem::ModuleItem(BaseModule *module, QGraphicsItem *parent)
     : QGraphicsRectItem(parent),
-    _module(module),
-    _clicked(false),
-    _output(nullptr),
-    _borderAnim(this, "color")
+      _module(module),
+      _clicked(false),
+      _output(nullptr),
+      _borderAnim(this, "color")
 {
     setFlag(QGraphicsItem::ItemSendsGeometryChanges, true);
     setFlag(QGraphicsItem::ItemIsSelectable, true);
@@ -97,9 +97,9 @@ void ModuleItem::setupProperties(QObject *module)
             QGraphicsProxyWidget *proxy = new QGraphicsProxyWidget(this);
             proxy->setWidget(editor);
             proxy->setGeometry(QRectF(
-                QPointF(rect().width() - 80, 20 + (i - 1) * 20),
-                QSizeF(40, 20)
-                ));
+                                   QPointF(rect().width() - 80, 20 + (i - 1) * 20),
+                                   QSizeF(40, 20)
+                               ));
         }
     }
 }
@@ -121,7 +121,7 @@ void ModuleItem::setupConnectors()
 
 void ModuleItem::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
-    if(event->buttons() & Qt::LeftButton)
+    if (event->buttons() & Qt::LeftButton)
     {
         _clicked = true;
         _point = event->scenePos();
@@ -132,13 +132,13 @@ void ModuleItem::mousePressEvent(QGraphicsSceneMouseEvent *event)
 
 void ModuleItem::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 {
-    if(event->button() == Qt::LeftButton)
+    if (event->button() == Qt::LeftButton)
         _clicked = false;
 }
 
 void ModuleItem::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 {
-    if(_clicked)
+    if (_clicked)
     {
         QPointF delta = event->scenePos() - _point;
         moveBy(delta.rx(), delta.ry());
@@ -146,12 +146,12 @@ void ModuleItem::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
     }
 }
 
-QVariant ModuleItem::itemChange(GraphicsItemChange change, const QVariant & value)
+QVariant ModuleItem::itemChange(GraphicsItemChange change, const QVariant& value)
 {
-    if(change == QGraphicsItem::ItemPositionChange)
+    if (change == QGraphicsItem::ItemPositionChange)
     {
         _output->updateConnection();
-        foreach(SourceItem *source, _sources)
+        foreach (SourceItem *source, _sources)
             source->updateConnection();
     }
 
@@ -202,7 +202,7 @@ void ModuleItem::onEnumChanged(const QString& e)
     }
 }
 
-QWidget * ModuleItem::setupBool(QObject *meta, QMetaProperty prop)
+QWidget *ModuleItem::setupBool(QObject *meta, QMetaProperty prop)
 {
     QCheckBox *box = new QCheckBox();
     box->setChecked(prop.read(meta).toBool());
@@ -210,7 +210,7 @@ QWidget * ModuleItem::setupBool(QObject *meta, QMetaProperty prop)
     return box;
 }
 
-QWidget * ModuleItem::setupInt(QObject *meta, QMetaProperty prop)
+QWidget *ModuleItem::setupInt(QObject *meta, QMetaProperty prop)
 {
     QSpinBox *slider = new QSpinBox();
     slider->setValue(prop.read(meta).toInt());
@@ -226,7 +226,7 @@ QWidget * ModuleItem::setupInt(QObject *meta, QMetaProperty prop)
     return slider;
 }
 
-QWidget * ModuleItem::setupDouble(QObject *meta, QMetaProperty prop)
+QWidget *ModuleItem::setupDouble(QObject *meta, QMetaProperty prop)
 {
     QDoubleSpinBox *slider = new QDoubleSpinBox();
     slider->setValue(prop.read(meta).toDouble());
@@ -242,7 +242,7 @@ QWidget * ModuleItem::setupDouble(QObject *meta, QMetaProperty prop)
     return slider;
 }
 
-QWidget * ModuleItem::setupEnum(QObject *meta, QMetaProperty prop)
+QWidget *ModuleItem::setupEnum(QObject *meta, QMetaProperty prop)
 {
     QComboBox *box = new QComboBox();
     QVariant vrange = meta->property((QString(prop.name()) + "Range").toLatin1().constData());

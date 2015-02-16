@@ -24,7 +24,7 @@ public:
     void setUpperBound(qreal f);
 
 private:
-    
+
 };
 
 #endif // SELECTMODULE_H

@@ -29,52 +29,52 @@ public:
     MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
-	void installThumbnail();
+    void installThumbnail();
 
 protected:
-	void keyReleaseEvent(QKeyEvent *);
-	void timerEvent(QTimerEvent *);
+    void keyReleaseEvent(QKeyEvent *);
+    void timerEvent(QTimerEvent *);
 
 private:
-	void installUi();
-	void installRecent();
-	void readSettings();
-	void writeSettings();
-	void setProject(Project *project);
-	void openProject(const QString& path);
+    void installUi();
+    void installRecent();
+    void readSettings();
+    void writeSettings();
+    void setProject(Project *project);
+    void openProject(const QString& path);
 
 private slots:
-	void commitData(QSessionManager&);
-	void newProject();
-	void openProject();
-	void closeProject();
-	void saveProject();
-	void recentProject(QAction *);
-	void createEmpty();
-	void addComponent(QAction *);
+    void commitData(QSessionManager&);
+    void newProject();
+    void openProject();
+    void closeProject();
+    void saveProject();
+    void recentProject(QAction *);
+    void createEmpty();
+    void addComponent(QAction *);
 private:
-	//Common
-	bool _maximized;
-	QSettings _settings;
+    //Common
+    bool _maximized;
+    QSettings _settings;
     QMenuBar *_menubar;
     QToolBar *_toolBar;
     QStatusBar *_statusBar;
-	QMenu *_recentMenu;
+    QMenu *_recentMenu;
 
 #if defined(Q_OS_WIN)
-	QWinJumpList *_jumpList;
-	QWinThumbnailToolBar *_thumbToolbar;
+    QWinJumpList *_jumpList;
+    QWinThumbnailToolBar *_thumbToolbar;
 #endif
 
-	Project *_project;
-	QStringList _recent;
+    Project *_project;
+    QStringList _recent;
 
-	SceneWidget *_scene;
+    SceneWidget *_scene;
     InspectorWidget *_inspector;
     ResourceWidget *_resources;
-	RenderWidget *_renderer;
+    RenderWidget *_renderer;
 
-	Engine _engine;
+    Engine _engine;
 };
 
 #endif // MAINWINDOW_H

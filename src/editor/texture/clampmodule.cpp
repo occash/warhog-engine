@@ -4,7 +4,7 @@
 #include <QSizeF>
 
 ClampModule::ClampModule(QObject *parent)
-: BaseModule("Clamp", new noise::module::Clamp(), parent)
+    : BaseModule("Clamp", new noise::module::Clamp(), parent)
 {
     setProperty("LowerBoundRange", QSizeF(-1.0, 1.0));
     setProperty("UpperBoundRange", QSizeF(-1.0, 1.0));

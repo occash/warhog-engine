@@ -2,62 +2,88 @@
 #define WINDOW_H
 
 #include "global.h"
+#include "flags.h"
+#include <string>
 
-struct WindowData;
+class NativeWindow;
 
 class ENGINE_EXPORT Window
 {
 public:
-	enum WindowFlags
-	{
-		Resizable = 1 << 0,
-		Closable = 1 << 1,
-		GrabMouse = 1 << 2,
-		DestroyOnClose = 1 << 3
-	};
+    enum Style
+    {
+        Clozable = 1 << 0,
+        Resizable = 1 << 1,
+        PreventSaver = 1 << 2
+    };
 
-    Window(int style, char *title = "Warhog", int width = 640, int height = 480);
-    virtual ~Window();
+    enum State
+    {
+        Normal = 1 << 0,
+        Mimimized = 1 << 1,
+        Maximized = 1 << 2,
+        Fullsceren = 1 << 3,
+        Active = 1 << 4
+    };
 
-	int x() const;
-	int y() const;
-	int width() const;
-	int height() const;
-	char *title() const;
-	bool isVisible() const;
-	bool isGrabMouse() const;
+    W_DECLAGE_FLAGS(Styles, Style)
+    W_DECLAGE_FLAGS(States, State)
 
-	void *handle() const;
+public:
+    Window();
+    ~Window();
 
-	void setPosition(int x, int y);
-	void setSize(int w, int h);
-	void setTitle(const char *title);
-	void setVisible(bool v);
-	void setMouseGrab(bool g);
+    bool isVisible() const;
+    void show();
+    void showNormal();
+    void hide();
+    bool isFullscreen() const;
+    void showFullscreen();
+    bool isMinimized() const;
+    void showMinimized();
+    bool isMaximized() const;
+    void showMaximized();
+    void close();
 
-	void show();
-	void hide();
-	void showFullscreen();
-	void close();
-	void update();
+    int x() const;
+    int y() const;
+    int width() const;
+    int height() const;
+    void move(int x, int y);
+    void resize(int w, int h);
 
-	static bool platformEvent(Window *, void *, long *);
+    std::string title() const;
+    void setTitle(const std::string& title);
 
-protected:
-	virtual void create(void *data);
-	virtual void destroy(void *data);
-	virtual void closeEvent();
-	virtual void moveEvent(int x, int y);
-	virtual void resizeEvent(int w, int h);
-	virtual void focusInEvent();
-	virtual void focusOutEvent();
-	virtual void showEvent();
-	virtual void hideEvent();
-	virtual void updateEvent();
+    bool isActiveWindow() const;
+    void activateWindow();
+
+    bool isMouseGrabbed() const;
+    void grabMouse();
+    void releaseMouse();
+
+    bool isCursorVisible() const;
+    void showCursor();
+    void hideCursor();
+
+    /*  static bool platformEvent(Window *, void *, long *);
+
+        protected:
+        virtual void create();
+        virtual void destroy();
+        virtual void closeEvent();
+        virtual void moveEvent(int x, int y);
+        virtual void resizeEvent(int w, int h);
+        virtual void focusInEvent();
+        virtual void focusOutEvent();
+        virtual void showEvent();
+        virtual void hideEvent();
+        virtual void updateEvent();*/
 
 private:
-	friend struct WindowData;
-	WindowData *_data;
+    friend class Context;
+    friend class Input;
+    NativeWindow *_window;
 
 };
 

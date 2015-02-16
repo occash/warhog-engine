@@ -7,23 +7,23 @@ class SyntaxFormat;
 
 class SyntaxHighlighter : public QSyntaxHighlighter
 {
-	Q_OBJECT
+    Q_OBJECT
 
 public:
-	SyntaxHighlighter(QObject *parent = 0);
-	~SyntaxHighlighter();
+    SyntaxHighlighter(QObject *parent = 0);
+    ~SyntaxHighlighter();
 
-	virtual QStringList keywords() const = 0;
+    virtual QStringList keywords() const = 0;
 
-	SyntaxFormat *syntaxFormat() const;
-	void setSyntaxFormat(SyntaxFormat *format);
+    SyntaxFormat *syntaxFormat() const;
+    void setSyntaxFormat(SyntaxFormat *format);
 
 signals:
-	void addWord(QString word);
-	void removeWord(QString word);
+    void addWord(QString word);
+    void removeWord(QString word);
 
 private:
-	SyntaxFormat *_format;
+    SyntaxFormat *_format;
 
 };
 

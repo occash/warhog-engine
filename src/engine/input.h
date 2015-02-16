@@ -1,18 +1,14 @@
 #ifndef INPUT_H
 #define INPUT_H
 
-#include <list>
-#include <map>
-#include <memory>
-
-#include <glm/glm.hpp>
-
 #include "global.h"
 
-class Window;
-class GLFWwindow;
+#include <string>
 
-class Input
+class Window;
+class NativeInput;
+
+class ENGINE_EXPORT Input
 {
 public:
     enum Axis
@@ -31,21 +27,55 @@ public:
         Special4,
         Special5,
     };
-
-    typedef std::map<std::string, int> KeyMap;
+    enum Keys
+    {
+        KeyEsc = 256,
+        KeyTab,
+        KeyBackspace,
+        KeyReturn,
+        KeyDelete,
+        KeyInsert,
+        KeyHome,
+        KeyEnd,
+        KeyPgup,
+        KeyPgdown,
+        KeyLeft,
+        KeyRight,
+        KeyUp,
+        KeyDown,
+        KeyShift,
+        KeyCtrl,
+        KeyAlt,
+        KeyScroll,
+        KeyCaps,
+        KeyNum,
+        KeyF1,
+        KeyF2,
+        KeyF3,
+        KeyF4,
+        KeyF5,
+        KeyF6,
+        KeyF7,
+        KeyF8,
+        KeyF9,
+        KeyF10,
+        KeyF11,
+        KeyF12,
+        NumKeys
+    };
 
 public:
-    static bool key(const std::string& name);
-    static bool button(Button b);
-    static glm::float_t axis(Axis a);
+    Input(Window *);
+    ~Input();
+
+    bool key(const std::string& name) const;
+    bool button(Button b) const;
+    float axis(Axis a) const;
+    float mouseX() const;
+    float mouseY() const;
 
 private:
-    friend class InputSystem;
-
-    static std::shared_ptr<Window> _window;
-    static KeyMap _keyMap;
-    static double _deltah;
-    static double _deltav;
+    NativeInput *_input;
 
 };
 

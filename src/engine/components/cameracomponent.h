@@ -7,53 +7,53 @@
 #include <entityx/Entity.h>
 #include <glm/glm.hpp>
 
-class ENGINE_EXPORT CameraComponent : 
-	public entityx::Component<CameraComponent>,
-	public Object
+class ENGINE_EXPORT CameraComponent :
+    public entityx::Component<CameraComponent>,
+    public Object
 {
-	U_OBJECT(CameraComponent, Object)
-	U_PROPERTIES(
-	U_PROPERTY(fieldOfView, fieldOfView, setFieldOfView),
-	U_PROPERTY(aspect, aspect, setAspect),
-	U_PROPERTY(nearPlane, nearPlane, setNearPlane),
-	U_PROPERTY(farPlane, farPlane, setFarPlane)
-	)
+    U_OBJECT(CameraComponent, Object)
+    U_PROPERTIES(
+        U_PROPERTY(fieldOfView, fieldOfView, setFieldOfView),
+        U_PROPERTY(aspect, aspect, setAspect),
+        U_PROPERTY(nearPlane, nearPlane, setNearPlane),
+        U_PROPERTY(farPlane, farPlane, setFarPlane)
+    )
 public:
-	enum PojectionType
-	{
-		Perspective,
-		Ortho,
-		Custom
-	};
+    enum PojectionType
+    {
+        Perspective,
+        Ortho,
+        Custom
+    };
 
     CameraComponent();
     ~CameraComponent();
 
-	PojectionType projectionType() const;
-	void setProjectionType(PojectionType type);
+    PojectionType projectionType() const;
+    void setProjectionType(PojectionType type);
 
-	float fieldOfView() const;
-	void setFieldOfView(const float& fov);
+    float fieldOfView() const;
+    void setFieldOfView(const float& fov);
 
-	float aspect() const;
-	void setAspect(const float& aspect);
+    float aspect() const;
+    void setAspect(const float& aspect);
 
-	float nearPlane() const;
-	void setNearPlane(const float& near);
+    float nearPlane() const;
+    void setNearPlane(const float& near);
 
-	float farPlane() const;
-	void setFarPlane(const float&far);
+    float farPlane() const;
+    void setFarPlane(const float& far);
 
-	glm::vec3 clearColor() const;
-	void setClearColor(const glm::vec3& cc);
+    glm::vec3 clearColor() const;
+    void setClearColor(const glm::vec3& cc);
 
 private:
-	PojectionType _type;
+    PojectionType _type;
     float _fov;
-	float _aspect;
-	float _nearPlane;
-	float _farPlane;
-	glm::vec3 _clearColor;
+    float _aspect;
+    float _nearPlane;
+    float _farPlane;
+    glm::vec3 _clearColor;
 
 };
 

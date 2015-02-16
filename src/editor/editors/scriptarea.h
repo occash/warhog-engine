@@ -21,8 +21,8 @@ public:
     void setCompleter(QCompleter *c);
     QCompleter *completer() const;
 
-	void setHighlighter(SyntaxHighlighter *h);
-	SyntaxHighlighter *highlighter() const;
+    void setHighlighter(SyntaxHighlighter *h);
+    SyntaxHighlighter *highlighter() const;
 
 protected:
     void keyPressEvent(QKeyEvent *e);
@@ -30,10 +30,10 @@ protected:
     void resizeEvent(QResizeEvent *event);
 
 private slots:
-    void insertCompletion(const QString &completion);
+    void insertCompletion(const QString& completion);
     void updateLineNumberAreaWidth(int newBlockCount);
     void highlightCurrentLine();
-    void updateLineNumberArea(const QRect &, int);
+    void updateLineNumberArea(const QRect&, int);
 
 private:
     QString textUnderCursor() const;
@@ -41,7 +41,7 @@ private:
 private:
     QWidget *_lineNumberArea;
     QCompleter *_completer;
-	SyntaxHighlighter *_highlighter;
+    SyntaxHighlighter *_highlighter;
 
 };
 

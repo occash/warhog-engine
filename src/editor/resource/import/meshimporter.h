@@ -5,8 +5,8 @@
 
 namespace Assimp
 {
-	class Importer;
-	class ProgressHandler;
+    class Importer;
+    class ProgressHandler;
 }
 
 class ProgressHandler;
@@ -23,12 +23,12 @@ public:
     QStringList suffixes();
 
 private:
-	void onUpdate(float val);
+    void onUpdate(float val);
 
 private:
-	friend class ProgressHandler;
-	Assimp::Importer *_importer;
-	Assimp::ProgressHandler *_handler;
+    friend class ProgressHandler;
+    Assimp::Importer *_importer;
+    Assimp::ProgressHandler *_handler;
 
 };
 

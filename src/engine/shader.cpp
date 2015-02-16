@@ -1,19 +1,19 @@
 #include "shader.h"
 #include "meta/any.h"
 
-const char * ShaderVariable::name() const
+const char *ShaderVariable::name() const
 {
-	return nullptr;
+    return nullptr;
 }
 
 Type ShaderVariable::type() const
 {
-	return Type(nullptr);
+    return Type(nullptr);
 }
 
 Any ShaderVariable::get() const
 {
-	return Any();
+    return Any();
 }
 
 void ShaderVariable::set(const Any&)
@@ -21,14 +21,14 @@ void ShaderVariable::set(const Any&)
 
 }
 
-const char * ShaderBlock::name() const
+const char *ShaderBlock::name() const
 {
-	return nullptr;
+    return nullptr;
 }
 
-ShaderVariable * ShaderBlock::variable(const char *name) const
+ShaderVariable *ShaderBlock::variable(const char *name) const
 {
-	return nullptr;
+    return nullptr;
 }
 
 void ShaderBlock::get(void *, int)
@@ -61,12 +61,12 @@ void Shader::unload()
 
 }
 
-ShaderVariable * Shader::variable(const char *) const
+ShaderVariable *Shader::variable(const char *) const
 {
-	return nullptr;
+    return nullptr;
 }
 
-ShaderBlock * Shader::block(const char *) const
+ShaderBlock *Shader::block(const char *) const
 {
-	return nullptr;
+    return nullptr;
 }
