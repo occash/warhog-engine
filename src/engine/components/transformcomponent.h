@@ -13,9 +13,9 @@ class ENGINE_EXPORT TransformComponent :
 {
     U_OBJECT(TransformComponent, Object)
     U_PROPERTIES(
-        U_PROPERTY(position, position, setPosition),
-        U_PROPERTY(rotation, rotation, setRotation),
-        U_PROPERTY(scale, scale, setScale),
+        U_PROPERTY(position, TransformComponent::position, TransformComponent::setPosition),
+        U_PROPERTY(rotation, TransformComponent::rotation, TransformComponent::setRotation),
+        U_PROPERTY(scale, TransformComponent::scale, TransformComponent::setScale),
     )
 
 public:

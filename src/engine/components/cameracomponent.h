@@ -13,10 +13,10 @@ class ENGINE_EXPORT CameraComponent :
 {
     U_OBJECT(CameraComponent, Object)
     U_PROPERTIES(
-        U_PROPERTY(fieldOfView, fieldOfView, setFieldOfView),
-        U_PROPERTY(aspect, aspect, setAspect),
-        U_PROPERTY(nearPlane, nearPlane, setNearPlane),
-        U_PROPERTY(farPlane, farPlane, setFarPlane)
+        U_PROPERTY(fieldOfView, CameraComponent::fieldOfView, CameraComponent::setFieldOfView),
+        U_PROPERTY(aspect, CameraComponent::aspect, CameraComponent::setAspect),
+        U_PROPERTY(nearPlane, CameraComponent::nearPlane, CameraComponent::setNearPlane),
+        U_PROPERTY(farPlane, CameraComponent::farPlane, CameraComponent::setFarPlane)
     )
 public:
     enum PojectionType
