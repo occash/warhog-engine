@@ -66,6 +66,8 @@ public:
     void showCursor();
     void hideCursor();
 
+    void *handle() const;
+
     /*  static bool platformEvent(Window *, void *, long *);
 
         protected:

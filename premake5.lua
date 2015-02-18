@@ -42,6 +42,9 @@ solution 'warhog'
 			libdirs { dep..'/lib/x86/Release'}
 		filter { 'platforms:x64', 'Release' }
 			libdirs { dep..'/lib/x64/Release'}
+            
+        filter { 'action:gmake' }
+            buildoptions { '-std=c++11', '-fpermissive' }
 		
 		filter 'Debug'
 			targetdir 'bin/debug'

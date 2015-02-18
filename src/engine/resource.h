@@ -24,7 +24,7 @@ class Resource : public BaseResource
 public:
     static Type staticType()
     {
-        return T::classApi()->name();
+        return std::string(T::classApi()->name());
     }
 
     Type type() const override

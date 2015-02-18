@@ -3,6 +3,7 @@
 #include "plugin.h"
 #include "nativeinterface.h"
 
+#include <cstdlib>
 
 PlatformManager::PlatformManager()
     : _loader("platform"),
