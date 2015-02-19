@@ -3,7 +3,6 @@
 //Systems
 #include "systems/rendersystem.h"
 #include "systems/scriptsystem.h"
-#include "systems/luascriptengine.h"
 
 //Components
 #include "components/infocomponent.h"
@@ -94,8 +93,8 @@ void Engine::configure()
 
     //systems.add<InputSystem>(_window, keyMap);
     std::shared_ptr<ScriptSystem> scripting = systems.add<ScriptSystem>();
-    scripting->registerEngine<LuaScriptEngine>();
-    systems.add<RenderSystem>();
+    //scripting->registerEngine<LuaScriptEngine>();
+    //systems.add<RenderSystem>();
     systems.system<RenderSystem>()->chooseBackend("OpenGL"); //TODO: read from config
     _window = systems.system<RenderSystem>()->window();
 }

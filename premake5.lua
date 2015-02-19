@@ -55,8 +55,7 @@ solution 'warhog'
 			{
 				'zlibd',
 				'libpngd',
-				'libyaml-cppmdd',
-				'luabind09-d'
+				'libyaml-cppmdd'
 			}
 			
 		filter 'Release'
@@ -68,8 +67,7 @@ solution 'warhog'
 			{
 				'zlib',
 				'libpng',
-				'libyaml-cppmd',
-				'luabind09'
+				'libyaml-cppmd'
 			}
 			
 	project 'launcher'
@@ -90,6 +88,9 @@ solution 'warhog'
 			targetdir 'bin/release'
 			defines 'NDEBUG'
 			optimize 'On'
+			
+		filter { 'action:gmake' }
+            buildoptions { '-std=c++11', '-fpermissive' }
 			
 	project 'editor'
 		targetname 'editor'
@@ -163,6 +164,9 @@ solution 'warhog'
 				'assimp'
 			}
 			
+		filter { 'action:gmake' }
+            buildoptions { '-std=c++11', '-fpermissive' }
+			
 	project 'platform'
 		targetname 'platform'
 		language 'C++'
@@ -188,6 +192,9 @@ solution 'warhog'
 			targetdir 'bin/release'
 			defines 'NDEBUG'
 			optimize 'On'
+			
+		filter { 'action:gmake' }
+            buildoptions { '-std=c++11', '-fpermissive' }
 			
 	project 'documentation'
 		kind 'Makefile'
