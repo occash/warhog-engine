@@ -69,9 +69,6 @@ solution 'warhog'
 				'libpng',
 				'libyaml-cppmd'
 			}
-		
-		filter { 'action:gmake' }
-            buildoptions { '-std=c++11', '-fpermissive' }
 			
 	project 'launcher'
 		targetname 'launcher'
