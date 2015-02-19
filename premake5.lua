@@ -70,8 +70,8 @@ solution 'warhog'
 				'libyaml-cppmd'
 			}
 		
-		filter "system:linux"
-			buildoptions {'-std=c++11'}
+		filter { 'action:gmake' }
+            buildoptions { '-std=c++11', '-fpermissive' }
 			
 	project 'launcher'
 		targetname 'launcher'
@@ -92,8 +92,8 @@ solution 'warhog'
 			defines 'NDEBUG'
 			optimize 'On'
 			
-		filter "system:linux"
-			buildoptions {'-std=c++11'}
+		filter { 'action:gmake' }
+            buildoptions { '-std=c++11', '-fpermissive' }
 			
 	project 'editor'
 		targetname 'editor'
@@ -167,8 +167,8 @@ solution 'warhog'
 				'assimp'
 			}
 			
-		filter "system:linux"
-			buildoptions {'-std=c++11'}
+		filter { 'action:gmake' }
+            buildoptions { '-std=c++11', '-fpermissive' }
 			
 	project 'platform'
 		targetname 'platform'
@@ -196,8 +196,8 @@ solution 'warhog'
 			defines 'NDEBUG'
 			optimize 'On'
 			
-		filter "system:linux"
-			buildoptions {'-std=c++11'}
+		filter { 'action:gmake' }
+            buildoptions { '-std=c++11', '-fpermissive' }
 			
 	project 'documentation'
 		kind 'Makefile'
