@@ -55,8 +55,7 @@ solution 'warhog'
 			{
 				'zlibd',
 				'libpngd',
-				'libyaml-cppmdd',
-				'luabind09-d'
+				'libyaml-cppmdd'
 			}
 			
 		filter 'Release'
@@ -68,17 +67,11 @@ solution 'warhog'
 			{
 				'zlib',
 				'libpng',
-				'libyaml-cppmd',
-				'luabind09'
+				'libyaml-cppmd'
 			}
 		
 		filter "system:linux"
 			buildoptions {'-std=c++11'}
-			
-			links
-			{
-				'GL'
-			}
 			
 	project 'launcher'
 		targetname 'launcher'
@@ -101,11 +94,6 @@ solution 'warhog'
 			
 		filter "system:linux"
 			buildoptions {'-std=c++11'}
-			
-			links
-			{
-				'GL'
-			}
 			
 	project 'editor'
 		targetname 'editor'
@@ -182,11 +170,6 @@ solution 'warhog'
 		filter "system:linux"
 			buildoptions {'-std=c++11'}
 			
-			links
-			{
-				'GL'
-			}
-			
 	project 'platform'
 		targetname 'platform'
 		language 'C++'
@@ -215,11 +198,6 @@ solution 'warhog'
 			
 		filter "system:linux"
 			buildoptions {'-std=c++11'}
-			
-			links
-			{
-				'GL'
-			}
 			
 	project 'documentation'
 		kind 'Makefile'

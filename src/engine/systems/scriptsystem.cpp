@@ -1,12 +1,15 @@
 #include "scriptsystem.h"
+#include "scriptengine.h"
 #include "../script.h"
-#include "luascriptengine.h"
-
-#include <lua/lua.hpp>
-#include <luabind/luabind.hpp>
+//#include "luascriptengine.h"
+//#include <lua/lua.hpp>
+//#include <luabind/luabind.hpp>
 #include <fstream>
 
-using namespace luabind;
+//using namespace luabind;
+using namespace entityx;
+#include <fstream>
+
 using namespace entityx;
 
 ScriptSystem::ScriptSystem()
