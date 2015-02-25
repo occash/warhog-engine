@@ -4,7 +4,7 @@
 #include <resourcemanager.h>
 
 #include <memory>
-#include <Freeimage.h>
+#include <FreeImage.h>
 
 static QString cubeNames[] =
 {

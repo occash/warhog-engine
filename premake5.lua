@@ -76,7 +76,11 @@ solution 'warhog'
 		kind 'WindowedApp'
 		
 		includedirs { 'src/engine', dep..'/include' }
-		links { 'engine' }
+		links 
+		{
+				'engine',
+				'entityx'
+		}
 		files { 'src/launcher/**' }
 		
 		filter 'Debug'
@@ -165,7 +169,7 @@ solution 'warhog'
 			}
 			
 		filter { 'action:gmake' }
-            buildoptions { '-std=c++11', '-fpermissive' }
+            buildoptions { '-std=c++11', '-fpermissive', '-fPIC' }
 			
 	project 'platform'
 		targetname 'platform'

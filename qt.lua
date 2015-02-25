@@ -326,7 +326,7 @@ function premake.extensions.qt.addUICustomBuildRule(config)
 
 	-- add the custom build rule
 	config.buildmessage		= "Uic'ing " .. config.name
-	config.buildcommands	= { config.config.qtpath .. "/bin/uic.exe -o \"" .. output .. "\" \"" .. config.abspath .. "\"" }
+	config.buildcommands	= { config.config.qtpath .. "/bin/uic -o \"" .. output .. "\" \"" .. config.abspath .. "\"" }
 	config.buildoutputs		= { output }
 
 end
@@ -358,7 +358,7 @@ function premake.extensions.qt.addQRCCustomBuildRule(config)
 
 	-- add the custom build rule
 	config.buildmessage		= "Rcc'ing " .. config.name
-	config.buildcommands	= { config.config.qtpath .. "/bin/rcc.exe -name \"" .. config.basename .. "\" -no-compress \"" .. config.abspath .. "\" -o \"" .. output .. "\"" }
+	config.buildcommands	= { config.config.qtpath .. "/bin/rcc -name \"" .. config.basename .. "\" -no-compress \"" .. config.abspath .. "\" -o \"" .. output .. "\"" }
 	config.buildoutputs		= { output }
 
 end
@@ -409,7 +409,7 @@ function premake.extensions.qt.addMOCCustomBuildRule(config)
 	local output = qt.getGeneratedDir(config) .. "/moc_" .. config.basename .. ".cpp"
 
 	-- create the moc command
-	local command = config.config.qtpath .. "/bin/moc.exe \"" .. config.abspath .. "\" -o \"" .. output .. "\""
+	local command = config.config.qtpath .. "/bin/moc \"" .. config.abspath .. "\" -o \"" .. output .. "\""
 
 	-- if we have a precompiled header, add it, and don't forget to add the original header:
 	-- the moc command will override it if we specify a -f include

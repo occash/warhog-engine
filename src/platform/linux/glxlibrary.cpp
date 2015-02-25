@@ -1,4 +1,5 @@
-#include "glx.h"
+#include <dlfcn.h>
+#include "glxlibrary.h"
 
 namespace glx
 {
@@ -10,7 +11,7 @@ GLX::GLX()
 {
     _handle = dlopen("libGL.so.1", RTLD_GLOBAL | RTLD_LAZY);
     if (_handle == NULL)
-        _handle = dlopen(name, RTLD_LAZY);
+        _handle = dlopen("libGL.so.1", RTLD_LAZY);
 
     if (!_handle)
         return; //Handle error (message box)
@@ -24,7 +25,7 @@ GLX::~GLX()
     dlclose(_handle);
 }
 
-GLX::resolve(const char *symbol)
+void *GLX::resolve(const char *symbol)
 {
     //Use glx::GetProcAddress
 }
