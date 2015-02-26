@@ -1,8 +1,10 @@
-#ifndef GLX_H
-#define GLX_H
+#ifndef GLXLIBRARY_H
+#define GLXLIBRARY_H
 
+#include <X11/Xutil.h>
+#include <X11/Xlib.h>
+#include <GL/glxew.h>
 #include "glxext.h"
-#include<X11/Xlib.h>
 
 class GLX
 {
@@ -30,7 +32,6 @@ typedef GLXFBConfig *(*PFNGLXCHOOSEFBCONFIGPROC)(Display *, int, const int *, in
 typedef GLXPbuffer (*PFNGLXCREATEPBUFFERPROC)(Display *, GLXFBConfig, const int *);
 typedef void (*PFNGLXDESTROYPBUFFERPROC)(Display *, GLXPbuffer);
 typedef XVisualInfo *(*PFNGLXGETVISUALFROMFBCONFIGPROC)(Display *, GLXFBConfig);
-typedef __GLXextFuncPtr (*PFNGLXGETPROCADDRESSPROC)(const GLubyte *);
 
 namespace glx
 {
@@ -38,4 +39,4 @@ namespace glx
     //To be continue
 };
 
-#endif //GLX_H
+#endif //GLXLIBRARY_H

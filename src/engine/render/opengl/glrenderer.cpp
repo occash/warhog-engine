@@ -1,5 +1,4 @@
 #include "glrenderer.h"
-#include "glwindow.h"
 #include "gltexture.h"
 #include "glmesh.h"
 #include "glshader.h"
@@ -21,8 +20,7 @@ const char *GLRenderer::name() const
 
 Window *GLRenderer::createWindow()
 {
-    Window *w = new GLWindow();
-    return w;
+    return nullptr;
 }
 
 Texture *GLRenderer::createTexture()
