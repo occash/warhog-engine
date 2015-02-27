@@ -94,7 +94,7 @@ void Engine::configure()
     //systems.add<InputSystem>(_window, keyMap);
     std::shared_ptr<ScriptSystem> scripting = systems.add<ScriptSystem>();
     //scripting->registerEngine<LuaScriptEngine>();
-    //systems.add<RenderSystem>();
+    systems.add<RenderSystem>();
     systems.system<RenderSystem>()->chooseBackend("OpenGL"); //TODO: read from config
     _window = systems.system<RenderSystem>()->window();
 }
