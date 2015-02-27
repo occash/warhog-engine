@@ -20,7 +20,6 @@ solution 'warhog'
 		
 		defines { 'ENGINE_LIB', 'UMOF_LIBRARY' }
 		includedirs { dep..'/include' }
-		vectorextensions 'AVX'
 		
 		links
 		{
