@@ -25,6 +25,8 @@
 #include "math/vector.h"
 #include "math/matrix.h"
 
+#include "stdGeometry.h"
+
 using namespace entityx;
 
 //Choose the best graphics card available on PC
@@ -112,7 +114,7 @@ void Engine::initialize()
     camera->setFieldOfView(60.0f);
 
     cameraPos->setPosition(glm::vec3(0.0f, 0.0f, 2.0f));
-    cameraPos->setRotation(glm::vec3(0.0f, 0.0f, 0.0f));
+    cameraPos->setRotation(glm::vec3(0.0f, 1.0f, 0.0f));
 
     //Create light
     Entity lightId = entities.create();
@@ -143,7 +145,9 @@ void Engine::initialize()
     meshResource.load(meshIn, meshObject);
     Mesh *cube = static_cast<Mesh *>(meshObject);
     cube->load();
-    meshFilter->setMesh(cube);
+    
+	stdGeometry m_geometry(renderer);
+	meshFilter->setMesh(m_geometry.cube());
 
     Shader *shader = renderer->createShader();
     shader->vertexSource = readFile("resources/shaders/brdf.vert");
