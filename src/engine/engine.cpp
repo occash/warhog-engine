@@ -113,8 +113,8 @@ void Engine::initialize()
     camera->setFarPlane(1000.0f);
     camera->setFieldOfView(60.0f);
 
-    cameraPos->setPosition(glm::vec3(0.0f, 0.0f, 2.0f));
-    cameraPos->setRotation(glm::vec3(0.0f, 1.0f, 0.0f));
+    cameraPos->setPosition(glm::vec3(0.0f, 0.0f, 5.0f));
+    cameraPos->setRotation(glm::vec3(0.0f, 0.0f, 0.0f));
 
     //Create light
     Entity lightId = entities.create();
@@ -122,11 +122,11 @@ void Engine::initialize()
     _lightNode = lightId;
     auto lightPos = lightId.assign<TransformComponent>();
     auto light = lightId.assign<LightComponent>();
-
     light->setType(LightComponent::Directional);
     light->setColor(glm::vec4(1.0f, 1.0f, 1.0f, 0.0f));
     light->setIntensity(0.1f);
-    lightPos->setRotation(glm::vec3(0.0f, 45.0f, 0.0f));
+	//lightPos->setPosition(glm::vec3(0.0f, 0.0f, -5.0f));
+    //lightPos->setRotation(glm::vec3(0.0f, 45.0f, 0.0f));
 
     //Create model
     Entity modelId = entities.create();
@@ -143,11 +143,11 @@ void Engine::initialize()
     std::ifstream meshIn("resources/dragon", std::ios::binary | std::ios::in);
     Object *meshObject = nullptr;
     meshResource.load(meshIn, meshObject);
-    Mesh *cube = static_cast<Mesh *>(meshObject);
-    cube->load();
-    
+
 	stdGeometry m_geometry(renderer);
-	meshFilter->setMesh(m_geometry.cube());
+	Mesh *cube = m_geometry.cube();
+	cube->load();
+	meshFilter->setMesh(cube);
 
     Shader *shader = renderer->createShader();
     shader->vertexSource = readFile("resources/shaders/brdf.vert");

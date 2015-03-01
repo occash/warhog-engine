@@ -19,23 +19,35 @@ Mesh *stdGeometry::cube(float length, float width, float height)
 	Vertex h_vertex;
 
 	h_vertex.position[0] = -1;
+	h_vertex.normal[0] = -1;
 	h_vertex.position[1] = -1;
-	h_vertex.position[2] = 1;
+	h_vertex.normal[1] = 1;
+	h_vertex.position[2] = -1;
+	h_vertex.normal[2] = -1;
 	verticies.push_back(h_vertex);
 
 	h_vertex.position[0] = 1;
 	h_vertex.position[1] = -1;
 	h_vertex.position[2] = 1;
+	h_vertex.normal[0] = -1;
+	h_vertex.normal[1] = 1;
+	h_vertex.normal[2] = -1;
 	verticies.push_back(h_vertex);
 
 	h_vertex.position[0] = 1;
 	h_vertex.position[1] = 1;
 	h_vertex.position[2] = 1;
+	h_vertex.normal[0] = -1;
+	h_vertex.normal[1] = -1;
+	h_vertex.normal[2] = -1;
 	verticies.push_back(h_vertex);
 
 	h_vertex.position[0] = -1;
 	h_vertex.position[1] = 1;
 	h_vertex.position[2] = 1;
+	h_vertex.normal[0] = 1;
+	h_vertex.normal[1] = -1;
+	h_vertex.normal[2] = -1;
 	verticies.push_back(h_vertex);
 
 	//////////////////2///////////////////////
@@ -43,21 +55,33 @@ Mesh *stdGeometry::cube(float length, float width, float height)
 	h_vertex.position[0] = -1;
 	h_vertex.position[1] = -1;
 	h_vertex.position[2] = -1;
+	h_vertex.normal[0] = 1;
+	h_vertex.normal[1] = 1;
+	h_vertex.normal[2] = 1;
 	verticies.push_back(h_vertex);
 
 	h_vertex.position[0] = -1;
 	h_vertex.position[1] = 1;
 	h_vertex.position[2] = -1;
+	h_vertex.normal[0] = 1;
+	h_vertex.normal[1] = -1;
+	h_vertex.normal[2] = 1;
 	verticies.push_back(h_vertex);
 
 	h_vertex.position[0] = 1;
 	h_vertex.position[1] = 1;
 	h_vertex.position[2] = -1;
+	h_vertex.normal[0] = -1;
+	h_vertex.normal[1] = -1;
+	h_vertex.normal[2] = 1;
 	verticies.push_back(h_vertex);
 
 	h_vertex.position[0] = 1;
 	h_vertex.position[1] = -1;
 	h_vertex.position[2] = -1;
+	h_vertex.normal[0] = 1;
+	h_vertex.normal[1] = -1;
+	h_vertex.normal[2] = -1;
 	verticies.push_back(h_vertex);
 
 	////////////////////////3//////////////////////////
@@ -65,21 +89,33 @@ Mesh *stdGeometry::cube(float length, float width, float height)
 	h_vertex.position[0] = -1;
 	h_vertex.position[1] = 1;
 	h_vertex.position[2] = -1;
+	h_vertex.normal[0] = -1;
+	h_vertex.normal[1] = 1;
+	h_vertex.normal[2] = -1;
 	verticies.push_back(h_vertex);
 
 	h_vertex.position[0] = -1;
 	h_vertex.position[1] = 1;
 	h_vertex.position[2] = 1;
+	h_vertex.normal[0] = -1;
+	h_vertex.normal[1] = 1;
+	h_vertex.normal[2] = 1;
 	verticies.push_back(h_vertex);
 
 	h_vertex.position[0] = 1;
 	h_vertex.position[1] = 1;
 	h_vertex.position[2] = 1;
+	h_vertex.normal[0] = 1;
+	h_vertex.normal[1] = 1;
+	h_vertex.normal[2] = 1;
 	verticies.push_back(h_vertex);
 
 	h_vertex.position[0] = 1;
 	h_vertex.position[1] = 1;
 	h_vertex.position[2] = -1;
+	h_vertex.normal[0] = 1;
+	h_vertex.normal[1] = 1;
+	h_vertex.normal[2] = -1;
 	verticies.push_back(h_vertex);
 
 	////////////////////////4//////////////////////////
@@ -87,21 +123,33 @@ Mesh *stdGeometry::cube(float length, float width, float height)
 	h_vertex.position[0] = -1;
 	h_vertex.position[1] = -1;
 	h_vertex.position[2] = -1;
+	h_vertex.normal[0] = -1;
+	h_vertex.normal[1] = -1;
+	h_vertex.normal[2] = -1;
 	verticies.push_back(h_vertex);
 
 	h_vertex.position[0] = 1;
 	h_vertex.position[1] = -1;
 	h_vertex.position[2] = -1;
+	h_vertex.normal[0] = 1;
+	h_vertex.normal[1] = -1;
+	h_vertex.normal[2] = -1;
 	verticies.push_back(h_vertex);
 
 	h_vertex.position[0] = 1;
 	h_vertex.position[1] = -1;
 	h_vertex.position[2] = 1;
+	h_vertex.normal[0] = 1;
+	h_vertex.normal[1] = -1;
+	h_vertex.normal[2] = 1;
 	verticies.push_back(h_vertex);
 
 	h_vertex.position[0] = -1;
 	h_vertex.position[1] = -1;
 	h_vertex.position[2] = 1;
+	h_vertex.normal[0] = -1;
+	h_vertex.normal[1] = -1;
+	h_vertex.normal[2] = 1;
 	verticies.push_back(h_vertex);
 
 	////////////////////////5//////////////////////////
@@ -109,21 +157,33 @@ Mesh *stdGeometry::cube(float length, float width, float height)
 	h_vertex.position[0] = 1;
 	h_vertex.position[1] = -1;
 	h_vertex.position[2] = -1;
+	h_vertex.normal[0] = 1;
+	h_vertex.normal[1] = -1;
+	h_vertex.normal[2] = -1;
 	verticies.push_back(h_vertex);
 
 	h_vertex.position[0] = 1;
 	h_vertex.position[1] = 1;
 	h_vertex.position[2] = -1;
+	h_vertex.normal[0] = 1;
+	h_vertex.normal[1] = 1;
+	h_vertex.normal[2] = -1;
 	verticies.push_back(h_vertex);
 
 	h_vertex.position[0] = 1;
 	h_vertex.position[1] = 1;
 	h_vertex.position[2] = 1;
+	h_vertex.normal[0] = 1;
+	h_vertex.normal[1] = 1;
+	h_vertex.normal[2] = 1;
 	verticies.push_back(h_vertex);
 
 	h_vertex.position[0] = 1;
 	h_vertex.position[1] = -1;
 	h_vertex.position[2] = 1;
+	h_vertex.normal[0] = 1;
+	h_vertex.normal[1] = -1;
+	h_vertex.normal[2] = 1;
 	verticies.push_back(h_vertex);
 
 	////////////////////////6//////////////////////////
@@ -131,27 +191,50 @@ Mesh *stdGeometry::cube(float length, float width, float height)
 	h_vertex.position[0] = -1;
 	h_vertex.position[1] = -1;
 	h_vertex.position[2] = -1;
+	h_vertex.normal[0] = -1;
+	h_vertex.normal[1] = -1;
+	h_vertex.normal[2] = -1;
 	verticies.push_back(h_vertex);
 
 	h_vertex.position[0] = -1;
 	h_vertex.position[1] = -1;
 	h_vertex.position[2] = 1;
+	h_vertex.normal[0] = -1;
+	h_vertex.normal[1] = -1;
+	h_vertex.normal[2] = 1;
 	verticies.push_back(h_vertex);
 
 	h_vertex.position[0] = -1;
 	h_vertex.position[1] = 1;
 	h_vertex.position[2] = 1;
+	h_vertex.normal[0] = -1;
+	h_vertex.normal[1] = 1;
+	h_vertex.normal[2] = 1;
 	verticies.push_back(h_vertex);
 
 	h_vertex.position[0] = -1;
 	h_vertex.position[1] = 1;
 	h_vertex.position[2] = -1;
+	h_vertex.normal[0] = -1;
+	h_vertex.normal[1] = 1;
+	h_vertex.normal[2] = -1;
 	verticies.push_back(h_vertex);
 
 	
 
+	for (int i = 0; i < m_cube->verticies.size(); ++i)
+	{
+		//m_cube->verticies[i].position[3] -= 4;
+
+
+		for (int j = 0; j < 3; ++j)
+		{
+			m_cube->verticies[i].normal[j] = -m_cube->verticies[i].position[j];
+		}
+	}
 	m_cube->verticies = verticies;
 	m_cube->indices = { 
+
 		0, 1, 2, 0, 2, 3,    // front
 		4, 5, 6, 4, 6, 7,    // back
 		8, 9, 10, 8, 10, 11,   // top

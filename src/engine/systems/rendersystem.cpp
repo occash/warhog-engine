@@ -180,10 +180,21 @@ void RenderSystem::update(EntityManager& entities, EventManager& events, double 
 
     MatrixBlock m;
 
-    glm::vec3 camPos = camTransform->position();
-    glm::vec3 camRot = camTransform->rotation();
+    //glm::vec3 camPos = camTransform->position();
+	static float x = 0;
+	static float y = 0;
+	static float i = 0;
 
-    glm::vec3 viewDir = glm::vec3(0.0f, 0.0f, -1.0f);
+	float start = 0.5;
+	x = start * cos(i);
+	y = start * sin(i);
+	i += 0.01;
+
+	glm::vec3 camPos(x, 0, y);
+
+	glm::vec3 camRot = camTransform->rotation();
+
+    glm::vec3 viewDir = glm::vec3(0.0f, 0.0f, -0.0f);
     glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
 
     //yaw
@@ -196,7 +207,7 @@ void RenderSystem::update(EntityManager& entities, EventManager& events, double 
 
     glm::mat4 view = glm::lookAt(
                          camPos,
-                         camPos + viewDir,
+						 glm::vec3(0,0,0),
                          cameraUp
                      );
 
