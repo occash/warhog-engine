@@ -185,7 +185,7 @@ void RenderSystem::update(EntityManager& entities, EventManager& events, double 
 	static float y = 0;
 	static float i = 0;
 
-	float start = 0.5;
+	float start = 5;
 	x = start * cos(i);
 	y = start * sin(i);
 	i += 0.01;
