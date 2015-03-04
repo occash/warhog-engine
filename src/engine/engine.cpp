@@ -110,7 +110,8 @@ void Engine::initialize()
     auto camera = cameraId.assign<CameraComponent>();
 
     camera->setClearColor(glm::vec3(0.0f, 0.0f, 0.0f));
-    camera->setFarPlane(1000.0f);
+	camera->setNearPlane(1.0f);
+    camera->setFarPlane(100.0f);
     camera->setFieldOfView(60.0f);
 
     cameraPos->setPosition(glm::vec3(0.0f, 0.0f, 5.0f));
@@ -144,6 +145,7 @@ void Engine::initialize()
     Object *meshObject = nullptr;
     meshResource.load(meshIn, meshObject);
 
+	//Mesh *cube = static_cast<Mesh *>(meshObject);
 	stdGeometry m_geometry(renderer);
 	Mesh *cube = m_geometry.cube();
 	cube->load();
@@ -203,7 +205,7 @@ void Engine::update(double dt)
     //rot.y = rot.y + 1;
     //lightPos->setRotation(rot);
 
-    _elapsed += dt;
+    /*_elapsed += dt;
     if (_elapsed >= 4)
     {
         float refractiveIndex = std::rand() % 20 + 0.01;
@@ -215,7 +217,7 @@ void Engine::update(double dt)
         mat->setProperty("roughness", roughness);
 
         _elapsed = 0.0;
-    }
+    }*/
 
     /*  auto lightPos = _lightNode.component<TransformComponent>();
         glm::vec3 rot = lightPos->rotation();

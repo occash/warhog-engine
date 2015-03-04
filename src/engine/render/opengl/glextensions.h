@@ -15,6 +15,9 @@ extern PFNGLCLEARCOLORPROC glClearColor;
 extern PFNGLCLEARDEPTHPROC glClearDepth;
 extern PFNGLTEXPARAMETERIPROC glTexParameteri;
 extern PFNGLTEXIMAGE2DPROC glTexImage2D;
+extern PFNGLCULLFACEPROC glCullFace;
+extern PFNGLENABLEPROC glEnable;
+extern PFNGLDEPTHFUNCPROC glDepthFunc;
 
 // OpenGL 1.1
 extern PFNGLGENTEXTURESPROC glGenTextures;

@@ -165,6 +165,13 @@ void RenderSystem::configure(EventManager& events)
     events.subscribe<EntityDestroyedEvent>(*this);
     events.subscribe<ComponentAddedEvent<MeshFilterComponent>>(*this);
     events.subscribe<ComponentRemovedEvent<MeshFilterComponent>>(*this);
+
+	glEnable(GL_CULL_FACE);
+	glCullFace(GL_BACK);
+	glEnable(GL_DEPTH_TEST);
+	glDepthFunc(GL_LESS);
+
+	glClear(GL_DEPTH_BUFFER_BIT);
 }
 
 void RenderSystem::update(EntityManager& entities, EventManager& events, double dt)
@@ -215,20 +222,20 @@ void RenderSystem::update(EntityManager& entities, EventManager& events, double 
 
     glm::mat4 model = glm::mat4(1.0f);
     m.modelView = view * model;
-    m.projection = glm::perspective(
-                       camera->fieldOfView(),
+	m.projection = glm::perspective(
+                       45.0f,//camera->fieldOfView(),
                        camera->aspect(),
-                       camera->nearPlane(),
-                       camera->farPlane()
+                       0.01f,//camera->nearPlane(),
+                       100.0f//camera->farPlane()
                    );
 
     glm::vec3 color = camera->clearColor();
 
-    glClearColor(color.x, color.y, color.z, 1.0f);
-    glClearDepth(1.0);
+    glClearColor(0.1, 0.5, 0.1, 1.0f);
+    glClearDepth(1);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    _skyShader->bind();
+    /*_skyShader->bind();
     SkyboxBlock sky;
     sky.fov = camera->fieldOfView();
     sky.width = _window->width();
@@ -237,10 +244,13 @@ void RenderSystem::update(EntityManager& entities, EventManager& events, double 
     ShaderBlock *skyMatrices = _skyShader->block("SkyboxBlock");
     skyMatrices->set(&sky, sizeof(SkyboxBlock));
     ShaderVariable *tex = _skyShader->variable("skyTexture");
-    tex->set(_skyTexture);
+	tex->set(_skyTexture);
     //_skyMesh->draw();
     renderQuad.draw();
     _skyShader->unbind();
+	*/
+	//glClear(GL_DEPTH_BUFFER_BIT);
+
 
     //Setup lights
     auto lights = entities.entities_with_components<TransformComponent, LightComponent>();
@@ -251,10 +261,10 @@ void RenderSystem::update(EntityManager& entities, EventManager& events, double 
 
     glm::vec3 lightDir(0.0f, 0.0f, 1.0f);
     glm::vec3 lightRot = lightTransform->rotation();
-    lightDir = glm::rotate(lightDir, lightRot.x, glm::vec3(0.0f, 1.0f, 0.0f));
-    lightDir = glm::rotate(lightDir, lightRot.y, glm::vec3(1.0f, 0.0f, 0.0f));
-    lightDir = glm::rotate(lightDir, lightRot.z, glm::vec3(0.0f, 0.0f, 1.0f));
-    lightDir = glm::normalize(lightDir);
+    //lightDir = glm::rotate(lightDir, lightRot.x, glm::vec3(0.0f, 1.0f, 0.0f));
+    //lightDir = glm::rotate(lightDir, lightRot.y, glm::vec3(1.0f, 0.0f, 0.0f));
+    //lightDir = glm::rotate(lightDir, lightRot.z, glm::vec3(0.0f, 0.0f, 1.0f));
+    //lightDir = glm::normalize(lightDir);
 
     DirectLight dlight;
     dlight.color = glm::vec3(light->color()) * glm::pi<float>();
@@ -262,7 +272,8 @@ void RenderSystem::update(EntityManager& entities, EventManager& events, double 
     dlight.direction = glm::vec3(lightDir4 * m.modelView);
 
     auto gameObjects = entities.entities_with_components<TransformComponent, MeshFilterComponent, MaterialComponent>();
-    for (auto gameObject : gameObjects)
+    
+	for (auto gameObject : gameObjects)
     {
         auto transform = gameObject.component<TransformComponent>();
         auto meshFilter = gameObject.component<MeshFilterComponent>();
