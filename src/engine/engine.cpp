@@ -25,7 +25,7 @@
 #include "math/vector.h"
 #include "math/matrix.h"
 
-#include "stdGeometry.h"
+#include "Geometry.h"
 
 using namespace entityx;
 
@@ -146,8 +146,8 @@ void Engine::initialize()
     meshResource.load(meshIn, meshObject);
 
 	//Mesh *cube = static_cast<Mesh *>(meshObject);
-	stdGeometry m_geometry(renderer);
-	Mesh *cube = m_geometry.cube();
+	Geometry m_geometry(renderer);
+	Mesh *cube = m_geometry.plane(3, 2);//m_geometry.cube(0.5, 2, 4);
 	cube->load();
 	meshFilter->setMesh(cube);
 
