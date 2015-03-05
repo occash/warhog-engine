@@ -1,12 +1,12 @@
-#include "Geometry.h"
+#include "geometry.h"
 #include "render/renderer.h"
 
 
 unsigned char floatToChar(float value)
 {
-	//Scale and bias
-	value = (value + 1.0f) * 0.5f;
-	return (unsigned char)(value * 255.0f);
+    //Scale and bias
+    value = (value + 1.0f) * 0.5f;
+    return (unsigned char)(value * 255.0f);
 }
 
 
@@ -20,84 +20,91 @@ Geometry::~Geometry()
 }
 
 //TODO: Width divisions: 1 Height divisions : 1 Depth divisions : 1
-Mesh *Geometry::cube(float width, float height, float depth)
+Mesh *Geometry::cube(float width, float height, float depth, 
+	int widthDiv, int heightDiv, int depthDiv)
 {
-	Mesh *m_cube = m_renderer->createMesh();
+    Mesh *m_cube = m_renderer->createMesh();
+	m_cube->verticies.resize(8);
+	m_cube->indices.resize(36);
 
-	std::vector<Vertex> verticies;
+	int ind = 0;
+	float normalizeK = sqrt(
+		(width / 2) * (width / 2) +
+		(height / 2) * (height / 2) +
+		(depth / 2) * (depth / 2)
+		);
 
-	Vertex h_vertex;
+    for (int i = 0; i <= widthDiv; ++i)
+    {
+        for (int j = 0; j <= heightDiv; ++j)
+        {
+            for (int k = 0; k <= depthDiv; ++k)
+            {
+				m_cube->verticies[ind].position[0] = -width / 2 + i * width / widthDiv;
+				m_cube->verticies[ind].position[1] = -height / 2 + j * height / heightDiv;
+				m_cube->verticies[ind].position[2] = -depth / 2 + k * depth / depthDiv;
 
-	for (int i = 0; i < 2; ++i)
-	{
-		for (int j = 0; j < 2; ++j)
-		{
-			for (int k = 0; k < 2; ++k)
-			{
-				h_vertex.position[0] = pow(-1, i) * width / 2;
-				h_vertex.position[1] = pow(-1, j) * height / 2;
-				h_vertex.position[2] = pow(-1, k) * depth / 2;
-				verticies.push_back(h_vertex);
-			}
-		}
-	}
-	m_cube->verticies = verticies;
-	m_cube->indices = {
+				/*normalizeK = sqrt(
+					m_cube->verticies[ind].position[0] * m_cube->verticies[ind].position[0] +
+					m_cube->verticies[ind].position[1] * m_cube->verticies[ind].position[1] +
+					m_cube->verticies[ind].position[2] * m_cube->verticies[ind].position[2]);*/
 
-		0, 2, 1, 1, 2, 3,
-		5, 1, 3, 3, 7, 5,
-		0, 4, 6, 6, 2, 0,
-		5, 7, 6, 5, 6, 4,
-		4, 0, 1, 4, 1, 5,
-		3, 2, 6, 3, 6, 7
-	};
+				m_cube->verticies[ind].normal[0] = floatToChar(m_cube->verticies[ind].position[0] / width);
+				m_cube->verticies[ind].normal[1] = floatToChar(m_cube->verticies[ind].position[1] / height);
+				m_cube->verticies[ind].normal[2] = floatToChar(m_cube->verticies[ind].position[2] / depth);
+				m_cube->verticies[ind].normal[3] = floatToChar(0.0f);
 
+				++ind;
+            }
+        }
+    }
 
+    m_cube->indices =
+    {
+        0, 2, 1, 1, 2, 3,
+        5, 1, 3, 3, 7, 5,
+        0, 4, 6, 6, 2, 0,
+        5, 7, 6, 5, 6, 4,
+        4, 0, 1, 4, 1, 5,
+        3, 2, 6, 3, 6, 7
+    };
 
-	for (int i = 0; i < m_cube->verticies.size(); ++i)
-	{
-		for (int j = 0; j < 3; ++j)
-		{
-			m_cube->verticies[i].normal[j] = floatToChar(m_cube->verticies[i].position[j]);
-		}
-		m_cube->verticies[i].normal[3] = floatToChar(0.0f);
-	}
-
-	return m_cube;
+    return m_cube;
 }
 
 Mesh *Geometry::plane(float width /* = 1 */, float height /* = 1 */)
 {
-	Mesh *m_plane = m_renderer->createMesh();
+    Mesh *m_plane = m_renderer->createMesh();
 
-	std::vector<Vertex> verticies;
+    std::vector<Vertex> verticies;
 
-	Vertex h_vertex;
+    Vertex h_vertex;
 
-	for (int i = 0; i < 2; ++i)
-	{
-		for (int j = 0; j < 2; ++j)
-		{
-			h_vertex.position[0] = pow(-1, i) * width / 2;
-			h_vertex.position[1] = pow(-1, j) * height / 2;
-			h_vertex.position[2] = 0;
-			verticies.push_back(h_vertex);
-		}
-	}
+    for (int i = 0; i < 2; ++i)
+    {
+        for (int j = 0; j < 2; ++j)
+        {
+            h_vertex.position[0] = pow(-1, i) * width / 2;
+            h_vertex.position[1] = pow(-1, j) * height / 2;
+            h_vertex.position[2] = 0;
+            verticies.push_back(h_vertex);
+        }
+    }
 
-	m_plane->verticies = verticies;
-	m_plane->indices = {
-		0, 2, 1, 1, 2, 3,
-	};
+    m_plane->verticies = verticies;
+    m_plane->indices =
+    {
+        0, 2, 1, 1, 2, 3,
+    };
 
 
-	for (int i = 0; i < m_plane->verticies.size(); ++i)
-	{
-		m_plane->verticies[i].normal[0] = floatToChar(0.0f);
-		m_plane->verticies[i].normal[1] = floatToChar(0.0f);
-		m_plane->verticies[i].normal[2] = floatToChar(1.0f);
-		m_plane->verticies[i].normal[3] = floatToChar(0.0f);
-	}
+    for (int i = 0; i < m_plane->verticies.size(); ++i)
+    {
+        m_plane->verticies[i].normal[0] = floatToChar(0.0f);
+        m_plane->verticies[i].normal[1] = floatToChar(0.0f);
+        m_plane->verticies[i].normal[2] = floatToChar(1.0f);
+        m_plane->verticies[i].normal[3] = floatToChar(0.0f);
+    }
 
-	return m_plane;
+    return m_plane;
 }

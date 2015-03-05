@@ -166,12 +166,13 @@ void RenderSystem::configure(EventManager& events)
     events.subscribe<ComponentAddedEvent<MeshFilterComponent>>(*this);
     events.subscribe<ComponentRemovedEvent<MeshFilterComponent>>(*this);
 
-	glEnable(GL_CULL_FACE);
-	glCullFace(GL_BACK);
-	glEnable(GL_DEPTH_TEST);
-	glDepthFunc(GL_LESS);
+    glEnable(GL_CULL_FACE);
+    glCullFace(GL_BACK);
+    glEnable(GL_DEPTH_TEST);
+    glDepthFunc(GL_LESS);
+	glFrontFace(GL_CW);
 
-	glClear(GL_DEPTH_BUFFER_BIT);
+    glClear(GL_DEPTH_BUFFER_BIT);
 }
 
 void RenderSystem::update(EntityManager& entities, EventManager& events, double dt)
@@ -188,18 +189,18 @@ void RenderSystem::update(EntityManager& entities, EventManager& events, double 
     MatrixBlock m;
 
     //glm::vec3 camPos = camTransform->position();
-	static float x = 0;
-	static float y = 0;
-	static float i = 0;
+    static float x = 0;
+    static float y = 0;
+    static float i = 0;
 
-	float start = 5;
-	x = start * cos(i);
-	y = start * sin(i);
-	i += 0.01;
+    float start = 5;
+    x = start * cos(i);
+    y = start * sin(i);
+    i += 0.01;
 
-	glm::vec3 camPos(x, 0, y);
+    glm::vec3 camPos(x, 0, y);
 
-	glm::vec3 camRot = camTransform->rotation();
+    glm::vec3 camRot = camTransform->rotation();
 
     glm::vec3 viewDir = glm::vec3(0.0f, 0.0f, -0.0f);
     glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
@@ -214,7 +215,7 @@ void RenderSystem::update(EntityManager& entities, EventManager& events, double 
 
     glm::mat4 view = glm::lookAt(
                          camPos,
-						 glm::vec3(0,0,0),
+                         glm::vec3(0, 0, 0),
                          cameraUp
                      );
 
@@ -222,7 +223,7 @@ void RenderSystem::update(EntityManager& entities, EventManager& events, double 
 
     glm::mat4 model = glm::mat4(1.0f);
     m.modelView = view * model;
-	m.projection = glm::perspective(
+    m.projection = glm::perspective(
                        45.0f,//camera->fieldOfView(),
                        camera->aspect(),
                        0.01f,//camera->nearPlane(),
@@ -235,21 +236,21 @@ void RenderSystem::update(EntityManager& entities, EventManager& events, double 
     glClearDepth(1);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    /*_skyShader->bind();
-    SkyboxBlock sky;
-    sky.fov = camera->fieldOfView();
-    sky.width = _window->width();
-    sky.height = _window->height();
-    sky.view = glm::inverse(view);
-    ShaderBlock *skyMatrices = _skyShader->block("SkyboxBlock");
-    skyMatrices->set(&sky, sizeof(SkyboxBlock));
-    ShaderVariable *tex = _skyShader->variable("skyTexture");
-	tex->set(_skyTexture);
-    //_skyMesh->draw();
-    renderQuad.draw();
-    _skyShader->unbind();
-	*/
-	//glClear(GL_DEPTH_BUFFER_BIT);
+    /*  _skyShader->bind();
+        SkyboxBlock sky;
+        sky.fov = camera->fieldOfView();
+        sky.width = _window->width();
+        sky.height = _window->height();
+        sky.view = glm::inverse(view);
+        ShaderBlock *skyMatrices = _skyShader->block("SkyboxBlock");
+        skyMatrices->set(&sky, sizeof(SkyboxBlock));
+        ShaderVariable *tex = _skyShader->variable("skyTexture");
+        tex->set(_skyTexture);
+        //_skyMesh->draw();
+        renderQuad.draw();
+        _skyShader->unbind();
+    */
+    //glClear(GL_DEPTH_BUFFER_BIT);
 
 
     //Setup lights
@@ -272,8 +273,8 @@ void RenderSystem::update(EntityManager& entities, EventManager& events, double 
     dlight.direction = glm::vec3(lightDir4 * m.modelView);
 
     auto gameObjects = entities.entities_with_components<TransformComponent, MeshFilterComponent, MaterialComponent>();
-    
-	for (auto gameObject : gameObjects)
+
+    for (auto gameObject : gameObjects)
     {
         auto transform = gameObject.component<TransformComponent>();
         auto meshFilter = gameObject.component<MeshFilterComponent>();

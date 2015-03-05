@@ -18,6 +18,7 @@ extern PFNGLTEXIMAGE2DPROC glTexImage2D;
 extern PFNGLCULLFACEPROC glCullFace;
 extern PFNGLENABLEPROC glEnable;
 extern PFNGLDEPTHFUNCPROC glDepthFunc;
+extern PFNGLFRONTFACEPROC glFrontFace;
 
 // OpenGL 1.1
 extern PFNGLGENTEXTURESPROC glGenTextures;
