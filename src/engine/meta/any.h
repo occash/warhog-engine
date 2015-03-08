@@ -137,7 +137,7 @@ Any::Any(T const& x) :
 
 template<typename T, std::size_t N>
 Any::Any(T(&x)[N]) :
-    _table(Table<T * >::get()),
+    _table(Table<T *>::get()),
     _object(nullptr)
 {
     new (&_object) T*(&x[0]);

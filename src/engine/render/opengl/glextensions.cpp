@@ -274,7 +274,7 @@ void GLExt::init(Context *context)
     GET_PROC_ADDRESS(glCullFace);
     GET_PROC_ADDRESS(glEnable);
     GET_PROC_ADDRESS(glDepthFunc);
-	GET_PROC_ADDRESS(glFrontFace);
+    GET_PROC_ADDRESS(glFrontFace);
 
     // OpenGL 1.1
     GET_PROC_ADDRESS(glGenTextures);

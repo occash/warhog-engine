@@ -20,19 +20,19 @@ Geometry::~Geometry()
 }
 
 //TODO: Width divisions: 1 Height divisions : 1 Depth divisions : 1
-Mesh *Geometry::cube(float width, float height, float depth, 
-	int widthDiv, int heightDiv, int depthDiv)
+Mesh *Geometry::cube(float width, float height, float depth,
+                     int widthDiv, int heightDiv, int depthDiv)
 {
     Mesh *m_cube = m_renderer->createMesh();
-	m_cube->verticies.resize(8);
-	m_cube->indices.resize(36);
+    m_cube->verticies.resize(8);
+    m_cube->indices.resize(36);
 
-	int ind = 0;
-	float normalizeK = sqrt(
-		(width / 2) * (width / 2) +
-		(height / 2) * (height / 2) +
-		(depth / 2) * (depth / 2)
-		);
+    int ind = 0;
+    float normalizeK = sqrt(
+                           (width / 2) * (width / 2) +
+                           (height / 2) * (height / 2) +
+                           (depth / 2) * (depth / 2)
+                       );
 
     for (int i = 0; i <= widthDiv; ++i)
     {
@@ -40,21 +40,21 @@ Mesh *Geometry::cube(float width, float height, float depth,
         {
             for (int k = 0; k <= depthDiv; ++k)
             {
-				m_cube->verticies[ind].position[0] = -width / 2 + i * width / widthDiv;
-				m_cube->verticies[ind].position[1] = -height / 2 + j * height / heightDiv;
-				m_cube->verticies[ind].position[2] = -depth / 2 + k * depth / depthDiv;
+                m_cube->verticies[ind].position[0] = -width / 2 + i * width / widthDiv;
+                m_cube->verticies[ind].position[1] = -height / 2 + j * height / heightDiv;
+                m_cube->verticies[ind].position[2] = -depth / 2 + k * depth / depthDiv;
 
-				/*normalizeK = sqrt(
-					m_cube->verticies[ind].position[0] * m_cube->verticies[ind].position[0] +
-					m_cube->verticies[ind].position[1] * m_cube->verticies[ind].position[1] +
-					m_cube->verticies[ind].position[2] * m_cube->verticies[ind].position[2]);*/
+                /*  normalizeK = sqrt(
+                    m_cube->verticies[ind].position[0] * m_cube->verticies[ind].position[0] +
+                    m_cube->verticies[ind].position[1] * m_cube->verticies[ind].position[1] +
+                    m_cube->verticies[ind].position[2] * m_cube->verticies[ind].position[2]);*/
 
-				m_cube->verticies[ind].normal[0] = floatToChar(m_cube->verticies[ind].position[0] / width);
-				m_cube->verticies[ind].normal[1] = floatToChar(m_cube->verticies[ind].position[1] / height);
-				m_cube->verticies[ind].normal[2] = floatToChar(m_cube->verticies[ind].position[2] / depth);
-				m_cube->verticies[ind].normal[3] = floatToChar(0.0f);
+                m_cube->verticies[ind].normal[0] = floatToChar(m_cube->verticies[ind].position[0] / width);
+                m_cube->verticies[ind].normal[1] = floatToChar(m_cube->verticies[ind].position[1] / height);
+                m_cube->verticies[ind].normal[2] = floatToChar(m_cube->verticies[ind].position[2] / depth);
+                m_cube->verticies[ind].normal[3] = floatToChar(0.0f);
 
-				++ind;
+                ++ind;
             }
         }
     }
