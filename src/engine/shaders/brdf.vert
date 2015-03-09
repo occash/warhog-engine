@@ -34,6 +34,6 @@ void main()
 {
     vec4 eyePos = mvp.modelView * vec4(position, 1.0);
 	DataOut.position = vec3(eyePos);
-	DataOut.normal = vec3(mvp.modelView * unpack(normal));
+	DataOut.normal = vec3(unpack(normal));
 	gl_Position = mvp.projection * eyePos;
 }

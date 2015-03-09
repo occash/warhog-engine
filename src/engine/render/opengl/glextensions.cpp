@@ -7,6 +7,10 @@ PFNGLCLEARCOLORPROC glClearColor = NULL;
 PFNGLCLEARDEPTHPROC glClearDepth = NULL;
 PFNGLTEXPARAMETERIPROC glTexParameteri = NULL;
 PFNGLTEXIMAGE2DPROC glTexImage2D = NULL;
+PFNGLCULLFACEPROC glCullFace = NULL;
+PFNGLENABLEPROC glEnable = NULL;
+PFNGLDEPTHFUNCPROC glDepthFunc = NULL;
+PFNGLFRONTFACEPROC glFrontFace = NULL;
 
 // OpenGL 1.1
 PFNGLGENTEXTURESPROC glGenTextures = NULL;
@@ -267,6 +271,10 @@ void GLExt::init(Context *context)
     GET_PROC_ADDRESS(glClearDepth);
     GET_PROC_ADDRESS(glTexParameteri);
     GET_PROC_ADDRESS(glTexImage2D);
+    GET_PROC_ADDRESS(glCullFace);
+    GET_PROC_ADDRESS(glEnable);
+    GET_PROC_ADDRESS(glDepthFunc);
+    GET_PROC_ADDRESS(glFrontFace);
 
     // OpenGL 1.1
     GET_PROC_ADDRESS(glGenTextures);

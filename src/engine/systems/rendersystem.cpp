@@ -165,6 +165,14 @@ void RenderSystem::configure(EventManager& events)
     events.subscribe<EntityDestroyedEvent>(*this);
     events.subscribe<ComponentAddedEvent<MeshFilterComponent>>(*this);
     events.subscribe<ComponentRemovedEvent<MeshFilterComponent>>(*this);
+
+    glEnable(GL_CULL_FACE);
+    glCullFace(GL_BACK);
+    glEnable(GL_DEPTH_TEST);
+    glDepthFunc(GL_LESS);
+    glFrontFace(GL_CCW);
+
+    glClear(GL_DEPTH_BUFFER_BIT);
 }
 
 void RenderSystem::update(EntityManager& entities, EventManager& events, double dt)
@@ -180,10 +188,23 @@ void RenderSystem::update(EntityManager& entities, EventManager& events, double 
 
     MatrixBlock m;
 
-    glm::vec3 camPos = camTransform->position();
+    //glm::vec3 camPos = camTransform->position();
+    static float x = 0;
+    static float z = 0;
+    static float i = 0;
+
+
+    /// camera is turning around the point (0,0) ////////////////////////////
+    float start = 2; // radius
+    x = start * cos(i);
+    z = start * sin(i);
+    i += 0.01;
+
+    glm::vec3 camPos(x, 0, z);
+
     glm::vec3 camRot = camTransform->rotation();
 
-    glm::vec3 viewDir = glm::vec3(0.0f, 0.0f, -1.0f);
+    glm::vec3 viewDir = glm::vec3(0.0f, 0.0f, -0.0f);
     glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
 
     //yaw
@@ -196,7 +217,7 @@ void RenderSystem::update(EntityManager& entities, EventManager& events, double 
 
     glm::mat4 view = glm::lookAt(
                          camPos,
-                         camPos + viewDir,
+                         glm::vec3(0, 0, 0),
                          cameraUp
                      );
 
@@ -217,19 +238,22 @@ void RenderSystem::update(EntityManager& entities, EventManager& events, double 
     glClearDepth(1.0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    _skyShader->bind();
-    SkyboxBlock sky;
-    sky.fov = camera->fieldOfView();
-    sky.width = _window->width();
-    sky.height = _window->height();
-    sky.view = glm::inverse(view);
-    ShaderBlock *skyMatrices = _skyShader->block("SkyboxBlock");
-    skyMatrices->set(&sky, sizeof(SkyboxBlock));
-    ShaderVariable *tex = _skyShader->variable("skyTexture");
-    tex->set(_skyTexture);
-    //_skyMesh->draw();
-    renderQuad.draw();
-    _skyShader->unbind();
+    /*  _skyShader->bind();
+        SkyboxBlock sky;
+        sky.fov = camera->fieldOfView();
+        sky.width = _window->width();
+        sky.height = _window->height();
+        sky.view = glm::inverse(view);
+        ShaderBlock *skyMatrices = _skyShader->block("SkyboxBlock");
+        skyMatrices->set(&sky, sizeof(SkyboxBlock));
+        ShaderVariable *tex = _skyShader->variable("skyTexture");
+        tex->set(_skyTexture);
+        //_skyMesh->draw();
+        renderQuad.draw();
+        _skyShader->unbind();
+    */
+    //glClear(GL_DEPTH_BUFFER_BIT);
+
 
     //Setup lights
     auto lights = entities.entities_with_components<TransformComponent, LightComponent>();
@@ -251,6 +275,7 @@ void RenderSystem::update(EntityManager& entities, EventManager& events, double 
     dlight.direction = glm::vec3(lightDir4 * m.modelView);
 
     auto gameObjects = entities.entities_with_components<TransformComponent, MeshFilterComponent, MaterialComponent>();
+
     for (auto gameObject : gameObjects)
     {
         auto transform = gameObject.component<TransformComponent>();
