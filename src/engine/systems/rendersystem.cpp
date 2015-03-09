@@ -194,7 +194,7 @@ void RenderSystem::update(EntityManager& entities, EventManager& events, double 
     static float i = 0;
 
 
-    /// ñamera is turning around the point (0,0) ////////////////////////////
+    /// camera is turning around the point (0,0) ////////////////////////////
     float start = 2; // radius
     x = start * cos(i);
     z = start * sin(i);
@@ -226,16 +226,16 @@ void RenderSystem::update(EntityManager& entities, EventManager& events, double 
     glm::mat4 model = glm::mat4(1.0f);
     m.modelView = view * model;
     m.projection = glm::perspective(
-                       45.0f,//camera->fieldOfView(),
+                       camera->fieldOfView(),
                        camera->aspect(),
-                       0.01f,//camera->nearPlane(),
-                       100.0f//camera->farPlane()
+                       camera->nearPlane(),
+                       camera->farPlane()
                    );
 
     glm::vec3 color = camera->clearColor();
 
-    glClearColor(0.1, 0.5, 0.1, 1.0f);
-    glClearDepth(1);
+    glClearColor(color.x, color.y, color.z, 1.0f);
+    glClearDepth(1.0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     /*  _skyShader->bind();
@@ -264,10 +264,10 @@ void RenderSystem::update(EntityManager& entities, EventManager& events, double 
 
     glm::vec3 lightDir(0.0f, 0.0f, 1.0f);
     glm::vec3 lightRot = lightTransform->rotation();
-    //lightDir = glm::rotate(lightDir, lightRot.x, glm::vec3(0.0f, 1.0f, 0.0f));
-    //lightDir = glm::rotate(lightDir, lightRot.y, glm::vec3(1.0f, 0.0f, 0.0f));
-    //lightDir = glm::rotate(lightDir, lightRot.z, glm::vec3(0.0f, 0.0f, 1.0f));
-    //lightDir = glm::normalize(lightDir);
+    lightDir = glm::rotate(lightDir, lightRot.x, glm::vec3(0.0f, 1.0f, 0.0f));
+    lightDir = glm::rotate(lightDir, lightRot.y, glm::vec3(1.0f, 0.0f, 0.0f));
+    lightDir = glm::rotate(lightDir, lightRot.z, glm::vec3(0.0f, 0.0f, 1.0f));
+    lightDir = glm::normalize(lightDir);
 
     DirectLight dlight;
     dlight.color = glm::vec3(light->color()) * glm::pi<float>();
