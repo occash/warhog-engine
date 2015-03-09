@@ -170,7 +170,7 @@ void RenderSystem::configure(EventManager& events)
     glCullFace(GL_BACK);
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LESS);
-	glFrontFace(GL_CW);
+    glFrontFace(GL_CCW);
 
     glClear(GL_DEPTH_BUFFER_BIT);
 }
@@ -193,7 +193,9 @@ void RenderSystem::update(EntityManager& entities, EventManager& events, double 
     static float y = 0;
     static float i = 0;
 
-    float start = 5;
+
+    /// камера вращается по кругу ////////////////////////////
+    float start = 2; // радиус вращения
     x = start * cos(i);
     y = start * sin(i);
     i += 0.01;

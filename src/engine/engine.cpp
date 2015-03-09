@@ -110,7 +110,7 @@ void Engine::initialize()
     auto camera = cameraId.assign<CameraComponent>();
 
     camera->setClearColor(glm::vec3(0.0f, 0.0f, 0.0f));
-    camera->setNearPlane(1.0f);
+    camera->setNearPlane(0.1f);
     camera->setFarPlane(100.0f);
     camera->setFieldOfView(60.0f);
 
@@ -145,9 +145,9 @@ void Engine::initialize()
     Object *meshObject = nullptr;
     meshResource.load(meshIn, meshObject);
 
-    //Mesh *cube = static_cast<Mesh *>(meshObject);
+    Mesh *cube = static_cast<Mesh *>(meshObject);
     Geometry m_geometry(renderer);
-    Mesh *cube = m_geometry.plane(3, 2);//m_geometry.cube(0.5, 2, 4);
+    //Mesh *cube = m_geometry.cube(2, 2, 2);
     cube->load();
     meshFilter->setMesh(cube);
 
@@ -205,9 +205,9 @@ void Engine::update(double dt)
     //rot.y = rot.y + 1;
     //lightPos->setRotation(rot);
 
-    /*  _elapsed += dt;
-        if (_elapsed >= 4)
-        {
+    _elapsed += dt;
+    if (_elapsed >= 4)
+    {
         float refractiveIndex = std::rand() % 20 + 0.01;
         float roughness = 0.1f * (std::rand() % 10) + 0.01;
         float fresnel0 = ((1.0f - refractiveIndex) / (1.0f + refractiveIndex));
@@ -217,7 +217,7 @@ void Engine::update(double dt)
         mat->setProperty("roughness", roughness);
 
         _elapsed = 0.0;
-        }*/
+    }
 
     /*  auto lightPos = _lightNode.component<TransformComponent>();
         glm::vec3 rot = lightPos->rotation();

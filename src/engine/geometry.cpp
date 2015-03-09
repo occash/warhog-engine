@@ -28,11 +28,6 @@ Mesh *Geometry::cube(float width, float height, float depth,
     m_cube->indices.resize(36);
 
     int ind = 0;
-    float normalizeK = sqrt(
-                           (width / 2) * (width / 2) +
-                           (height / 2) * (height / 2) +
-                           (depth / 2) * (depth / 2)
-                       );
 
     for (int i = 0; i <= widthDiv; ++i)
     {
@@ -43,11 +38,6 @@ Mesh *Geometry::cube(float width, float height, float depth,
                 m_cube->verticies[ind].position[0] = -width / 2 + i * width / widthDiv;
                 m_cube->verticies[ind].position[1] = -height / 2 + j * height / heightDiv;
                 m_cube->verticies[ind].position[2] = -depth / 2 + k * depth / depthDiv;
-
-                /*  normalizeK = sqrt(
-                    m_cube->verticies[ind].position[0] * m_cube->verticies[ind].position[0] +
-                    m_cube->verticies[ind].position[1] * m_cube->verticies[ind].position[1] +
-                    m_cube->verticies[ind].position[2] * m_cube->verticies[ind].position[2]);*/
 
                 m_cube->verticies[ind].normal[0] = floatToChar(m_cube->verticies[ind].position[0] / width);
                 m_cube->verticies[ind].normal[1] = floatToChar(m_cube->verticies[ind].position[1] / height);
@@ -61,12 +51,12 @@ Mesh *Geometry::cube(float width, float height, float depth,
 
     m_cube->indices =
     {
-        0, 2, 1, 1, 2, 3,
-        5, 1, 3, 3, 7, 5,
-        0, 4, 6, 6, 2, 0,
-        5, 7, 6, 5, 6, 4,
-        4, 0, 1, 4, 1, 5,
-        3, 2, 6, 3, 6, 7
+        2, 6, 4, 4, 0, 2,
+        6, 5, 4, 6, 7, 5,
+        1, 5, 7, 1, 7, 3,
+        1, 3, 2, 0, 1, 2,
+        2, 3, 7, 7, 6, 2,
+        0, 4, 5, 5, 1, 0
     };
 
     return m_cube;
