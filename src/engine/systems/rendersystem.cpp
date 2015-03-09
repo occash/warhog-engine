@@ -190,17 +190,17 @@ void RenderSystem::update(EntityManager& entities, EventManager& events, double 
 
     //glm::vec3 camPos = camTransform->position();
     static float x = 0;
-    static float y = 0;
+    static float z = 0;
     static float i = 0;
 
 
-    /// камера вращается по кругу ////////////////////////////
-    float start = 2; // радиус вращения
+    /// сamera is turning around the point (0,0) ////////////////////////////
+    float start = 2; // radius
     x = start * cos(i);
-    y = start * sin(i);
+    z = start * sin(i);
     i += 0.01;
 
-    glm::vec3 camPos(x, 0, y);
+    glm::vec3 camPos(x, 0, z);
 
     glm::vec3 camRot = camTransform->rotation();
 
