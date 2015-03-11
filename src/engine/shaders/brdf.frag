@@ -13,6 +13,7 @@ uniform DirectLight
 {
     vec3 color;
     vec3 direction;
+	vec3 intencity;
 } light;
 
 in Data 
@@ -70,9 +71,17 @@ void main()
 						geometry(normal, halfVec, view, light.direction, mat.roughness) *
 						distribution(normal, halfVec, mat.roughness) /
 						(4.0 * NdotL_clamped * NdotV_clamped);
-	vec3 color_spec = NdotL_clamped * brdf_spec * light.color;
-	vec3 color_diff = NdotL_clamped * diffuseEnergyRatio(mat.fresnel0, normal, light.direction) * mat.color * light.color;
+	vec3 color_spec = NdotL_clamped * 
+						brdf_spec * 
+						light.color  * 
+						light.intencity;
+	vec3 color_diff = NdotL_clamped * 
+					diffuseEnergyRatio(mat.fresnel0, normal, light.direction) * 
+					mat.color * 
+					light.color;
 
-	fragColor = vec4(color_diff + color_spec, 1.0);
+	fragColor = vec4(color_diff + color_spec
+					, 
+					1.0);
 	//fragColor = vec4(1.0, 0.0, 0.0, 1.0);
 }

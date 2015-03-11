@@ -119,6 +119,23 @@ struct DirectLight
     glm::float_t __padding0;
     glm::vec3 direction;
     glm::float_t __padding1;
+	glm::vec3 intencity;
+	glm::float_t __padding2; ///wtf??
+};
+
+struct PointLight
+{
+	glm::vec3 position;
+	glm::vec3 color;
+	float intencity;
+};
+
+struct SpotLight
+{
+	glm::vec3 position;
+	glm::vec3 color;
+	float intencity;
+	glm::vec3 direction;
 };
 
 struct SkyboxBlock
@@ -195,7 +212,7 @@ void RenderSystem::update(EntityManager& entities, EventManager& events, double 
 
 
     /// camera is turning around the point (0,0) ////////////////////////////
-    float start = 2; // radius
+    float start = 5; // radius
     x = start * cos(i);
     z = start * sin(i);
     i += 0.01;
@@ -263,16 +280,18 @@ void RenderSystem::update(EntityManager& entities, EventManager& events, double 
     auto light = (*lightObject).component<LightComponent>();
 
     glm::vec3 lightDir(0.0f, 0.0f, 1.0f);
-    glm::vec3 lightRot = lightTransform->rotation();
-    lightDir = glm::rotate(lightDir, lightRot.x, glm::vec3(0.0f, 1.0f, 0.0f));
+    //glm::vec3 lightRot = lightTransform->rotation();
+    /*lightDir = glm::rotate(lightDir, lightRot.x, glm::vec3(0.0f, 1.0f, 0.0f));
     lightDir = glm::rotate(lightDir, lightRot.y, glm::vec3(1.0f, 0.0f, 0.0f));
-    lightDir = glm::rotate(lightDir, lightRot.z, glm::vec3(0.0f, 0.0f, 1.0f));
+    lightDir = glm::rotate(lightDir, lightRot.z, glm::vec3(0.0f, 0.0f, 1.0f));*/
     lightDir = glm::normalize(lightDir);
 
     DirectLight dlight;
-    dlight.color = glm::vec3(light->color()) * glm::pi<float>();
+	dlight.color = glm::vec3(light->color()) * glm::pi<float>();
     glm::vec4 lightDir4 = glm::vec4(lightDir, 1.0f);
-    dlight.direction = glm::vec3(lightDir4 * m.modelView);
+    dlight.direction = glm::vec3(lightDir4 /** m.modelView*/); //m.modelView for the dir light??
+	dlight.intencity = { 0.5, 0.5, 0.8 };
+
 
     auto gameObjects = entities.entities_with_components<TransformComponent, MeshFilterComponent, MaterialComponent>();
 

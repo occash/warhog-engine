@@ -109,7 +109,7 @@ void Engine::initialize()
     auto cameraPos = cameraId.assign<TransformComponent>();
     auto camera = cameraId.assign<CameraComponent>();
 
-    camera->setClearColor(glm::vec3(0.0f, 0.0f, 0.0f));
+    camera->setClearColor(glm::vec3(0.3f, 0.6f, 0.3f));
     camera->setNearPlane(0.1f);
     camera->setFarPlane(100.0f);
     camera->setFieldOfView(60.0f);
@@ -132,24 +132,34 @@ void Engine::initialize()
     //Create model
     Entity modelId = entities.create();
     modelId.assign<InfoComponent>("Dragon");
-    modelId.assign<TransformComponent>();
+    auto transform = modelId.assign<TransformComponent>();
     auto meshFilter = modelId.assign<MeshFilterComponent>();
     auto material = modelId.assign<MaterialComponent>();
+
+	transform->setPosition({ 3, 0, 0 });
+
+	Entity model2 = entities.create();
+	auto transform2 = model2.assign<TransformComponent>();
+	auto meshFilter2 = model2.assign<MeshFilterComponent>();
+	auto material2 = model2.assign<MaterialComponent>();
+
+	transform2->setPosition({ -3, 0, 0 });
 
     //ResourceManager manager;
     //manager.add<MeshResource>();
     //manager.add<ScriptResource>();
     Renderer *renderer = systems.system<RenderSystem>()->renderer();
     MeshResource meshResource(renderer);
-    std::ifstream meshIn("resources/dragon", std::ios::binary | std::ios::in);
-    Object *meshObject = nullptr;
-    meshResource.load(meshIn, meshObject);
+    //std::ifstream meshIn("resources/dragon", std::ios::binary | std::ios::in);
+    //Object *meshObject = nullptr;
+    //meshResource.load(meshIn, meshObject);
 
-    Mesh *cube = static_cast<Mesh *>(meshObject);
+    //Mesh *cube = static_cast<Mesh *>(meshObject);
     Geometry m_geometry(renderer);
-    //Mesh *cube = m_geometry.cube(2, 2, 2);
+    Mesh *cube = m_geometry.cube(2, 2, 2);
     cube->load();
     meshFilter->setMesh(cube);
+	meshFilter2->setMesh(cube);
 
     Shader *shader = renderer->createShader();
     shader->vertexSource = readFile("resources/shaders/brdf.vert");
@@ -159,6 +169,7 @@ void Engine::initialize()
     mat = new Material;
     mat->setShader(shader);
     material->setMaterial(mat);
+	material2->setMaterial(mat);
     mat->setProperty("color", glm::vec3(0.6f, 0.84f, 0.91f) / 3.14f);
     float refractiveIndex = 16.0f;
     float fresnel0 = ((1.0f - refractiveIndex) / (1.0f + refractiveIndex));
@@ -213,8 +224,8 @@ void Engine::update(double dt)
         float fresnel0 = ((1.0f - refractiveIndex) / (1.0f + refractiveIndex));
         fresnel0 = fresnel0 * fresnel0;
 
-        mat->setProperty("fresnel0", fresnel0);
-        mat->setProperty("roughness", roughness);
+        mat->setProperty("fresnel0", 0.1f);
+        mat->setProperty("roughness", 0.3f);
 
         _elapsed = 0.0;
     }
