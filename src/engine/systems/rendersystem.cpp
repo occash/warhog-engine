@@ -101,7 +101,8 @@ RenderQuad renderQuad;
 
 struct MatrixBlock
 {
-    glm::mat4 modelView;
+    glm::mat4 model;
+	glm::mat4 view;
     glm::mat4 projection;
 };
 
@@ -119,22 +120,25 @@ struct DirectLight
     glm::float_t __padding0;
     glm::vec3 direction;
     glm::float_t __padding1;
-	glm::vec3 intencity;
+	glm::vec3 intensity;
 	glm::float_t __padding2; ///wtf??
 };
 
 struct PointLight
 {
 	glm::vec3 position;
+	glm::float_t __padding0;
 	glm::vec3 color;
-	float intencity;
+	glm::float_t __padding1;
+	glm::vec3 intensity;
+	glm::float_t __padding2;
 };
 
 struct SpotLight
 {
 	glm::vec3 position;
 	glm::vec3 color;
-	float intencity;
+	float intensity;
 	glm::vec3 direction;
 };
 
@@ -241,7 +245,8 @@ void RenderSystem::update(EntityManager& entities, EventManager& events, double 
     camera->setAspect(float(_window->width()) / float(_window->height()));
 
     glm::mat4 model = glm::mat4(1.0f);
-    m.modelView = view * model;
+    m.model = model;
+	m.view = view;
     m.projection = glm::perspective(
                        camera->fieldOfView(),
                        camera->aspect(),
@@ -289,8 +294,24 @@ void RenderSystem::update(EntityManager& entities, EventManager& events, double 
     DirectLight dlight;
 	dlight.color = glm::vec3(light->color()) * glm::pi<float>();
     glm::vec4 lightDir4 = glm::vec4(lightDir, 1.0f);
-    dlight.direction = glm::vec3(lightDir4 /** m.modelView*/); //m.modelView for the dir light??
-	dlight.intencity = { 0.5, 0.5, 0.8 };
+    dlight.direction = glm::vec3(lightDir4/** m.modelView*/); //m.modelView for the dir light??
+	dlight.intensity = { 0.5, 0.5, 1 };
+
+	/////point light ////////////
+
+	auto pLight = entities.entities_with_components<TransformComponent, LightComponent>();
+	auto pLightObject = pLight.begin();
+
+	auto pLightTransform = (*pLightObject).component<TransformComponent>();
+	auto pLightComponent = (*pLightObject).component<LightComponent>();
+	glm::vec3 pLightPos(0.0f, 0.0f, 0.0f);
+
+	PointLight m_pLight;
+	m_pLight.color = glm::vec3(1.0f, 1.0f, 1.0f);
+	m_pLight.position = pLightPos;
+	m_pLight.intensity = glm::vec3(1.0f, 1.0f, 1.0f);
+
+	//////////////////////////////
 
 
     auto gameObjects = entities.entities_with_components<TransformComponent, MeshFilterComponent, MaterialComponent>();
@@ -310,12 +331,16 @@ void RenderSystem::update(EntityManager& entities, EventManager& events, double 
         glm::vec3 scl = transform->scale();
         glm::mat4 model = glm::mat4(1.0f);
         applyTransform(model, pos, rot, scl);
-        m.modelView = view * model;
+        m.model = model;
+		m.view = view;
         ShaderBlock *matricies = shader->block("MatrixBlock");
         matricies->set(&m, sizeof(MatrixBlock));
 
         ShaderBlock *directlight = shader->block("DirectLight");
         directlight->set(&dlight, sizeof(DirectLight));
+
+		ShaderBlock *pointLight = shader->block("PointLight");
+		pointLight->set(&m_pLight, sizeof(PointLight));
 
         meshFilter->mesh()->draw();
         shader->unbind();
