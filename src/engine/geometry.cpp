@@ -1,6 +1,13 @@
 #include "geometry.h"
 #include "render/renderer.h"
 
+float float_sign(float x)
+{
+    if (x > 0) return 1.0f;
+    if (x < 0) return -1.0f;
+    if (x == 0) return 0.0f;
+}
+
 
 unsigned char floatToChar(float value)
 {
@@ -19,46 +26,81 @@ Geometry::~Geometry()
 {
 }
 
-//TODO: Width divisions: 1 Height divisions : 1 Depth divisions : 1
+
+//TODO: Peter say that  unnecessary vertex inside cube
+//TODO: Now Width divisions: 1 Height divisions : 1 Depth divisions : 1
+//TODO: Divisions cube
 Mesh *Geometry::cube(float width, float height, float depth,
                      int widthDiv, int heightDiv, int depthDiv)
 {
     Mesh *m_cube = m_renderer->createMesh();
-    m_cube->verticies.resize(8);
+    m_cube->verticies.resize(24);
     m_cube->indices.resize(36);
 
     int ind = 0;
-
-    for (int i = 0; i <= widthDiv; ++i)
+    for (int iter = 1; iter <= 3; iter++)
     {
-        for (int j = 0; j <= heightDiv; ++j)
+        for (int i = 0; i <= widthDiv; ++i)
         {
-            for (int k = 0; k <= depthDiv; ++k)
+            for (int j = 0; j <= heightDiv; ++j)
             {
-                m_cube->verticies[ind].position[0] = -width / 2 + i * width / widthDiv;
-                m_cube->verticies[ind].position[1] = -height / 2 + j * height / heightDiv;
-                m_cube->verticies[ind].position[2] = -depth / 2 + k * depth / depthDiv;
+                for (int k = 0; k <= depthDiv; ++k)
+                {
 
-                m_cube->verticies[ind].normal[0] = floatToChar(m_cube->verticies[ind].position[0] / width);
-                m_cube->verticies[ind].normal[1] = floatToChar(m_cube->verticies[ind].position[1] / height);
-                m_cube->verticies[ind].normal[2] = floatToChar(m_cube->verticies[ind].position[2] / depth);
-                m_cube->verticies[ind].normal[3] = floatToChar(0.0f);
+                    float x_pos = -width / 2 + i * width / widthDiv;
+                    float y_pos = -height / 2 + j * height / heightDiv;
+                    float z_pos = -depth / 2 + k * depth / depthDiv;
+                    m_cube->verticies[ind].position[0] = x_pos;
+                    m_cube->verticies[ind].position[1] = y_pos;
+                    m_cube->verticies[ind].position[2] = z_pos;
 
-                ++ind;
+                    if ((i == 0 || i == widthDiv) && (j == 0 || j == heightDiv) && (k == 0 || k == heightDiv))
+                    {
+                        if (iter == 1)
+                        {
+                            m_cube->verticies[ind].normal[0] = floatToChar(float_sign(x_pos));
+                            m_cube->verticies[ind].normal[1] = floatToChar(0.0f);
+                            m_cube->verticies[ind].normal[2] = floatToChar(0.0f);
+                        }
+
+
+                        if (iter == 2)
+                        {
+                            m_cube->verticies[ind].normal[0] = floatToChar(0.0f);
+                            m_cube->verticies[ind].normal[1] = floatToChar(float_sign(y_pos));
+                            m_cube->verticies[ind].normal[2] = floatToChar(0.0f);
+                        }
+
+                        if (iter == 3)
+                        {
+                            m_cube->verticies[ind].normal[0] = floatToChar(0.0f);
+                            m_cube->verticies[ind].normal[1] = floatToChar(0.0f);
+                            m_cube->verticies[ind].normal[2] = floatToChar(float_sign(z_pos));
+                        }
+
+                        m_cube->verticies[ind].normal[3] = floatToChar(0.0f);
+                    }
+                    else
+                    {
+                        m_cube->verticies[ind].normal[0] = floatToChar(x_pos / width);
+                        m_cube->verticies[ind].normal[1] = floatToChar(y_pos / height);
+                        m_cube->verticies[ind].normal[2] = floatToChar(z_pos / depth);
+                        m_cube->verticies[ind].normal[3] = floatToChar(0.0f);
+                    }
+                    ++ind;
+                }
             }
         }
     }
-
     m_cube->indices =
     {
-        2, 6, 4, 4, 0, 2,
+        18, 22, 20, 20, 16, 18,
         6, 5, 4, 6, 7, 5,
-        1, 5, 7, 1, 7, 3,
+        17, 21, 23, 17, 23, 19,
         1, 3, 2, 0, 1, 2,
-        2, 3, 7, 7, 6, 2,
-        0, 4, 5, 5, 1, 0
+        10, 11, 15, 15, 14, 10,
+        8, 12, 13, 13, 9, 8
     };
-
     return m_cube;
 }
 
