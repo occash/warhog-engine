@@ -150,13 +150,13 @@ void Engine::initialize()
     //manager.add<ScriptResource>();
     Renderer *renderer = systems.system<RenderSystem>()->renderer();
     MeshResource meshResource(renderer);
-    //std::ifstream meshIn("resources/dragon", std::ios::binary | std::ios::in);
-    //Object *meshObject = nullptr;
-    //meshResource.load(meshIn, meshObject);
+    std::ifstream meshIn("resources/dragon", std::ios::binary | std::ios::in);
+    Object *meshObject = nullptr;
+    meshResource.load(meshIn, meshObject);
 
-    //Mesh *cube = static_cast<Mesh *>(meshObject);
+    Mesh *cube = static_cast<Mesh *>(meshObject);
     Geometry m_geometry(renderer);
-    Mesh *cube = m_geometry.cube(2, 2, 2);
+    //Mesh *cube = m_geometry.cube(2, 2, 2);
     cube->load();
     meshFilter->setMesh(cube);
 	meshFilter2->setMesh(cube);
@@ -224,8 +224,8 @@ void Engine::update(double dt)
         float fresnel0 = ((1.0f - refractiveIndex) / (1.0f + refractiveIndex));
         fresnel0 = fresnel0 * fresnel0;
 
-        mat->setProperty("fresnel0", 0.1f);
-        mat->setProperty("roughness", 0.3f);
+		mat->setProperty("fresnel0", fresnel0);
+		mat->setProperty("roughness", roughness);
 
         _elapsed = 0.0;
     }

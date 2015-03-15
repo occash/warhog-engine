@@ -126,8 +126,7 @@ struct DirectLight
 
 struct PointLight
 {
-	glm::vec3 position;
-	glm::float_t __padding0;
+	glm::vec4 position;
 	glm::vec3 color;
 	glm::float_t __padding1;
 	glm::vec3 intensity;
@@ -284,7 +283,7 @@ void RenderSystem::update(EntityManager& entities, EventManager& events, double 
     auto lightTransform = (*lightObject).component<TransformComponent>();
     auto light = (*lightObject).component<LightComponent>();
 
-    glm::vec3 lightDir(0.0f, 0.0f, 1.0f);
+    glm::vec3 lightDir(0.0f, 0.0f, 0.0f);
     //glm::vec3 lightRot = lightTransform->rotation();
     /*lightDir = glm::rotate(lightDir, lightRot.x, glm::vec3(0.0f, 1.0f, 0.0f));
     lightDir = glm::rotate(lightDir, lightRot.y, glm::vec3(1.0f, 0.0f, 0.0f));
@@ -304,11 +303,11 @@ void RenderSystem::update(EntityManager& entities, EventManager& events, double 
 
 	auto pLightTransform = (*pLightObject).component<TransformComponent>();
 	auto pLightComponent = (*pLightObject).component<LightComponent>();
-	glm::vec3 pLightPos(0.0f, 0.0f, 0.0f);
+	glm::vec4 pLightPos(0.0f, 0.0f, 0.0f, 1.0f);
 
 	PointLight m_pLight;
 	m_pLight.color = glm::vec3(1.0f, 1.0f, 1.0f);
-	m_pLight.position = pLightPos;
+	m_pLight.position = glm::vec4(m.view * pLightPos);
 	m_pLight.intensity = glm::vec3(1.0f, 1.0f, 1.0f);
 
 	//////////////////////////////

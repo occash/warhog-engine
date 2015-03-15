@@ -2,8 +2,10 @@
 
 in Data 
 {
-    vec3 position;
-    vec3 normal;
+	vec3 position;			// camera space
+	vec3 normal;			// camera space
+	vec3 eyeDirection;		// camera space
+	vec3 lightDirection;	// camera space
 } DataIn;
 
 out vec4 fragColor;
@@ -27,8 +29,8 @@ uniform DirectLight
 layout(std140)
 uniform PointLight
 {
+	vec4 position;
     vec3 color;
-    vec3 position;
     vec3 intensity;
 } pLight;
 
@@ -39,9 +41,9 @@ uniform MatrixBlock
 	mat4 projection;
 } mvp;
 //Schlick approximation
-float fresnel(float f0, vec3 n, vec3 l)
+float fresnel(float f0, vec3 h, vec3 l)
 {
-    return f0 + (1.0 - f0) * pow(1.0 - dot(n, l), 5.0);
+    return f0 + (1.0 - f0) * pow(1.0 - dot(h, l), 5.0);
 }
 
 
@@ -52,7 +54,8 @@ float distribution(vec3 n, vec3 h, float roughness)
     float m_Sq = roughness * roughness;
     float NdotH_Sq = max(dot(n, h), 0.0);
     NdotH_Sq = NdotH_Sq * NdotH_Sq;
-    return exp((NdotH_Sq - 1.0) / (m_Sq * NdotH_Sq)) / (3.14159265 * m_Sq * NdotH_Sq * NdotH_Sq);
+    return exp((NdotH_Sq - 1.0) / (m_Sq * NdotH_Sq)) / 
+			(3.14159265 * m_Sq * NdotH_Sq * NdotH_Sq);
 }
 
 
@@ -77,7 +80,18 @@ float diffuseEnergyRatio(float f0, vec3 n, vec3 l)
     return 1.0 - f0;
 }
 
+vec3 ads()
+{
+	vec3 n = normalize(DataIn.normal);
+	vec3 s = normalize(vec3(pLight.position) - DataIn.position);
+	vec3 v = normalize(-DataIn.position);
+	vec3 h = normalize(v + s);
 
+	return pLight.intensity *
+			(0.03 +
+			0.1 * max(dot(s, DataIn.normal), 0.0) +
+			0.5 * pow(max(dot(h,n), 0.0), 3));
+}
 
 void main()
 {
@@ -103,33 +117,39 @@ void main()
 					mat.color * 
 					light.color;*/
     /////fragment with point light ////////
-
-	vec3 s = normalize(pLight.position - DataIn.position);
-    halfVec = normalize(s + view);
-    NdotL = dot(normal, pLight.position);
-    NdotV = dot(normal, view);
+	
+	vec3 s = normalize(vec3(pLight.position) - DataIn.position);
+    halfVec = normalize(s + DataIn.eyeDirection);
+    NdotL = dot(normal, vec3(pLight.position));
+    NdotV = dot(normal, halfVec);
     NdotL_clamped = max(NdotL, 0.0);
     NdotV_clamped = max(NdotV, 0.0);
 
-    brdf_spec = fresnel(mat.fresnel0, halfVec, pLight.position) *
-						geometry(normal, halfVec, view, pLight.position, mat.roughness) *
+    brdf_spec = fresnel(mat.fresnel0, halfVec, -DataIn.lightDirection) *
+						geometry(normal, halfVec, view, DataIn.lightDirection, mat.roughness) *
 						distribution(normal, halfVec, mat.roughness) /
 						(4.0 * NdotL_clamped * NdotV_clamped);
     color_spec += NdotL_clamped * 
 						brdf_spec * 
-						pLight.color  * 
-						pLight.intensity;
+						pLight.color;//  * 
+						//pLight.intensity;
 
     color_diff += NdotL_clamped * 
-					diffuseEnergyRatio(mat.fresnel0, normal, pLight.position) * 
-					mat.color * 
-					pLight.intensity;
+					diffuseEnergyRatio(mat.fresnel0, normal, DataIn.lightDirection) * 
+					mat.color;// * 
+					//pLight.intensity;
 
 	//////////////////////////////////////////////
 
+	//fragColor = vec4(ads(), 1.0);
     fragColor = vec4(color_diff + color_spec
 					, 
 					1.0);
     //fragColor = vec4(normal, 1.0);
 	//fragColor = vec4(1.0, 0.0, 0.0, 1.0);
 }
+
+/*void main()
+{
+	fragColor = vec4(ads(), 1.0);
+}*/

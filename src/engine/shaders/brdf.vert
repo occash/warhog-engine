@@ -9,9 +9,20 @@ in vec4 normal;
 
 out Data 
 {
-	vec3 position;
-	vec3 normal;
+	vec3 position;			// camera space
+	vec3 normal;			// camera space
+	vec3 eyeDirection;		// camera space
+	vec3 lightDirection;	// camera space
 } DataOut;
+
+layout(std140)
+uniform PointLight
+{
+	vec4 position;
+    vec3 color;
+    vec3 intensity;
+} pLight;
+
 
 layout(std140)
 uniform MatrixBlock
@@ -31,10 +42,24 @@ vec4 unpack(vec4 n)
 	return nres;
 }
 
-void main()
+/*void main()
 {
+	mat4 normalMatrix = transpose((mvp.view * mvp.model));
     vec4 eyePos = mvp.view * mvp.model * vec4(position, 1.0);
 	DataOut.position = vec3(eyePos);
-	DataOut.normal = vec3(mvp.model * unpack(normal));
+	DataOut.normal = vec3(normalMatrix * unpack(normal));
 	gl_Position = mvp.projection * eyePos;
+}*/
+
+void main()
+{
+	gl_Position = mvp.projection * mvp.view * mvp.model * vec4(position, 1.0);
+
+	DataOut.position = (mvp.view * mvp.model * vec4(position, 1)).xyz;
+	DataOut.eyeDirection = vec3(0,0,0) - DataOut.position;
+
+	vec3 lightPositionCameraSpace = (mvp.view * pLight.position).xyz;
+	DataOut.lightDirection = lightPositionCameraSpace + DataOut.eyeDirection;
+
+	DataOut.normal = (mvp.view * mvp.model * unpack(normal)).xyz;
 }
