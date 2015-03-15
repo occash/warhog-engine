@@ -1,10 +1,6 @@
 #include "geometry.h"
 #include "render/renderer.h"
-
 #include "math\mathlib.h"
-
-
-using namespace Math;
 
 unsigned char floatToChar(float value)
 {
@@ -12,7 +8,6 @@ unsigned char floatToChar(float value)
     value = (value + 1.0f) * 0.5f;
     return (unsigned char)(value * 255.0f);
 }
-
 
 Geometry::Geometry(Renderer *currentRenderer) : m_renderer(currentRenderer)
 {
@@ -33,7 +28,6 @@ Mesh *Geometry::cube(float width, float height, float depth,
     Mesh *m_cube = m_renderer->createMesh();
     m_cube->verticies.resize(24);
     m_cube->indices.resize(36);
-
     int ind = 0;
     for (int iter = 0; iter < 3; iter++)
     {
@@ -43,7 +37,6 @@ Mesh *Geometry::cube(float width, float height, float depth,
             {
                 for (int k = 0; k <= depthDiv; ++k)
                 {
-
                     float xPos = -width / 2 + i * width / widthDiv;
                     float yPos = -height / 2 + j * height / heightDiv;
                     float zPos = -depth / 2 + k * depth / depthDiv;
@@ -56,13 +49,18 @@ Mesh *Geometry::cube(float width, float height, float depth,
                     m_cube->verticies[ind].normal[3] = floatToChar(0.0f);
                     if ((i == 0 || i == widthDiv) && (j == 0 || j == heightDiv) && (k == 0 || k == heightDiv))
                     {
-                        if (iter == 0)
+                        switch (iter)
+                        {
+                        case 0:
                             m_cube->verticies[ind].normal[0] = floatToChar(Math::sign(xPos));
-                        if (iter == 1)
+                            break;
+                        case 1:
                             m_cube->verticies[ind].normal[1] = floatToChar(Math::sign(yPos));
-
-                        if (iter == 2)
+                            break;
+                        case 2:
                             m_cube->verticies[ind].normal[2] = floatToChar(Math::sign(zPos));
+                            break;
+                        }
                     }
                     else
                     {
