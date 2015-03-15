@@ -64,6 +64,7 @@ Mesh *Geometry::cube(float width, float height, float depth,
                     }
                     else
                     {
+						//TODO:normals for not corner vertext
                         m_cube->verticies[ind].normal[0] = floatToChar(xPos / width);
                         m_cube->verticies[ind].normal[1] = floatToChar(yPos / height);
                         m_cube->verticies[ind].normal[2] = floatToChar(zPos / depth);
