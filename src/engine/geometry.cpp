@@ -1,13 +1,10 @@
 #include "geometry.h"
 #include "render/renderer.h"
 
-float float_sign(float x)
-{
-    if (x > 0) return 1.0f;
-    if (x < 0) return -1.0f;
-    if (x == 0) return 0.0f;
-}
+#include "math\mathlib.h"
 
+
+using namespace Math;
 
 unsigned char floatToChar(float value)
 {
@@ -27,7 +24,7 @@ Geometry::~Geometry()
 }
 
 
-//TODO: Peter say that  unnecessary vertex inside cube
+//TODO: Peter said that there are unnecessary vertex inside the cube
 //TODO: Now Width divisions: 1 Height divisions : 1 Depth divisions : 1
 //TODO: Divisions cube
 Mesh *Geometry::cube(float width, float height, float depth,
@@ -38,7 +35,7 @@ Mesh *Geometry::cube(float width, float height, float depth,
     m_cube->indices.resize(36);
 
     int ind = 0;
-    for (int iter = 1; iter <= 3; iter++)
+    for (int iter = 0; iter < 3; iter++)
     {
         for (int i = 0; i <= widthDiv; ++i)
         {
@@ -47,45 +44,31 @@ Mesh *Geometry::cube(float width, float height, float depth,
                 for (int k = 0; k <= depthDiv; ++k)
                 {
 
-                    float x_pos = -width / 2 + i * width / widthDiv;
-                    float y_pos = -height / 2 + j * height / heightDiv;
-                    float z_pos = -depth / 2 + k * depth / depthDiv;
-                    m_cube->verticies[ind].position[0] = x_pos;
-                    m_cube->verticies[ind].position[1] = y_pos;
-                    m_cube->verticies[ind].position[2] = z_pos;
-
+                    float xPos = -width / 2 + i * width / widthDiv;
+                    float yPos = -height / 2 + j * height / heightDiv;
+                    float zPos = -depth / 2 + k * depth / depthDiv;
+                    m_cube->verticies[ind].position[0] = xPos;
+                    m_cube->verticies[ind].position[1] = yPos;
+                    m_cube->verticies[ind].position[2] = zPos;
+                    m_cube->verticies[ind].normal[0] = floatToChar(0.0f);
+                    m_cube->verticies[ind].normal[1] = floatToChar(0.0f);
+                    m_cube->verticies[ind].normal[2] = floatToChar(0.0f);
+                    m_cube->verticies[ind].normal[3] = floatToChar(0.0f);
                     if ((i == 0 || i == widthDiv) && (j == 0 || j == heightDiv) && (k == 0 || k == heightDiv))
                     {
+                        if (iter == 0)
+                            m_cube->verticies[ind].normal[0] = floatToChar(Math::sign(xPos));
                         if (iter == 1)
-                        {
-                            m_cube->verticies[ind].normal[0] = floatToChar(float_sign(x_pos));
-                            m_cube->verticies[ind].normal[1] = floatToChar(0.0f);
-                            m_cube->verticies[ind].normal[2] = floatToChar(0.0f);
-                        }
-
+                            m_cube->verticies[ind].normal[1] = floatToChar(Math::sign(yPos));
 
                         if (iter == 2)
-                        {
-                            m_cube->verticies[ind].normal[0] = floatToChar(0.0f);
-                            m_cube->verticies[ind].normal[1] = floatToChar(float_sign(y_pos));
-                            m_cube->verticies[ind].normal[2] = floatToChar(0.0f);
-                        }
-
-                        if (iter == 3)
-                        {
-                            m_cube->verticies[ind].normal[0] = floatToChar(0.0f);
-                            m_cube->verticies[ind].normal[1] = floatToChar(0.0f);
-                            m_cube->verticies[ind].normal[2] = floatToChar(float_sign(z_pos));
-                        }
-
-                        m_cube->verticies[ind].normal[3] = floatToChar(0.0f);
+                            m_cube->verticies[ind].normal[2] = floatToChar(Math::sign(zPos));
                     }
                     else
                     {
-                        m_cube->verticies[ind].normal[0] = floatToChar(x_pos / width);
-                        m_cube->verticies[ind].normal[1] = floatToChar(y_pos / height);
-                        m_cube->verticies[ind].normal[2] = floatToChar(z_pos / depth);
-                        m_cube->verticies[ind].normal[3] = floatToChar(0.0f);
+                        m_cube->verticies[ind].normal[0] = floatToChar(xPos / width);
+                        m_cube->verticies[ind].normal[1] = floatToChar(yPos / height);
+                        m_cube->verticies[ind].normal[2] = floatToChar(zPos / depth);
                     }
                     ++ind;
                 }
