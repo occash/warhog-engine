@@ -136,14 +136,14 @@ void Engine::initialize()
     auto meshFilter = modelId.assign<MeshFilterComponent>();
     auto material = modelId.assign<MaterialComponent>();
 
-	transform->setPosition({ 3, 0, 0 });
+    transform->setPosition({ 3, 0, 0 });
 
-	Entity model2 = entities.create();
-	auto transform2 = model2.assign<TransformComponent>();
-	auto meshFilter2 = model2.assign<MeshFilterComponent>();
-	auto material2 = model2.assign<MaterialComponent>();
+    Entity model2 = entities.create();
+    auto transform2 = model2.assign<TransformComponent>();
+    auto meshFilter2 = model2.assign<MeshFilterComponent>();
+    auto material2 = model2.assign<MaterialComponent>();
 
-	transform2->setPosition({ -3, 0, 0 });
+    transform2->setPosition({ -3, 0, 0 });
 
     //ResourceManager manager;
     //manager.add<MeshResource>();
@@ -154,12 +154,12 @@ void Engine::initialize()
     Object *meshObject = nullptr;
     meshResource.load(meshIn, meshObject);
 
-    Mesh *cube = static_cast<Mesh *>(meshObject);
+    //Mesh *cube = static_cast<Mesh *>(meshObject);
     Geometry m_geometry(renderer);
-    //Mesh *cube = m_geometry.cube(2, 2, 2);
+    Mesh *cube = m_geometry.cube(2, 2, 2);
     cube->load();
     meshFilter->setMesh(cube);
-	meshFilter2->setMesh(cube);
+    meshFilter2->setMesh(cube);
 
     Shader *shader = renderer->createShader();
     shader->vertexSource = readFile("../src/engine/shaders/brdf.vert");
@@ -169,7 +169,7 @@ void Engine::initialize()
     mat = new Material;
     mat->setShader(shader);
     material->setMaterial(mat);
-	material2->setMaterial(mat);
+    material2->setMaterial(mat);
     mat->setProperty("color", glm::vec3(0.6f, 0.84f, 0.91f) / 3.14f);
     float refractiveIndex = 16.0f;
     float fresnel0 = ((1.0f - refractiveIndex) / (1.0f + refractiveIndex));
@@ -224,8 +224,8 @@ void Engine::update(double dt)
         float fresnel0 = ((1.0f - refractiveIndex) / (1.0f + refractiveIndex));
         fresnel0 = fresnel0 * fresnel0;
 
-		mat->setProperty("fresnel0", fresnel0);
-		mat->setProperty("roughness", roughness);
+        mat->setProperty("fresnel0", fresnel0);
+        mat->setProperty("roughness", roughness);
 
         _elapsed = 0.0;
     }

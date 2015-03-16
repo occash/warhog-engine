@@ -102,7 +102,7 @@ RenderQuad renderQuad;
 struct MatrixBlock
 {
     glm::mat4 model;
-	glm::mat4 view;
+    glm::mat4 view;
     glm::mat4 projection;
 };
 
@@ -120,25 +120,23 @@ struct DirectLight
     glm::float_t __padding0;
     glm::vec3 direction;
     glm::float_t __padding1;
-	glm::vec3 intensity;
-	glm::float_t __padding2; ///wtf??
+    glm::vec3 intensity;
+    glm::float_t __padding2; ///wtf??
 };
 
 struct PointLight
 {
-	glm::vec4 position;
-	glm::vec3 color;
-	glm::float_t __padding1;
-	glm::vec3 intensity;
-	glm::float_t __padding2;
+    glm::vec4 position;
+    glm::vec3 color;
+    glm::float_t power;
 };
 
 struct SpotLight
 {
-	glm::vec3 position;
-	glm::vec3 color;
-	float intensity;
-	glm::vec3 direction;
+    glm::vec3 position;
+    glm::vec3 color;
+    float intensity;
+    glm::vec3 direction;
 };
 
 struct SkyboxBlock
@@ -218,7 +216,7 @@ void RenderSystem::update(EntityManager& entities, EventManager& events, double 
     float start = 6; // radius
     x = start * cos(i);
     z = start * sin(i);
-    i += 0.003;
+    i += 0.01;
 
     glm::vec3 camPos(x, 0, z);
 
@@ -245,7 +243,7 @@ void RenderSystem::update(EntityManager& entities, EventManager& events, double 
 
     glm::mat4 model = glm::mat4(1.0f);
     m.model = model;
-	m.view = view;
+    m.view = view;
     m.projection = glm::perspective(
                        camera->fieldOfView(),
                        camera->aspect(),
@@ -285,32 +283,32 @@ void RenderSystem::update(EntityManager& entities, EventManager& events, double 
 
     glm::vec4 lightDir(0.0f, 0.0f, 1.0f, 0.0f);
     //glm::vec3 lightRot = lightTransform->rotation();
-    /*lightDir = glm::rotate(lightDir, lightRot.x, glm::vec3(0.0f, 1.0f, 0.0f));
-    lightDir = glm::rotate(lightDir, lightRot.y, glm::vec3(1.0f, 0.0f, 0.0f));
-    lightDir = glm::rotate(lightDir, lightRot.z, glm::vec3(0.0f, 0.0f, 1.0f));*/
+    /*  lightDir = glm::rotate(lightDir, lightRot.x, glm::vec3(0.0f, 1.0f, 0.0f));
+        lightDir = glm::rotate(lightDir, lightRot.y, glm::vec3(1.0f, 0.0f, 0.0f));
+        lightDir = glm::rotate(lightDir, lightRot.z, glm::vec3(0.0f, 0.0f, 1.0f));*/
     lightDir = glm::normalize(lightDir);
 
     DirectLight dlight;
-	dlight.color = glm::vec3(light->color()) * glm::pi<float>();
+    dlight.color = glm::vec3(light->color()) * glm::pi<float>();
     glm::vec4 lightDir4 = glm::vec4(lightDir);
     dlight.direction = glm::vec3(m.view * lightDir4/** m.modelView*/); //m.modelView for the dir light??
-	dlight.intensity = { 0.5, 0.5, 1 };
+    dlight.intensity = { 0.5, 0.5, 1 };
 
-	/////point light ////////////
+    /////point light ////////////
 
-	auto pLight = entities.entities_with_components<TransformComponent, LightComponent>();
-	auto pLightObject = pLight.begin();
+    auto pLight = entities.entities_with_components<TransformComponent, LightComponent>();
+    auto pLightObject = pLight.begin();
 
-	auto pLightTransform = (*pLightObject).component<TransformComponent>();
-	auto pLightComponent = (*pLightObject).component<LightComponent>();
-	glm::vec4 pLightPos(1.0f, 0.0f, 0.0f, 0.0f);
+    auto pLightTransform = (*pLightObject).component<TransformComponent>();
+    auto pLightComponent = (*pLightObject).component<LightComponent>();
+    glm::vec4 pLightPos(0.0f, 0.0f, 5.0f, 1.0f);
 
-	PointLight m_pLight;
-	m_pLight.color = glm::vec3(0.1f, 0.1f, 0.6f);
-	m_pLight.position = glm::vec4(m.view * pLightPos);
-	m_pLight.intensity = glm::vec3(0.1f, 1.0f, 0.1f);
+    PointLight m_pLight;
+    m_pLight.color = glm::vec3(0.1f, 0.1f, 0.9f);
+    m_pLight.position = m.view * pLightPos;
+    m_pLight.power = 50;
 
-	//////////////////////////////
+    //////////////////////////////
 
 
     auto gameObjects = entities.entities_with_components<TransformComponent, MeshFilterComponent, MaterialComponent>();
@@ -331,15 +329,15 @@ void RenderSystem::update(EntityManager& entities, EventManager& events, double 
         glm::mat4 model = glm::mat4(1.0f);
         applyTransform(model, pos, rot, scl);
         m.model = model;
-		m.view = view;
+        m.view = view;
         ShaderBlock *matricies = shader->block("MatrixBlock");
         matricies->set(&m, sizeof(MatrixBlock));
 
         ShaderBlock *directlight = shader->block("DirectLight");
         directlight->set(&dlight, sizeof(DirectLight));
 
-		ShaderBlock *pointLight = shader->block("PointLight");
-		pointLight->set(&m_pLight, sizeof(PointLight));
+        ShaderBlock *pointLight = shader->block("PointLight");
+        pointLight->set(&m_pLight, sizeof(PointLight));
 
         meshFilter->mesh()->draw();
         shader->unbind();
