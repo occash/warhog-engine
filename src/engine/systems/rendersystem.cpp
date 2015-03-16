@@ -475,8 +475,8 @@ void RenderSystem::chooseBackend(const std::string& name)
         _boxShader->load();*/
 
     _skyShader = _renderer->createShader();
-    _skyShader->vertexSource = readFile("resources/shaders/skybox.vert");
-    _skyShader->pixelSource = readFile("resources/shaders/skybox.frag");
+    _skyShader->vertexSource = readFile("../src/engine/shaders/skybox.vert");
+    _skyShader->pixelSource = readFile("../src/engine/shaders/skybox.frag");
     _skyShader->load();
 
     TextureResource texResource(_renderer);

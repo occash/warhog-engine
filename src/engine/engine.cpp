@@ -162,8 +162,8 @@ void Engine::initialize()
 	meshFilter2->setMesh(cube);
 
     Shader *shader = renderer->createShader();
-    shader->vertexSource = readFile("resources/shaders/brdf.vert");
-    shader->pixelSource = readFile("resources/shaders/brdf.frag");
+    shader->vertexSource = readFile("../src/engine/shaders/brdf.vert");
+    shader->pixelSource = readFile("../src/engine/shaders/brdf.frag");
     shader->load();
 
     mat = new Material;
