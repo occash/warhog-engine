@@ -215,10 +215,10 @@ void RenderSystem::update(EntityManager& entities, EventManager& events, double 
 
 
     /// camera is turning around the point (0,0) ////////////////////////////
-    float start = 5; // radius
+    float start = 6; // radius
     x = start * cos(i);
     z = start * sin(i);
-    i += 0.01;
+    i += 0.003;
 
     glm::vec3 camPos(x, 0, z);
 
@@ -283,7 +283,7 @@ void RenderSystem::update(EntityManager& entities, EventManager& events, double 
     auto lightTransform = (*lightObject).component<TransformComponent>();
     auto light = (*lightObject).component<LightComponent>();
 
-    glm::vec3 lightDir(0.0f, 0.0f, 0.0f);
+    glm::vec4 lightDir(0.0f, 0.0f, 1.0f, 0.0f);
     //glm::vec3 lightRot = lightTransform->rotation();
     /*lightDir = glm::rotate(lightDir, lightRot.x, glm::vec3(0.0f, 1.0f, 0.0f));
     lightDir = glm::rotate(lightDir, lightRot.y, glm::vec3(1.0f, 0.0f, 0.0f));
@@ -292,8 +292,8 @@ void RenderSystem::update(EntityManager& entities, EventManager& events, double 
 
     DirectLight dlight;
 	dlight.color = glm::vec3(light->color()) * glm::pi<float>();
-    glm::vec4 lightDir4 = glm::vec4(lightDir, 1.0f);
-    dlight.direction = glm::vec3(lightDir4/** m.modelView*/); //m.modelView for the dir light??
+    glm::vec4 lightDir4 = glm::vec4(lightDir);
+    dlight.direction = glm::vec3(m.view * lightDir4/** m.modelView*/); //m.modelView for the dir light??
 	dlight.intensity = { 0.5, 0.5, 1 };
 
 	/////point light ////////////
@@ -303,12 +303,12 @@ void RenderSystem::update(EntityManager& entities, EventManager& events, double 
 
 	auto pLightTransform = (*pLightObject).component<TransformComponent>();
 	auto pLightComponent = (*pLightObject).component<LightComponent>();
-	glm::vec4 pLightPos(0.0f, 0.0f, 0.0f, 1.0f);
+	glm::vec4 pLightPos(1.0f, 0.0f, 0.0f, 0.0f);
 
 	PointLight m_pLight;
-	m_pLight.color = glm::vec3(1.0f, 1.0f, 1.0f);
+	m_pLight.color = glm::vec3(0.1f, 0.1f, 0.6f);
 	m_pLight.position = glm::vec4(m.view * pLightPos);
-	m_pLight.intensity = glm::vec3(1.0f, 1.0f, 1.0f);
+	m_pLight.intensity = glm::vec3(0.1f, 1.0f, 0.1f);
 
 	//////////////////////////////
 

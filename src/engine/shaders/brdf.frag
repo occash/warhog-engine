@@ -77,7 +77,7 @@ float geometry(vec3 n, vec3 h, vec3 v, vec3 l, float roughness)
 //(1 - f0)
 float diffuseEnergyRatio(float f0, vec3 n, vec3 l)
 {
-    return 1.0 - f0;
+    return (1.0 - (f0  + (1 - f0) * pow(dot(n, l), 5)));
 }
 
 vec3 ads()
