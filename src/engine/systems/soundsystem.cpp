@@ -79,9 +79,13 @@ void SoundSystem::update(EntityManager& entities, EventManager& events, double d
 	auto listenerTransform = (*listenerObject).component<TransformComponent>();	
 	glmListenerPosition = listenerTransform->position();
 	fmodListenerPosition = { glmListenerPosition.x*distanceFactor, glmListenerPosition.y*distanceFactor, glmListenerPosition.z*distanceFactor};
-
 	//Play sound:
-	result = system->playSound(sound, 0, true, &channel);
+	bool isPlaying;
+	result = channel->isPlaying(&isPlaying);
+	if (!isPlaying)
+	{
+		result = system->playSound(sound, 0, true, &channel);
+	}
 	result = channel->set3DAttributes(&fmodSoundPosition, 0);//second argument velocity is null. Need to Dopler
 	ERRCHECK(result);
 	result = channel->setPaused(false);

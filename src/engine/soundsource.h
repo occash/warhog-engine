@@ -8,12 +8,11 @@ public:
 	~SoundSource();
 	FMOD::Sound *sound;
 	FMOD::Channel   *channel = 0;//using, when sound is playing
-	bool playing = false;
 	float minDistance = 100.0f;
 	float maxDistance = 100000.0f;
 	void setSound(FMOD::Sound* sound);
 	void setChannel(FMOD::Channel* channel);
-	//TODO:LoopMode
+	//TODO:change LoopMode
 	//TODO: Play control:volume, start, stop
 };
 #endif
