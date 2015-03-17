@@ -3,6 +3,7 @@
 //Systems
 #include "systems/rendersystem.h"
 #include "systems/scriptsystem.h"
+#include "systems/soundsystem.h"
 
 //Components
 #include "components/infocomponent.h"
@@ -11,11 +12,14 @@
 #include "components/meshfiltercomponent.h"
 #include "components/materialcomponent.h"
 #include "components/lightcomponent.h"
+#include "components/soundcomponent.h"
+#include "components/listenercomponent.h"
 
 //Engine objects
 #include "mesh.h"
 #include "shader.h"
 #include "material.h"
+#include "soundsource.h"
 
 //Resources
 #include "resourcemanager.h"
@@ -25,7 +29,7 @@
 #include "math/vector.h"
 #include "math/matrix.h"
 
-#include "Geometry.h"
+#include "geometry.h"
 
 using namespace entityx;
 
@@ -99,6 +103,7 @@ void Engine::configure()
     systems.add<RenderSystem>();
     systems.system<RenderSystem>()->chooseBackend("OpenGL"); //TODO: read from config
     _window = systems.system<RenderSystem>()->window();
+	systems.add<SoundSystem>();
 }
 
 void Engine::initialize()
@@ -108,6 +113,7 @@ void Engine::initialize()
     auto cameraInfo = cameraId.assign<InfoComponent>("Main camera");
     auto cameraPos = cameraId.assign<TransformComponent>();
     auto camera = cameraId.assign<CameraComponent>();
+	auto listener = cameraId.assign<ListenerComponent>();
 
     camera->setClearColor(glm::vec3(0.0f, 0.0f, 0.0f));
     camera->setNearPlane(0.1f);
@@ -135,7 +141,7 @@ void Engine::initialize()
     modelId.assign<TransformComponent>();
     auto meshFilter = modelId.assign<MeshFilterComponent>();
     auto material = modelId.assign<MaterialComponent>();
-
+	auto soundCom = modelId.assign<SoundComponent>();
     //ResourceManager manager;
     //manager.add<MeshResource>();
     //manager.add<ScriptResource>();
@@ -144,10 +150,9 @@ void Engine::initialize()
     std::ifstream meshIn("resources/dragon", std::ios::binary | std::ios::in);
     Object *meshObject = nullptr;
     meshResource.load(meshIn, meshObject);
-
     Mesh *cube = static_cast<Mesh *>(meshObject);
-    Geometry m_geometry(renderer);
-    //Mesh *cube = m_geometry.cube(2, 2, 2);
+	Geometry m_geometry(renderer);
+    //Mesh *cube = m_geometry.cube(1, 1, 1);
     cube->load();
     meshFilter->setMesh(cube);
 
@@ -169,6 +174,10 @@ void Engine::initialize()
     //Entity scriptId = entity_manager->create();
     //auto scriptSystem = systems.system<ScriptSystem>();
     //scriptSystem->assign(cameraId, script);
+	//sound:
+	SoundSource* soundSource = new SoundSource();
+	systems.system<SoundSystem>()->createSound(soundSource);
+	soundCom->setSoundSource(soundSource);
 }
 
 void Engine::update(double dt)
@@ -228,6 +237,7 @@ void Engine::update(double dt)
 
     systems.update<RenderSystem>(dt);
     systems.update<ScriptSystem>(dt);
+	systems.update<SoundSystem>(dt);
 }
 
 Window *Engine::window() const
@@ -254,4 +264,8 @@ void Engine::addComponent(entityx::Entity id, const std::string& name)
         id.assign<MeshFilterComponent>();
     if (name == "Script")
         id.assign<ScriptComponent>();
+	if (name == "Sound")
+		id.assign<SoundComponent>();
+	if (name == "Listener")
+		id.assign<ListenerComponent>();
 }
