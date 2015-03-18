@@ -138,7 +138,8 @@ struct SpotLight
     glm::float_t power;
     glm::vec4 direction;
 	glm::float_t cosA;
-	glm::float_t __padding1[3];
+	glm::float_t shadowPower;
+	glm::float_t __padding1[2];
 };
 
 struct SkyboxBlock
@@ -186,11 +187,11 @@ void RenderSystem::configure(EventManager& events)
     events.subscribe<ComponentAddedEvent<MeshFilterComponent>>(*this);
     events.subscribe<ComponentRemovedEvent<MeshFilterComponent>>(*this);
 
-    /*glEnable(GL_CULL_FACE);
+    glEnable(GL_CULL_FACE);
     glCullFace(GL_BACK);
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LESS);
-    glFrontFace(GL_CCW);*/
+    glFrontFace(GL_CCW);
 
     glClear(GL_DEPTH_BUFFER_BIT);
 }
@@ -293,7 +294,7 @@ void RenderSystem::update(EntityManager& entities, EventManager& events, double 
     DirectLight dlight;
     dlight.color = glm::vec3(light->color()) * glm::pi<float>();
     glm::vec4 lightDir4 = glm::vec4(lightDir);
-    dlight.direction = glm::vec3(m.view * lightDir4/** m.modelView*/); //m.modelView for the dir light??
+    dlight.direction = glm::vec3(m.view * lightDir4); 
     dlight.intensity = { 0.5, 0.5, 1 };
 
     /////point light ////////////
@@ -318,15 +319,16 @@ void RenderSystem::update(EntityManager& entities, EventManager& events, double 
 
 	auto sLightTransform = (*sLightObject).component<TransformComponent>();
 	auto sLightComponent = (*sLightObject).component<LightComponent>();
-	glm::vec4 sLightPosition(0.0f, 0.0f, 3.0f, 1.0f);
-	glm::vec4 sLightDirection(0.0f, 0.0f, -1.0f, 0.0f);
+	glm::vec4 sLightPosition(0.0f, 0.0f, 0.50f, 1.0f);
+	glm::vec4 sLightDirection(0.0f, 1.0f, -1.0f, 0.0f);
 
 	SpotLight m_sLight;
 	m_sLight.color = glm::vec3(1.0f, 1.0f, 1.0f);
 	m_sLight.position = m.view * sLightPosition;
 	m_sLight.direction = glm::normalize(m.view * sLightDirection);
 	m_sLight.power = 50;
-	m_sLight.cosA = 0.7f;
+	m_sLight.cosA = 0.8f;
+	m_sLight.shadowPower = 2;
 
 	///////////////////////////////
 
