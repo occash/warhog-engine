@@ -137,9 +137,9 @@ struct SpotLight
     glm::vec3 color;
     glm::float_t power;
     glm::vec4 direction;
-	glm::float_t cosA;
-	glm::float_t shadowPower;
-	glm::float_t __padding1[2];
+    glm::float_t cosA;
+    glm::float_t shadowPower;
+    glm::float_t __padding1[2];
 };
 
 struct SkyboxBlock
@@ -294,7 +294,7 @@ void RenderSystem::update(EntityManager& entities, EventManager& events, double 
     DirectLight dlight;
     dlight.color = glm::vec3(light->color()) * glm::pi<float>();
     glm::vec4 lightDir4 = glm::vec4(lightDir);
-    dlight.direction = glm::vec3(m.view * lightDir4); 
+    dlight.direction = glm::vec3(m.view * lightDir4);
     dlight.intensity = { 0.5, 0.5, 1 };
 
     /////point light ////////////
@@ -312,25 +312,25 @@ void RenderSystem::update(EntityManager& entities, EventManager& events, double 
     m_pLight.power = 50;
 
     //////////////////////////////
-	//////spot light//////////////
+    //////spot light//////////////
 
-	auto sLight = entities.entities_with_components<TransformComponent, LightComponent>();
-	auto sLightObject = sLight.begin();
+    auto sLight = entities.entities_with_components<TransformComponent, LightComponent>();
+    auto sLightObject = sLight.begin();
 
-	auto sLightTransform = (*sLightObject).component<TransformComponent>();
-	auto sLightComponent = (*sLightObject).component<LightComponent>();
-	glm::vec4 sLightPosition(0.0f, 0.0f, 0.50f, 1.0f);
-	glm::vec4 sLightDirection(0.0f, 1.0f, -1.0f, 0.0f);
+    auto sLightTransform = (*sLightObject).component<TransformComponent>();
+    auto sLightComponent = (*sLightObject).component<LightComponent>();
+    glm::vec4 sLightPosition(0.0f, 0.0f, 0.50f, 1.0f);
+    glm::vec4 sLightDirection(0.0f, 1.0f, -1.0f, 0.0f);
 
-	SpotLight m_sLight;
-	m_sLight.color = glm::vec3(1.0f, 1.0f, 1.0f);
-	m_sLight.position = m.view * sLightPosition;
-	m_sLight.direction = glm::normalize(m.view * sLightDirection);
-	m_sLight.power = 50;
-	m_sLight.cosA = 0.8f;
-	m_sLight.shadowPower = 2;
+    SpotLight m_sLight;
+    m_sLight.color = glm::vec3(1.0f, 1.0f, 1.0f);
+    m_sLight.position = m.view * sLightPosition;
+    m_sLight.direction = glm::normalize(m.view * sLightDirection);
+    m_sLight.power = 50;
+    m_sLight.cosA = 0.8f;
+    m_sLight.shadowPower = 2;
 
-	///////////////////////////////
+    ///////////////////////////////
 
 
 
@@ -362,8 +362,8 @@ void RenderSystem::update(EntityManager& entities, EventManager& events, double 
         ShaderBlock *pointLight = shader->block("PointLight");
         pointLight->set(&m_pLight, sizeof(PointLight));
 
-		ShaderBlock *spotLight = shader->block("SpotLight");
-		spotLight->set(&m_sLight, sizeof(SpotLight));
+        ShaderBlock *spotLight = shader->block("SpotLight");
+        spotLight->set(&m_sLight, sizeof(SpotLight));
 
         meshFilter->mesh()->draw();
         shader->unbind();
