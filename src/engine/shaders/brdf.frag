@@ -33,6 +33,16 @@ uniform PointLight
 
 } pLight;
 
+layout(std140)
+uniform SpotLight
+{
+    vec4 position;
+    vec3 color;
+    float power;
+    vec4 direction;
+	float cosA;
+} sLight;
+
 uniform MatrixBlock
 {
 	mat4 model;
@@ -118,6 +128,7 @@ void main()
 
     /////fragment with point light ////////
 	
+	
 	vec3 s = normalize(vec3(pLight.position) - DataIn.position);
     halfVec = normalize(s + view);
     NdotL = dot(normal, s);
@@ -128,7 +139,8 @@ void main()
 	float dist = length(vec3(pLight.position) - DataIn.position);
 	dist = dist * dist;
 
-    brdf_spec = fresnel(mat.fresnel0, halfVec, s) *
+    /*
+	brdf_spec = fresnel(mat.fresnel0, halfVec, s) *
 						geometry(normal, halfVec, view, s, mat.roughness) *
 						distribution(normal, halfVec, mat.roughness) /
 						(4.0 * NdotL_clamped * NdotV_clamped);
@@ -141,13 +153,36 @@ void main()
 					diffuseEnergyRatio(mat.fresnel0, normal, s) * 
 					mat.color * pLight.color / dist;
 
+	*/
+	//////////////////////////////////////////////
+	/////////////// spot Light ///////////////////
+
+	s = normalize(vec3(sLight.position) - DataIn.position);
+	halfVec = normalize(s + view);
+	NdotL = dot(normal, s);
+    NdotV = dot(normal, view);
+    NdotL_clamped = max(NdotL, 0.0);
+    NdotV_clamped = max(NdotV, 0.0);
+
+	dist = length(vec3(sLight.position) - DataIn.position);
+	float angleCos = dot(-s, sLight.direction.xyz);
+
+	//fragColor = vec4(sLight.direction.xyz, 1.0);
+
+	if (angleCos > sLight.cosA)
+	{
+		fragColor = vec4(angleCos, 0.0, 0.0, 1.0);
+	}
+	else 
+		fragColor = vec4(0.0, 0.0, 0.0, 1.0);
+
 	//////////////////////////////////////////////
 
 	//fragColor = vec4(ads(), 1.0);
 
-    fragColor = vec4(color_diff + color_spec
+    /*fragColor = vec4(color_diff + color_spec
 					, 
-					1.0);
+					1.0);*/
     //fragColor = vec4(normal, 1.0);
 	//fragColor = vec4(s, 1.0);
 	//fragColor = vec4(NdotL_clamped, 0.0, 0.0, 1.0);

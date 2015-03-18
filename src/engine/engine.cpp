@@ -136,14 +136,14 @@ void Engine::initialize()
     auto meshFilter = modelId.assign<MeshFilterComponent>();
     auto material = modelId.assign<MaterialComponent>();
 
-    transform->setPosition({ 3, 0, 0 });
+    transform->setPosition({ 0, 0, 0 });
 
     Entity model2 = entities.create();
     auto transform2 = model2.assign<TransformComponent>();
     auto meshFilter2 = model2.assign<MeshFilterComponent>();
     auto material2 = model2.assign<MaterialComponent>();
 
-    transform2->setPosition({ -3, 0, 0 });
+    transform2->setPosition({ 0, 0, 0 });
 
     //ResourceManager manager;
     //manager.add<MeshResource>();
@@ -156,7 +156,7 @@ void Engine::initialize()
 
     //Mesh *cube = static_cast<Mesh *>(meshObject);
     Geometry m_geometry(renderer);
-    Mesh *cube = m_geometry.cube(2, 2, 2);
+    Mesh *cube = m_geometry.plane(10, 10);
     cube->load();
     meshFilter->setMesh(cube);
     meshFilter2->setMesh(cube);

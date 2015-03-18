@@ -133,10 +133,12 @@ struct PointLight
 
 struct SpotLight
 {
-    glm::vec3 position;
+    glm::vec4 position;
     glm::vec3 color;
-    float intensity;
-    glm::vec3 direction;
+    glm::float_t power;
+    glm::vec4 direction;
+	glm::float_t cosA;
+	glm::float_t __padding1[3];
 };
 
 struct SkyboxBlock
@@ -184,11 +186,11 @@ void RenderSystem::configure(EventManager& events)
     events.subscribe<ComponentAddedEvent<MeshFilterComponent>>(*this);
     events.subscribe<ComponentRemovedEvent<MeshFilterComponent>>(*this);
 
-    glEnable(GL_CULL_FACE);
+    /*glEnable(GL_CULL_FACE);
     glCullFace(GL_BACK);
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LESS);
-    glFrontFace(GL_CCW);
+    glFrontFace(GL_CCW);*/
 
     glClear(GL_DEPTH_BUFFER_BIT);
 }
@@ -213,7 +215,7 @@ void RenderSystem::update(EntityManager& entities, EventManager& events, double 
 
 
     /// camera is turning around the point (0,0) ////////////////////////////
-    float start = 6; // radius
+    float start = 10; // radius
     x = start * cos(i);
     z = start * sin(i);
     i += 0.01;
@@ -301,14 +303,33 @@ void RenderSystem::update(EntityManager& entities, EventManager& events, double 
 
     auto pLightTransform = (*pLightObject).component<TransformComponent>();
     auto pLightComponent = (*pLightObject).component<LightComponent>();
-    glm::vec4 pLightPos(0.0f, 0.0f, 5.0f, 1.0f);
+    glm::vec4 pLightPos(0.0f, 0.0f, 3.0f, 1.0f);
 
     PointLight m_pLight;
-    m_pLight.color = glm::vec3(0.1f, 0.1f, 0.9f);
+    m_pLight.color = glm::vec3(1.0f, 1.0f, 1.0f);
     m_pLight.position = m.view * pLightPos;
     m_pLight.power = 50;
 
     //////////////////////////////
+	//////spot light//////////////
+
+	auto sLight = entities.entities_with_components<TransformComponent, LightComponent>();
+	auto sLightObject = sLight.begin();
+
+	auto sLightTransform = (*sLightObject).component<TransformComponent>();
+	auto sLightComponent = (*sLightObject).component<LightComponent>();
+	glm::vec4 sLightPosition(0.0f, 0.0f, 3.0f, 1.0f);
+	glm::vec4 sLightDirection(0.0f, 0.0f, -1.0f, 0.0f);
+
+	SpotLight m_sLight;
+	m_sLight.color = glm::vec3(1.0f, 1.0f, 1.0f);
+	m_sLight.position = m.view * sLightPosition;
+	m_sLight.direction = glm::normalize(m.view * sLightDirection);
+	m_sLight.power = 50;
+	m_sLight.cosA = 0.7f;
+
+	///////////////////////////////
+
 
 
     auto gameObjects = entities.entities_with_components<TransformComponent, MeshFilterComponent, MaterialComponent>();
@@ -338,6 +359,9 @@ void RenderSystem::update(EntityManager& entities, EventManager& events, double 
 
         ShaderBlock *pointLight = shader->block("PointLight");
         pointLight->set(&m_pLight, sizeof(PointLight));
+
+		ShaderBlock *spotLight = shader->block("SpotLight");
+		spotLight->set(&m_sLight, sizeof(SpotLight));
 
         meshFilter->mesh()->draw();
         shader->unbind();
