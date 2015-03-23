@@ -62,23 +62,21 @@ void SoundSystem::update(EntityManager& entities, EventManager& events, double d
 	auto soundSource = soundCom->soundSource;
 	auto sound = soundSource->sound;
 	auto channel = soundCom->soundSource->channel;
-	FMOD_VECTOR fmodSoundPosition;
 	glm::vec3 glmSoundPosition;
 	auto soundTransform = (*soundObject).component<TransformComponent>();
 	glmSoundPosition = soundTransform->position();
-	fmodSoundPosition = {glmSoundPosition.x*distanceFactor, glmSoundPosition.y*distanceFactor, glmSoundPosition.z*distanceFactor};
-
+	soundCom->setPos(glmSoundPosition.x*distanceFactor, glmSoundPosition.y*distanceFactor, glmSoundPosition.z*distanceFactor);
 	//Setup listener
 	auto listeners = entities.entities_with_components<ListenerComponent, TransformComponent>();
 	auto listenerObject = listeners.begin();
 	if (listenerObject == listeners.end())
 		return;
 	auto listenerCom = (*listenerObject).component<ListenerComponent>();
-	FMOD_VECTOR fmodListenerPosition;
 	glm::vec3 glmListenerPosition;
 	auto listenerTransform = (*listenerObject).component<TransformComponent>();	
 	glmListenerPosition = listenerTransform->position();
-	fmodListenerPosition = { glmListenerPosition.x*distanceFactor, glmListenerPosition.y*distanceFactor, glmListenerPosition.z*distanceFactor};
+	auto listener = listenerCom->listener;
+	listenerCom->setPos(glmListenerPosition.x*distanceFactor, glmListenerPosition.y*distanceFactor, glmListenerPosition.z*distanceFactor);
 	//Play sound:
 	bool isPlaying;
 	result = channel->isPlaying(&isPlaying);
@@ -86,13 +84,13 @@ void SoundSystem::update(EntityManager& entities, EventManager& events, double d
 	{
 		result = system->playSound(sound, 0, true, &channel);
 	}
-	result = channel->set3DAttributes(&fmodSoundPosition, 0);//second argument velocity is null. Need to Dopler
+	result = channel->set3DAttributes(&soundSource->pos, 0);//second argument velocity is null. Need to Dopler
 	ERRCHECK(result);
 	result = channel->setPaused(false);
 	ERRCHECK(result);
 	soundCom->soundSource->channel = channel;
 	ERRCHECK(result);
-	result = system->set3DListenerAttributes(0, &fmodListenerPosition, 0, 0, 0);
+	result = system->set3DListenerAttributes(0, &listener->pos, 0, &listener->forward, &listener->up);
 	//TODO:velocity,forward,up for listener
 	ERRCHECK(result);
 	result = system->update();//Update FMOD system 

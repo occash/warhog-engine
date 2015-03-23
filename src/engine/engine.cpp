@@ -113,14 +113,19 @@ void Engine::initialize()
     auto cameraInfo = cameraId.assign<InfoComponent>("Main camera");
     auto cameraPos = cameraId.assign<TransformComponent>();
     auto camera = cameraId.assign<CameraComponent>();
-	auto listener = cameraId.assign<ListenerComponent>();
+	auto listenerCom = cameraId.assign<ListenerComponent>();
+	SoundListener* soundListener = new SoundListener();
+	listenerCom->setSoundListener(soundListener);
+	listenerCom->setForward(-1.0f, 0.0f, 0.0f);
+	listenerCom->setUp(0.0f, 1.0f, 0.0f);
+
 
     camera->setClearColor(glm::vec3(0.0f, 0.0f, 0.0f));
     camera->setNearPlane(0.1f);
     camera->setFarPlane(100.0f);
     camera->setFieldOfView(60.0f);
 
-    cameraPos->setPosition(glm::vec3(0.0f, 0.0f, 5.0f));
+    cameraPos->setPosition(glm::vec3(2.0f, 0.0f, 0.0f));
     cameraPos->setRotation(glm::vec3(0.0f, 0.0f, 0.0f));
 
     //Create light
@@ -138,7 +143,7 @@ void Engine::initialize()
     //Create model
     Entity modelId = entities.create();
     modelId.assign<InfoComponent>("Dragon");
-    modelId.assign<TransformComponent>();
+    auto modelTransform = modelId.assign<TransformComponent>();
     auto meshFilter = modelId.assign<MeshFilterComponent>();
     auto material = modelId.assign<MaterialComponent>();
 	auto soundCom = modelId.assign<SoundComponent>();
@@ -178,6 +183,9 @@ void Engine::initialize()
 	SoundSource* soundSource = new SoundSource();
 	systems.system<SoundSystem>()->createSound(soundSource);
 	soundCom->setSoundSource(soundSource);
+	modelTransform->setPosition(glm::vec3(0.0f, 0.0f, -10.0f));
+	//modelTransform->setRotation(glm::vec3(0.3f, 0.3f, 0.3f));
+
 }
 
 void Engine::update(double dt)

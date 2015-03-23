@@ -14,7 +14,10 @@ class ENGINE_EXPORT SoundComponent :
 public:
 	SoundComponent();
 	~SoundComponent();
-	void setSoundSource(SoundSource *soundSource);
 	SoundSource *soundSource;
+	void setSoundSource(SoundSource *soundSource);
+	void setPos(float x, float y, float z);
+	FMOD_VECTOR getPos();
+	FMOD::Sound* getSound();
 };
 #endif
