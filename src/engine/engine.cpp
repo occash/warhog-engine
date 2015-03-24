@@ -111,13 +111,13 @@ void Engine::initialize()
     //Create camera
     Entity cameraId = entities.create();
     auto cameraInfo = cameraId.assign<InfoComponent>("Main camera");
-    auto cameraPos = cameraId.assign<TransformComponent>();
+    auto cameraTransform = cameraId.assign<TransformComponent>();
     auto camera = cameraId.assign<CameraComponent>();
     auto listenerCom = cameraId.assign<ListenerComponent>();
     SoundListener *soundListener = new SoundListener();
     listenerCom->setSoundListener(soundListener);
-    listenerCom->setForward(-1.0f, 0.0f, 0.0f);
-    listenerCom->setUp(0.0f, 1.0f, 0.0f);
+    //listenerCom->setForward(-1.0f, 0.0f, 0.0f);
+    //listenerCom->setUp(0.0f, 1.0f, 0.0f);
 
 
     camera->setClearColor(glm::vec3(0.0f, 0.0f, 0.0f));
@@ -125,8 +125,8 @@ void Engine::initialize()
     camera->setFarPlane(100.0f);
     camera->setFieldOfView(60.0f);
 
-    cameraPos->setPosition(glm::vec3(2.0f, 0.0f, 0.0f));
-    cameraPos->setRotation(glm::vec3(0.0f, 0.0f, 0.0f));
+	cameraTransform->setPosition(glm::vec3(1.0f, 0.0f, 2.0f));
+	cameraTransform->setRotation(glm::vec3(0.0f, 0.0f, 0.0f));
 
     //Create light
     Entity lightId = entities.create();

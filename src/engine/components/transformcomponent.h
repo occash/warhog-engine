@@ -32,7 +32,7 @@ public:
     glm::vec3 scale() const;
     void setScale(const glm::vec3& scale);
 
-	glm::vec3 rotateVector(glm::vec3& vector);//return rotated vector
+    glm::vec3 rotateVector(glm::vec3& vector);//return rotated vector
 private:
     glm::vec3 _position;
     glm::vec3 _rotation;

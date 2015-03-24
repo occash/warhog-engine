@@ -8,13 +8,13 @@ ListenerComponent::~ListenerComponent()
 }
 
 void ListenerComponent::setSoundListener(SoundListener *listener)
-{	
+{
     _listener = listener;
 }
 
-SoundListener* ListenerComponent::getSoundListener()
+SoundListener *ListenerComponent::getSoundListener()
 {
-	return _listener;
+    return _listener;
 }
 
 void ListenerComponent::setPos(float x, float y, float z)
@@ -32,15 +32,15 @@ void ListenerComponent::setUp(float x, float y, float z)
 
 void ListenerComponent::setPos(const glm::vec3& pos)
 {
-	_listener->setPos(pos);
+    _listener->setPos(pos);
 }
 void ListenerComponent::setForward(const glm::vec3& forward)
 {
-	_listener->setForward(forward);
+    _listener->setForward(forward);
 }
 void ListenerComponent::setUp(const glm::vec3& up)
 {
-	_listener->setUp(up);
+    _listener->setUp(up);
 }
 
 

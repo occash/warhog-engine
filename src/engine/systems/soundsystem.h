@@ -15,9 +15,9 @@ class SoundSystem : public entityx::System<SoundSystem>,
     public entityx::Receiver<SoundSystem>
 {
 private:
-	FMOD::System *_system = NULL;
-	unsigned int version;//installed version FMOD
-	FMOD_VECTOR convertToFMODVector(glm::vec3 v);
+    FMOD::System *_system = NULL;
+    unsigned int version;//installed version FMOD
+    FMOD_VECTOR convertToFMODVector(glm::vec3 v);
 public:
     SoundSystem();
     ~SoundSystem();

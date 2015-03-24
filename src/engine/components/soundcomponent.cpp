@@ -24,11 +24,11 @@ glm::vec3 SoundComponent::getPos()
 
 void SoundComponent::setPos(const glm::vec3& pos)
 {
-	_soundSource->setPos(pos);
+    _soundSource->setPos(pos);
 }
 
 
-SoundSource* SoundComponent::getSoundSource()
+SoundSource *SoundComponent::getSoundSource()
 {
-	return _soundSource;
+    return _soundSource;
 }

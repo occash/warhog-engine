@@ -21,42 +21,43 @@ void SoundSource::setChannel(FMOD::Channel *channel)
 
 void SoundSource::setPos(float x, float y, float z)
 {
-	_pos = {x, y, z};
+    _pos = {x, y, z};
 }
 
 void SoundSource::setPos(const glm::vec3& pos)
 {
+	//_pos = { -pos.x, pos.y, pos.z };
 	_pos = pos;
 }
 
 glm::vec3 SoundSource::getPos()
 {
-	return _pos;
+    return _pos;
 }
 
-FMOD::Sound* SoundSource::getSound()
+FMOD::Sound *SoundSource::getSound()
 {
     return _sound;
 }
 
-FMOD::Channel* SoundSource::getChannel()
+FMOD::Channel *SoundSource::getChannel()
 {
-	return _channel;
+    return _channel;
 }
 
 void SoundSource::setMinDistance(float minDistance)
 {
-	_minDistance = minDistance;
+    _minDistance = minDistance;
 }
 void SoundSource::setMaxDistance(float maxDistance)
 {
-	_maxDistance = maxDistance;
+    _maxDistance = maxDistance;
 }
 float SoundSource::getMinDistance()
 {
-	return _minDistance;
+    return _minDistance;
 }
 float SoundSource::getMaxDistance()
 {
-	return _maxDistance;
+    return _maxDistance;
 }
