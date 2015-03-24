@@ -125,8 +125,8 @@ void Engine::initialize()
     camera->setFarPlane(100.0f);
     camera->setFieldOfView(60.0f);
 
-	cameraTransform->setPosition(glm::vec3(1.0f, 0.0f, 2.0f));
-	cameraTransform->setRotation(glm::vec3(0.0f, 0.0f, 0.0f));
+    cameraTransform->setPosition(glm::vec3(0.0f, 0.0f, 2.0f));
+    cameraTransform->setRotation(glm::vec3(0.0f, 0.0f, 0.0f));
 
     //Create light
     Entity lightId = entities.create();

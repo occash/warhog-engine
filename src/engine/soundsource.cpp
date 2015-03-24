@@ -26,8 +26,8 @@ void SoundSource::setPos(float x, float y, float z)
 
 void SoundSource::setPos(const glm::vec3& pos)
 {
-	//_pos = { -pos.x, pos.y, pos.z };
-	_pos = pos;
+    //_pos = { -pos.x, pos.y, pos.z };
+    _pos = pos;
 }
 
 glm::vec3 SoundSource::getPos()
@@ -49,15 +49,9 @@ void SoundSource::setMinDistance(float minDistance)
 {
     _minDistance = minDistance;
 }
-void SoundSource::setMaxDistance(float maxDistance)
-{
-    _maxDistance = maxDistance;
-}
+
 float SoundSource::getMinDistance()
 {
     return _minDistance;
 }
-float SoundSource::getMaxDistance()
-{
-    return _maxDistance;
-}
+

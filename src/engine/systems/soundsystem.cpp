@@ -27,7 +27,7 @@ void  SoundSystem::createSound(SoundSource *sound_source)
 {
     FMOD::Sound *sound;
     result = _system->createSound("SecretGarden.mp3", FMOD_3D, 0, &sound);
-    result = sound->set3DMinMaxDistance(sound_source->getMinDistance(), sound_source->getMaxDistance());
+    result = sound->set3DMinMaxDistance(sound_source->getMinDistance(), 0.0f);
     ERRCHECK(result);
     result = sound->setMode(FMOD_3D_INVERSEROLLOFF);
     ERRCHECK(result);
@@ -43,7 +43,7 @@ void SoundSystem::configure(EventManager& events)
     if (version < FMOD_VERSION)
         printf("FMOD lib version %08x doesn't match header version %08x", version, FMOD_VERSION);
     ERRCHECK(result);
-	result = _system->init(512, FMOD_INIT_3D_RIGHTHANDED, 0);    // Initialize FMOD.
+    result = _system->init(512, FMOD_INIT_3D_RIGHTHANDED | FMOD_INIT_VOL0_BECOMES_VIRTUAL, 0);    // Initialize FMOD.
     //TODO:first argument is count of max channel. To write algorithm of detect channel  count
     ERRCHECK(result);
     result = _system->set3DSettings(0.0, 1.0f, 1.0f);
