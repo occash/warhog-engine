@@ -1,4 +1,5 @@
 #include "soundsystem.h"
+#include <glm/gtx/rotate_vector.hpp>
 
 using namespace entityx;
 
@@ -34,12 +35,6 @@ void  SoundSystem::createSound(SoundSource *sound_source)
 }
 void SoundSystem::configure(EventManager& events)
 {
-    events.subscribe<EntityCreatedEvent>(*this);
-    events.subscribe<EntityDestroyedEvent>(*this);
-    events.subscribe<ComponentAddedEvent<SoundComponent>>(*this);
-    events.subscribe<ComponentRemovedEvent<SoundComponent>>(*this);
-    events.subscribe<ComponentAddedEvent<ListenerComponent>>(*this);
-    events.subscribe<ComponentRemovedEvent<ListenerComponent>>(*this);
     //fmod initiallisation:
     result = System_Create(&_system);      // Create the main system object.
     ERRCHECK(result);
@@ -95,39 +90,16 @@ void SoundSystem::update(EntityManager& entities, EventManager& events, double d
 	soundCom->getSoundSource()->setChannel(channel);
     ERRCHECK(result);
 	FMOD_VECTOR listenerPos = convertToFMODVector(listenerCom->getPos());
-	FMOD_VECTOR listenerForward = convertToFMODVector(listenerCom->getForward());
-	FMOD_VECTOR listenerUp = convertToFMODVector(listenerCom->getUp());
+	glm::vec3 glmListenerForward = listenerCom->getForward();
+	glm::vec3 glmListenerUp = listenerCom->getUp();
+	glmListenerForward = listenerTransform->rotateVector(glmListenerForward);
+	glmListenerUp = listenerTransform->rotateVector(glmListenerUp);
+	//glmListenerForward = glm::rotate()
+	FMOD_VECTOR listenerForward = convertToFMODVector(glmListenerForward);
+	FMOD_VECTOR listenerUp = convertToFMODVector(glmListenerUp);
 	result = _system->set3DListenerAttributes(0, &listenerPos, 0, &listenerForward, &listenerUp);
     //TODO:velocity,forward,up for listener
     ERRCHECK(result);
     result = _system->update();//Update FMOD system
     ERRCHECK(result);
 }
-
-void SoundSystem::receive(const EntityCreatedEvent& event)
-{
-
-}
-
-void SoundSystem::receive(const EntityDestroyedEvent& event)
-{
-
-}
-
-void SoundSystem::receive(const ComponentAddedEvent<SoundComponent>& event)
-{
-
-}
-
-void SoundSystem::receive(const ComponentRemovedEvent<SoundComponent>& event)
-{
-}
-
-void SoundSystem::receive(const ComponentAddedEvent<ListenerComponent>& event)
-{
-}
-
-void SoundSystem::receive(const ComponentRemovedEvent<ListenerComponent>& event)
-{
-}
-

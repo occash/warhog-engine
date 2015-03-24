@@ -21,7 +21,7 @@ void SoundSource::setChannel(FMOD::Channel *channel)
 
 void SoundSource::setPos(float x, float y, float z)
 {
-	_pos.x = { x, y, z };
+	_pos = {x, y, z};
 }
 
 void SoundSource::setPos(const glm::vec3& pos)
