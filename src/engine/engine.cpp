@@ -103,7 +103,7 @@ void Engine::configure()
     systems.add<RenderSystem>();
     systems.system<RenderSystem>()->chooseBackend("OpenGL"); //TODO: read from config
     _window = systems.system<RenderSystem>()->window();
-	systems.add<SoundSystem>();
+    systems.add<SoundSystem>();
 }
 
 void Engine::initialize()
@@ -113,11 +113,11 @@ void Engine::initialize()
     auto cameraInfo = cameraId.assign<InfoComponent>("Main camera");
     auto cameraPos = cameraId.assign<TransformComponent>();
     auto camera = cameraId.assign<CameraComponent>();
-	auto listenerCom = cameraId.assign<ListenerComponent>();
-	SoundListener* soundListener = new SoundListener();
-	listenerCom->setSoundListener(soundListener);
-	listenerCom->setForward(-1.0f, 0.0f, 0.0f);
-	listenerCom->setUp(0.0f, 1.0f, 0.0f);
+    auto listenerCom = cameraId.assign<ListenerComponent>();
+    SoundListener *soundListener = new SoundListener();
+    listenerCom->setSoundListener(soundListener);
+    listenerCom->setForward(-1.0f, 0.0f, 0.0f);
+    listenerCom->setUp(0.0f, 1.0f, 0.0f);
 
 
     camera->setClearColor(glm::vec3(0.0f, 0.0f, 0.0f));
@@ -146,7 +146,7 @@ void Engine::initialize()
     auto modelTransform = modelId.assign<TransformComponent>();
     auto meshFilter = modelId.assign<MeshFilterComponent>();
     auto material = modelId.assign<MaterialComponent>();
-	auto soundCom = modelId.assign<SoundComponent>();
+    auto soundCom = modelId.assign<SoundComponent>();
     //ResourceManager manager;
     //manager.add<MeshResource>();
     //manager.add<ScriptResource>();
@@ -156,7 +156,7 @@ void Engine::initialize()
     Object *meshObject = nullptr;
     meshResource.load(meshIn, meshObject);
     Mesh *cube = static_cast<Mesh *>(meshObject);
-	Geometry m_geometry(renderer);
+    Geometry m_geometry(renderer);
     //Mesh *cube = m_geometry.cube(1, 1, 1);
     cube->load();
     meshFilter->setMesh(cube);
@@ -179,12 +179,12 @@ void Engine::initialize()
     //Entity scriptId = entity_manager->create();
     //auto scriptSystem = systems.system<ScriptSystem>();
     //scriptSystem->assign(cameraId, script);
-	//sound:
-	SoundSource* soundSource = new SoundSource();
-	systems.system<SoundSystem>()->createSound(soundSource);
-	soundCom->setSoundSource(soundSource);
-	modelTransform->setPosition(glm::vec3(0.0f, 0.0f, -10.0f));
-	//modelTransform->setRotation(glm::vec3(0.3f, 0.3f, 0.3f));
+    //sound:
+    SoundSource *soundSource = new SoundSource();
+    systems.system<SoundSystem>()->createSound(soundSource);
+    soundCom->setSoundSource(soundSource);
+    modelTransform->setPosition(glm::vec3(0.0f, 0.0f, 0.0f));
+    //modelTransform->setRotation(glm::vec3(0.3f, 0.3f, 0.3f));
 
 }
 
@@ -245,7 +245,7 @@ void Engine::update(double dt)
 
     systems.update<RenderSystem>(dt);
     systems.update<ScriptSystem>(dt);
-	systems.update<SoundSystem>(dt);
+    systems.update<SoundSystem>(dt);
 }
 
 Window *Engine::window() const
@@ -272,8 +272,8 @@ void Engine::addComponent(entityx::Entity id, const std::string& name)
         id.assign<MeshFilterComponent>();
     if (name == "Script")
         id.assign<ScriptComponent>();
-	if (name == "Sound")
-		id.assign<SoundComponent>();
-	if (name == "Listener")
-		id.assign<ListenerComponent>();
+    if (name == "Sound")
+        id.assign<SoundComponent>();
+    if (name == "Listener")
+        id.assign<ListenerComponent>();
 }

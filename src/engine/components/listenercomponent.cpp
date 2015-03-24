@@ -8,34 +8,54 @@ ListenerComponent::~ListenerComponent()
 }
 
 void ListenerComponent::setSoundListener(SoundListener *listener)
+{	
+    _listener = listener;
+}
+
+SoundListener* ListenerComponent::getSoundListener()
 {
-	this->listener = listener;
+	return _listener;
 }
 
 void ListenerComponent::setPos(float x, float y, float z)
 {
-	this->listener->setPos(x, y, z);
+    _listener->setPos(x, y, z);
 }
 void ListenerComponent::setForward(float x, float y, float z)
 {
-	this->listener->setForward(x, y, z);
+    _listener->setForward(x, y, z);
 }
 void ListenerComponent::setUp(float x, float y, float z)
 {
-	this->listener->setUp(x, y, z);
+    _listener->setUp(x, y, z);
 }
 
-FMOD_VECTOR ListenerComponent::getPos()
+void ListenerComponent::setPos(const glm::vec3& pos)
 {
-	return this->listener->getPos();
+	_listener->setPos(pos);
+}
+void ListenerComponent::setForward(const glm::vec3& forward)
+{
+	_listener->setForward(forward);
+}
+void ListenerComponent::setUp(const glm::vec3& up)
+{
+	_listener->setUp(up);
 }
 
-FMOD_VECTOR ListenerComponent::getForward()
+
+
+glm::vec3 ListenerComponent::getPos()
 {
-	return this->listener->getForward();
+    return _listener->getPos();
 }
 
-FMOD_VECTOR ListenerComponent::getUp()
+glm::vec3 ListenerComponent::getForward()
 {
-	return this->listener->getUp();
+    return _listener->getForward();
+}
+
+glm::vec3 ListenerComponent::getUp()
+{
+    return _listener->getUp();
 }

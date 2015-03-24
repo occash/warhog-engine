@@ -1,5 +1,5 @@
 #include "soundcomponent.h"
-SoundComponent::SoundComponent() :soundSource(nullptr)
+SoundComponent::SoundComponent() : _soundSource(nullptr)
 {
 }
 
@@ -7,22 +7,28 @@ SoundComponent::~SoundComponent()
 {
 }
 
-void SoundComponent::setSoundSource(SoundSource *soundSource)
+void SoundComponent::setSoundSource(SoundSource *soundSource, float distanceFactor)
 {
-	this->soundSource = soundSource;
+    _soundSource = soundSource;
 }
 
 void SoundComponent::setPos(float x, float y, float z)
 {
-	this->soundSource->setPos(x, y, z);
+    _soundSource->setPos(x, y, z);
 }
 
-FMOD_VECTOR SoundComponent::getPos()
+glm::vec3 SoundComponent::getPos()
 {
-	return this->soundSource->getPos();
+    return _soundSource->getPos();
 }
 
-FMOD::Sound* SoundComponent::getSound()
+void SoundComponent::setPos(const glm::vec3& pos)
 {
-	return this->soundSource->getSound();
+	_soundSource->setPos(pos);
+}
+
+
+SoundSource* SoundComponent::getSoundSource()
+{
+	return _soundSource;
 }

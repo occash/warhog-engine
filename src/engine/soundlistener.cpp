@@ -1,9 +1,9 @@
 #include "soundlistener.h"
 SoundListener::SoundListener()
 {
-	pos = { 0.0f, 0.0f, 0.0f };
-	forward = { 0.0f, 1.0f, 0.0f};//vector length  must be 1 
-	up = { 0.0f, 0.0f, 0.0f};//vector length  must be 1 
+	_pos = { 0.0f, 0.0f, 0.0f};
+	_forward = { 0.0f, 0.0f, -1.0f };//vector length  must be 1
+	_up = {0.0f, 1.0f, 0.0f};//vector length  must be 1
 }
 
 SoundListener::~SoundListener()
@@ -12,34 +12,52 @@ SoundListener::~SoundListener()
 
 void SoundListener::setPos(float x, float y, float z)
 {
-	pos.x = x;
-	pos.y = y;
-	pos.z = z;
+	_pos = { x, y, z};
 }
 void SoundListener::setForward(float x, float y, float z)
 {
-	forward.x = x;
-	forward.y = y;
-	forward.z = z;
+	glm::vec3 forward = { x, y, z };
+	glm::vec3 forward_normalized = glm::normalize(forward);
+	_forward = forward;
 }
 void SoundListener::setUp(float x, float y, float z)
 {
-	up.x = x;
-	up.y = y;
-	up.z = z;
+	glm::vec3 up = { x, y, z };
+	glm::vec3 up_normalized = glm::normalize(up);
+	_up = up;
 }
 
-FMOD_VECTOR SoundListener::getPos()
+
+void SoundListener::setPos(const glm::vec3& pos)
 {
-	return pos;
+	_pos = pos;
 }
 
-FMOD_VECTOR SoundListener::getForward()
+void SoundListener::setForward(const glm::vec3& forward)
 {
-	return forward;
+	glm::vec3 forward_normalized = glm::normalize(forward);
+	_forward = forward_normalized;
 }
 
-FMOD_VECTOR SoundListener::getUp()
+
+void SoundListener::setUp(const glm::vec3& up)
 {
-	return up;
+	glm::vec3 up_normalized = glm::normalize(up);
+	_up = up_normalized;
+}
+
+glm::vec3 SoundListener::getPos()
+{
+	return _pos;
+}
+
+glm::vec3 SoundListener::getForward()
+{
+	return _forward;
+}
+
+
+glm::vec3 SoundListener::getUp()
+{
+	return _up;
 }

@@ -12,24 +12,25 @@
 struct SoundInfo;
 
 class SoundSystem : public entityx::System<SoundSystem>,
-	public entityx::Receiver<SoundSystem>
+    public entityx::Receiver<SoundSystem>
 {
-public:
-	SoundSystem();
-	~SoundSystem();
-	FMOD::System *system = NULL;
-	float distanceFactor = 1.0f;//it's mean that distance in meters
+private:
+	FMOD::System *_system = NULL;
 	unsigned int version;//installed version FMOD
-	FMOD_RESULT result;//for error_code
-	void createSound(SoundSource* sound_source);
-	void configure(entityx::EventManager& events) override;
-	void update(entityx::EntityManager& entities,
-		entityx::EventManager& events, double dt) override;
-	void receive(const entityx::EntityCreatedEvent& event);
-	void receive(const entityx::EntityDestroyedEvent& event);
-	void receive(const entityx::ComponentAddedEvent<SoundComponent>& event);
-	void receive(const entityx::ComponentRemovedEvent<SoundComponent>& event);
-	void receive(const entityx::ComponentAddedEvent<ListenerComponent>& event);
-	void receive(const entityx::ComponentRemovedEvent<ListenerComponent>& event);
+	FMOD_VECTOR convertToFMODVector(glm::vec3 v);
+public:
+    SoundSystem();
+    ~SoundSystem();
+    FMOD_RESULT result;//for error_code
+    void createSound(SoundSource *sound_source);
+    void configure(entityx::EventManager& events) override;
+    void update(entityx::EntityManager& entities,
+                entityx::EventManager& events, double dt) override;
+    void receive(const entityx::EntityCreatedEvent& event);
+    void receive(const entityx::EntityDestroyedEvent& event);
+    void receive(const entityx::ComponentAddedEvent<SoundComponent>& event);
+    void receive(const entityx::ComponentRemovedEvent<SoundComponent>& event);
+    void receive(const entityx::ComponentAddedEvent<ListenerComponent>& event);
+    void receive(const entityx::ComponentRemovedEvent<ListenerComponent>& event);
 };
 #endif

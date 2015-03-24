@@ -8,16 +8,18 @@
 #include "../soundsource.h"
 
 class ENGINE_EXPORT SoundComponent :
-	public entityx::Component<SoundComponent>,
-	public Object
+    public entityx::Component<SoundComponent>,
+    public Object
 {
+private:
+	SoundSource *_soundSource;
 public:
-	SoundComponent();
-	~SoundComponent();
-	SoundSource *soundSource;
-	void setSoundSource(SoundSource *soundSource);
-	void setPos(float x, float y, float z);
-	FMOD_VECTOR getPos();
-	FMOD::Sound* getSound();
+    SoundComponent();
+    ~SoundComponent();
+	SoundSource* getSoundSource();
+	void setSoundSource(SoundSource *soundSource,float distanceFactor=1.0f);
+    void setPos(float x, float y, float z);
+	void setPos(const glm::vec3& pos);
+	glm::vec3 getPos();
 };
 #endif
