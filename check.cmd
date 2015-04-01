@@ -1,0 +1,1 @@
+cppcheck --enable=all -j 8 --platform=win64 --quiet --std=c++11 --xml src 2> checklog.xml
