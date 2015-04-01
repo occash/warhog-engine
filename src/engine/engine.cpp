@@ -111,10 +111,10 @@ void Engine::initialize()
 {
     //Create camera
     _cameraNode = entities.create();
-	auto cameraInfo = _cameraNode.assign<InfoComponent>("Main camera");
-	auto cameraTransform = _cameraNode.assign<TransformComponent>();
-	auto camera = _cameraNode.assign<CameraComponent>();
-	auto listenerCom = _cameraNode.assign<ListenerComponent>();
+    auto cameraInfo = _cameraNode.assign<InfoComponent>("Main camera");
+    auto cameraTransform = _cameraNode.assign<TransformComponent>();
+    auto camera = _cameraNode.assign<CameraComponent>();
+    auto listenerCom = _cameraNode.assign<ListenerComponent>();
     SoundListener *soundListener = new SoundListener();
     listenerCom->setSoundListener(soundListener);
     //listenerCom->setForward(-1.0f, 0.0f, 0.0f);
@@ -143,11 +143,11 @@ void Engine::initialize()
 
     //Create model
     _modelNode = entities.create();
-	_modelNode.assign<InfoComponent>("Dragon");
-	auto modelTransform = _modelNode.assign<TransformComponent>();
-	auto meshFilter = _modelNode.assign<MeshFilterComponent>();
-	auto material = _modelNode.assign<MaterialComponent>();
-	auto soundCom = _modelNode.assign<SoundComponent>();
+    _modelNode.assign<InfoComponent>("Dragon");
+    auto modelTransform = _modelNode.assign<TransformComponent>();
+    auto meshFilter = _modelNode.assign<MeshFilterComponent>();
+    auto material = _modelNode.assign<MaterialComponent>();
+    auto soundCom = _modelNode.assign<SoundComponent>();
     //ResourceManager manager;
     //manager.add<MeshResource>();
     //manager.add<ScriptResource>();
@@ -181,15 +181,15 @@ void Engine::initialize()
     //auto scriptSystem = systems.system<ScriptSystem>();
     //scriptSystem->assign(cameraId, script);
     //sound:
-	
+
 
 
     SoundSource *soundSource = new SoundSource();
-	soundSource->setFileName("SecretGarden.mp3");
+    soundSource->setFileName("SecretGarden.mp3");
     systems.system<SoundSystem>()->createSound(soundSource);
     soundCom->setSoundSource(soundSource);
-	soundCom->changeLoopMode(true);
-	soundCom->play();
+    soundCom->changeLoopMode(true);
+    soundCom->play();
     modelTransform->setPosition(glm::vec3(0.0f, 0.0f, 0.0f));
     //modelTransform->setRotation(glm::vec3(0.3f, 0.3f, 0.3f));
 
@@ -228,9 +228,9 @@ void Engine::update(double dt)
     //glm::vec3 rot = lightPos->rotation();
     //rot.y = rot.y + 1;
     //lightPos->setRotation(rot);
-	auto soundCom = _modelNode.component<SoundComponent>();
+    auto soundCom = _modelNode.component<SoundComponent>();
     _elapsed += dt;
-	if (_elapsed >= 4)
+    if (_elapsed >= 4)
     {
         float refractiveIndex = std::rand() % 20 + 0.01;
         float roughness = 0.1f * (std::rand() % 10) + 0.01;
@@ -240,18 +240,18 @@ void Engine::update(double dt)
         mat->setProperty("roughness", roughness);
         _elapsed = 0.0;
     }
-	auto cameraPos = _cameraNode.component<TransformComponent>();
-	glm::vec3 rot = cameraPos->rotation();
-	rot.y = (float)(rot.y + 0.1);
-	if (rot.y >= 360)
-		rot.y = 0.0f;
-	float angle = 3.14f*rot.y / 180.0f;
-	cameraPos->setRotation(rot);
-	glm::vec3 pos = cameraPos->position();;
-	pos.z = (float)cos(angle);
-	pos.x = (float)sin(angle);
-	cameraPos->setPosition(pos);
-	
+    auto cameraPos = _cameraNode.component<TransformComponent>();
+    glm::vec3 rot = cameraPos->rotation();
+    rot.y = (float)(rot.y + 0.1);
+    if (rot.y >= 360)
+        rot.y = 0.0f;
+    float angle = 3.14f * rot.y / 180.0f;
+    cameraPos->setRotation(rot);
+    glm::vec3 pos = cameraPos->position();;
+    pos.z = (float)cos(angle);
+    pos.x = (float)sin(angle);
+    cameraPos->setPosition(pos);
+
     systems.update<RenderSystem>(dt);
     systems.update<ScriptSystem>(dt);
     systems.update<SoundSystem>(dt);

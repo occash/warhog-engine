@@ -206,8 +206,8 @@ void RenderSystem::update(EntityManager& entities, EventManager& events, double 
 
     glm::vec3 viewDir = glm::vec3(0.0f, 0.0f, -1.0f);
     glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
-	viewDir = camTransform->rotateVector(viewDir);
-	cameraUp = camTransform->rotateVector(cameraUp);
+    viewDir = camTransform->rotateVector(viewDir);
+    cameraUp = camTransform->rotateVector(cameraUp);
     //yaw
     //viewDir = glm::rotate(viewDir, camRot.x, glm::vec3(1.0f, 0.0f, 0.0f));
     //pitch

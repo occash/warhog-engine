@@ -16,17 +16,17 @@ private:
 public:
     SoundComponent();
     ~SoundComponent();
-	void play();
-	void stop();
-	void changeLoopMode(bool isLooping);
+    void play();
+    void stop();
+    void changeLoopMode(bool isLooping);
 
     void setSoundSource(SoundSource *soundSource);
     void setPos(float x, float y, float z);
     void setPos(const glm::vec3& pos);
 
-	SoundSource *getSoundSource();
+    SoundSource *getSoundSource();
     glm::vec3 getPos();
-	bool isPlaying();
-	bool isLooping();
+    bool isPlaying();
+    bool isLooping();
 };
 #endif

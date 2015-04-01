@@ -9,9 +9,9 @@ SoundSource::~SoundSource()
 {
 }
 
-void SoundSource::setFileName(char* fileName)
+void SoundSource::setFileName(char *fileName)
 {
-	_fileName = fileName;
+    _fileName = fileName;
 }
 
 void SoundSource::setSound(FMOD::Sound *sound)
@@ -60,32 +60,32 @@ float SoundSource::getMinDistance()
     return _minDistance;
 }
 
-char* SoundSource::getFileName()
+char *SoundSource::getFileName()
 {
-	return _fileName;
+    return _fileName;
 }
 
 void SoundSource::play()
 {
-	_isPlaying = true;
+    _isPlaying = true;
 }
 
 void SoundSource::stop()
 {
-	_isPlaying = false;
+    _isPlaying = false;
 }
 
 bool SoundSource::isPlaying()
 {
-	return _isPlaying;
+    return _isPlaying;
 }
 
 void SoundSource::changeLoopMode(bool islooping)
 {
-	_isLooping = islooping;
+    _isLooping = islooping;
 }
 
 bool SoundSource::isLooping()
 {
-	return _isLooping;
+    return _isLooping;
 }
