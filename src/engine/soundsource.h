@@ -17,10 +17,13 @@ private:
     glm::vec3 _pos;
     float _minDistance = 1.0f;
 	char* _fileName = "";
+	bool _isPlaying = false;
+	bool _isLooping = false;
 public:
     SoundSource();
     ~SoundSource();
-
+	void play();
+	void stop();
 	
 
     void setSound(FMOD::Sound *sound);
@@ -29,13 +32,15 @@ public:
     void setPos(const glm::vec3& pos);
     void setMinDistance(float minDistance);
 	void setFileName(char* fileName);
+	void changeLoopMode(bool islooping);
 	
+	bool isLooping();
+	bool isPlaying();
 	char* getFileName();
     float getMinDistance();
     glm::vec3 getPos();
     FMOD::Sound *getSound();
     FMOD::Channel *getChannel();
-    //TODO:change LoopMode
-    //TODO: Play control:volume, start, stop
+    //TODO: Play control:volume
 };
 #endif

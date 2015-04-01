@@ -64,3 +64,28 @@ char* SoundSource::getFileName()
 {
 	return _fileName;
 }
+
+void SoundSource::play()
+{
+	_isPlaying = true;
+}
+
+void SoundSource::stop()
+{
+	_isPlaying = false;
+}
+
+bool SoundSource::isPlaying()
+{
+	return _isPlaying;
+}
+
+void SoundSource::changeLoopMode(bool islooping)
+{
+	_isLooping = islooping;
+}
+
+bool SoundSource::isLooping()
+{
+	return _isLooping;
+}

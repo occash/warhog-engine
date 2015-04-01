@@ -39,6 +39,7 @@ private:
     std::clock_t _timer;
     bool _running = false;
 	entityx::Entity _cameraNode;
+	entityx::Entity _modelNode;
 };
 
 #endif

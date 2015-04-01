@@ -26,13 +26,16 @@ SoundSystem::~SoundSystem()
 void  SoundSystem::createSound(SoundSource *soundSource)
 {
     FMOD::Sound *sound;
+	FMOD::Channel *channel;
 	char* fileName = soundSource->getFileName();
     result = _system->createSound(fileName, FMOD_3D, 0, &sound);
     result = sound->set3DMinMaxDistance(soundSource->getMinDistance(), 0.0f);
     
     result = sound->setMode(FMOD_3D_INVERSEROLLOFF);
-    
+	result = _system->playSound(sound, 0, true, &channel);
+
     soundSource->setSound(sound);
+	soundSource->setChannel(channel);
 }
 void SoundSystem::configure(EventManager& events)
 {
@@ -61,46 +64,50 @@ void SoundSystem::update(EntityManager& entities, EventManager& events, double d
         return;
     auto soundCom = (*soundObject).component<SoundComponent>();
     auto soundSource = soundCom->getSoundSource();
-    auto sound = soundSource->getSound();
-    auto channel = soundSource->getChannel();
-    glm::vec3 glmSoundPosition;
-    auto soundTransform = (*soundObject).component<TransformComponent>();
-    glmSoundPosition = soundTransform->position();
-    soundCom->setPos(glmSoundPosition);
-    //Setup listener
-    auto listeners = entities.entities_with_components<ListenerComponent, TransformComponent>();
-    auto listenerObject = listeners.begin();
-    if (listenerObject == listeners.end())
-        return;
-    auto listenerCom = (*listenerObject).component<ListenerComponent>();
-    glm::vec3 glmListenerPosition;
-    auto listenerTransform = (*listenerObject).component<TransformComponent>();
-    glmListenerPosition = listenerTransform->position();
-    //auto listener = listenerCom->listener;
-    listenerCom->setPos(glmListenerPosition);
-    //Play sound:
-    bool isPlaying;
-    result = channel->isPlaying(&isPlaying);
-    if (!isPlaying)
-        result = _system->playSound(sound, 0, true, &channel);
-    FMOD_VECTOR soundPos = convertToFMODVector(soundCom->getPos());
-    result = channel->set3DAttributes(&soundPos, 0);//second argument velocity is null. Need to Dopler
-    
-    result = channel->setPaused(false);
-    
-    soundCom->getSoundSource()->setChannel(channel);
-    
-    FMOD_VECTOR listenerPos = convertToFMODVector(listenerCom->getPos());
-    glm::vec3 glmListenerForward = listenerCom->getForward();
-    glm::vec3 glmListenerUp = listenerCom->getUp();
-    glmListenerForward = listenerTransform->rotateVector(glmListenerForward);
-    glmListenerUp = listenerTransform->rotateVector(glmListenerUp);
-    //glmListenerForward = glm::rotate()
-    FMOD_VECTOR listenerForward = convertToFMODVector(glmListenerForward);
-    FMOD_VECTOR listenerUp = convertToFMODVector(glmListenerUp);
-    result = _system->set3DListenerAttributes(0, &listenerPos, 0, &listenerForward, &listenerUp);
-    //TODO:velocity,forward,up for listener
-    
-    result = _system->update();//Update FMOD system
-    
+	auto sound = soundSource->getSound();
+	auto channel = soundSource->getChannel();
+	if (soundSource->isPlaying())
+	{
+		glm::vec3 glmSoundPosition;
+		auto soundTransform = (*soundObject).component<TransformComponent>();
+		glmSoundPosition = soundTransform->position();
+		soundCom->setPos(glmSoundPosition);
+		//Setup listener
+		auto listeners = entities.entities_with_components<ListenerComponent, TransformComponent>();
+		auto listenerObject = listeners.begin();
+		if (listenerObject == listeners.end())
+			return;
+		auto listenerCom = (*listenerObject).component<ListenerComponent>();
+		glm::vec3 glmListenerPosition;
+		auto listenerTransform = (*listenerObject).component<TransformComponent>();
+		glmListenerPosition = listenerTransform->position();
+		//auto listener = listenerCom->listener;
+		listenerCom->setPos(glmListenerPosition);
+		//Play sound:
+		bool isChannelPlaying;
+		bool isLooping = soundSource->isLooping();
+		result = channel->isPlaying(&isChannelPlaying);
+		if (isLooping && !isChannelPlaying)
+			result = _system->playSound(sound, 0, true, &channel);
+		FMOD_VECTOR soundPos = convertToFMODVector(soundCom->getPos());
+		result = channel->set3DAttributes(&soundPos, 0);//second argument velocity is null. Need to Dopler
+
+		result = channel->setPaused(false);
+		FMOD_VECTOR listenerPos = convertToFMODVector(listenerCom->getPos());
+		glm::vec3 glmListenerForward = listenerCom->getForward();
+		glm::vec3 glmListenerUp = listenerCom->getUp();
+		glmListenerForward = listenerTransform->rotateVector(glmListenerForward);
+		glmListenerUp = listenerTransform->rotateVector(glmListenerUp);
+		//glmListenerForward = glm::rotate()
+		FMOD_VECTOR listenerForward = convertToFMODVector(glmListenerForward);
+		FMOD_VECTOR listenerUp = convertToFMODVector(glmListenerUp);
+		result = _system->set3DListenerAttributes(0, &listenerPos, 0, &listenerForward, &listenerUp);
+		//TODO:velocity,forward,up for listener
+	}
+	else
+	{
+		channel->setPaused(true);
+	}
+		soundCom->getSoundSource()->setChannel(channel);
+		result = _system->update();//Update FMOD system
 }

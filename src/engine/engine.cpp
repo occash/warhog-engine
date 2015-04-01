@@ -15,6 +15,7 @@
 #include "components/soundcomponent.h"
 #include "components/listenercomponent.h"
 
+
 //Engine objects
 #include "mesh.h"
 #include "shader.h"
@@ -141,12 +142,12 @@ void Engine::initialize()
     //lightPos->setRotation(glm::vec3(0.0f, 45.0f, 0.0f));
 
     //Create model
-    Entity modelId = entities.create();
-    modelId.assign<InfoComponent>("Dragon");
-    auto modelTransform = modelId.assign<TransformComponent>();
-    auto meshFilter = modelId.assign<MeshFilterComponent>();
-    auto material = modelId.assign<MaterialComponent>();
-    auto soundCom = modelId.assign<SoundComponent>();
+    _modelNode = entities.create();
+	_modelNode.assign<InfoComponent>("Dragon");
+	auto modelTransform = _modelNode.assign<TransformComponent>();
+	auto meshFilter = _modelNode.assign<MeshFilterComponent>();
+	auto material = _modelNode.assign<MaterialComponent>();
+	auto soundCom = _modelNode.assign<SoundComponent>();
     //ResourceManager manager;
     //manager.add<MeshResource>();
     //manager.add<ScriptResource>();
@@ -187,6 +188,8 @@ void Engine::initialize()
 	soundSource->setFileName("SecretGarden.mp3");
     systems.system<SoundSystem>()->createSound(soundSource);
     soundCom->setSoundSource(soundSource);
+	soundCom->changeLoopMode(true);
+	soundCom->play();
     modelTransform->setPosition(glm::vec3(0.0f, 0.0f, 0.0f));
     //modelTransform->setRotation(glm::vec3(0.3f, 0.3f, 0.3f));
 
@@ -225,21 +228,18 @@ void Engine::update(double dt)
     //glm::vec3 rot = lightPos->rotation();
     //rot.y = rot.y + 1;
     //lightPos->setRotation(rot);
-
+	auto soundCom = _modelNode.component<SoundComponent>();
     _elapsed += dt;
-    if (_elapsed >= 4)
+	if (_elapsed >= 4)
     {
         float refractiveIndex = std::rand() % 20 + 0.01;
         float roughness = 0.1f * (std::rand() % 10) + 0.01;
         float fresnel0 = ((1.0f - refractiveIndex) / (1.0f + refractiveIndex));
         fresnel0 = fresnel0 * fresnel0;
-
         mat->setProperty("fresnel0", fresnel0);
         mat->setProperty("roughness", roughness);
-
         _elapsed = 0.0;
     }
-	
 	auto cameraPos = _cameraNode.component<TransformComponent>();
 	glm::vec3 rot = cameraPos->rotation();
 	rot.y = (float)(rot.y + 0.1);

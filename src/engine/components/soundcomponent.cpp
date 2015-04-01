@@ -32,3 +32,28 @@ SoundSource *SoundComponent::getSoundSource()
 {
     return _soundSource;
 }
+
+void SoundComponent::play()
+{
+	_soundSource->play();
+}
+
+void SoundComponent::stop()
+{
+	_soundSource->stop();
+}
+
+bool SoundComponent::isPlaying()
+{
+	return _soundSource->isPlaying();
+}
+
+void SoundComponent::changeLoopMode(bool isLooping)
+{
+	_soundSource->changeLoopMode(isLooping);
+}
+
+bool SoundComponent::isLooping()
+{
+	return _soundSource->isLooping();
+}
