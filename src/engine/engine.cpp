@@ -117,9 +117,6 @@ void Engine::initialize()
     auto listenerCom = _cameraNode.assign<ListenerComponent>();
     SoundListener *soundListener = new SoundListener();
     listenerCom->setSoundListener(soundListener);
-    //listenerCom->setForward(-1.0f, 0.0f, 0.0f);
-    //listenerCom->setUp(0.0f, 1.0f, 0.0f);
-
 
     camera->setClearColor(glm::vec3(0.0f, 0.0f, 0.0f));
     camera->setNearPlane(0.1f);
@@ -138,8 +135,6 @@ void Engine::initialize()
     light->setType(LightComponent::Directional);
     light->setColor(glm::vec4(1.0f, 1.0f, 1.0f, 0.0f));
     light->setIntensity(0.1f);
-    //lightPos->setPosition(glm::vec3(0.0f, 0.0f, -5.0f));
-    //lightPos->setRotation(glm::vec3(0.0f, 45.0f, 0.0f));
 
     //Create model
     _modelNode = entities.create();
@@ -181,8 +176,6 @@ void Engine::initialize()
     //auto scriptSystem = systems.system<ScriptSystem>();
     //scriptSystem->assign(cameraId, script);
     //sound:
-
-
 
     SoundSource *soundSource = new SoundSource();
     soundSource->setFileName("SecretGarden.mp3");
