@@ -7,7 +7,7 @@ SoundComponent::~SoundComponent()
 {
 }
 
-void SoundComponent::setSoundSource(SoundSource *soundSource, float distanceFactor)
+void SoundComponent::setSoundSource(SoundSource *soundSource)
 {
     _soundSource = soundSource;
 }

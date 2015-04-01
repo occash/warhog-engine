@@ -9,6 +9,11 @@ SoundSource::~SoundSource()
 {
 }
 
+void SoundSource::setFileName(char* fileName)
+{
+	_fileName = fileName;
+}
+
 void SoundSource::setSound(FMOD::Sound *sound)
 {
     _sound = sound;
@@ -55,3 +60,7 @@ float SoundSource::getMinDistance()
     return _minDistance;
 }
 
+char* SoundSource::getFileName()
+{
+	return _fileName;
+}

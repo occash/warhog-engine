@@ -15,6 +15,7 @@ private:
 public:
     ListenerComponent();
     ~ListenerComponent();
+
     void setSoundListener(SoundListener *listener);
     SoundListener *getSoundListener();
     void setPos(float x, float y, float z);
@@ -23,6 +24,7 @@ public:
     void setPos(const glm::vec3& pos);
     void setForward(const glm::vec3& forward);
     void setUp(const glm::vec3& up);
+
     glm::vec3 getPos();
     glm::vec3 getForward();
     glm::vec3 getUp();

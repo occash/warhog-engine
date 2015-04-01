@@ -29,7 +29,7 @@
 #include "math/vector.h"
 #include "math/matrix.h"
 
-#include "geometry.h"
+#include "Geometry.h"
 
 using namespace entityx;
 
@@ -109,11 +109,11 @@ void Engine::configure()
 void Engine::initialize()
 {
     //Create camera
-    Entity cameraId = entities.create();
-    auto cameraInfo = cameraId.assign<InfoComponent>("Main camera");
-    auto cameraTransform = cameraId.assign<TransformComponent>();
-    auto camera = cameraId.assign<CameraComponent>();
-    auto listenerCom = cameraId.assign<ListenerComponent>();
+    _cameraNode = entities.create();
+	auto cameraInfo = _cameraNode.assign<InfoComponent>("Main camera");
+	auto cameraTransform = _cameraNode.assign<TransformComponent>();
+	auto camera = _cameraNode.assign<CameraComponent>();
+	auto listenerCom = _cameraNode.assign<ListenerComponent>();
     SoundListener *soundListener = new SoundListener();
     listenerCom->setSoundListener(soundListener);
     //listenerCom->setForward(-1.0f, 0.0f, 0.0f);
@@ -180,7 +180,11 @@ void Engine::initialize()
     //auto scriptSystem = systems.system<ScriptSystem>();
     //scriptSystem->assign(cameraId, script);
     //sound:
+	
+
+
     SoundSource *soundSource = new SoundSource();
+	soundSource->setFileName("SecretGarden.mp3");
     systems.system<SoundSystem>()->createSound(soundSource);
     soundCom->setSoundSource(soundSource);
     modelTransform->setPosition(glm::vec3(0.0f, 0.0f, 0.0f));
@@ -235,14 +239,19 @@ void Engine::update(double dt)
 
         _elapsed = 0.0;
     }
-
-    /*  auto lightPos = _lightNode.component<TransformComponent>();
-        glm::vec3 rot = lightPos->rotation();
-        rot.y = rot.y + 1;
-        if (rot.y == 360)
-        rot.y = 0;
-        lightPos->setRotation(rot);*/
-
+	
+	auto cameraPos = _cameraNode.component<TransformComponent>();
+	glm::vec3 rot = cameraPos->rotation();
+	rot.y = (float)(rot.y + 0.1);
+	if (rot.y >= 360)
+		rot.y = 0.0f;
+	float angle = 3.14f*rot.y / 180.0f;
+	cameraPos->setRotation(rot);
+	glm::vec3 pos = cameraPos->position();;
+	pos.z = (float)cos(angle);
+	pos.x = (float)sin(angle);
+	cameraPos->setPosition(pos);
+	
     systems.update<RenderSystem>(dt);
     systems.update<ScriptSystem>(dt);
     systems.update<SoundSystem>(dt);

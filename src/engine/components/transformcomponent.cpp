@@ -41,7 +41,7 @@ void TransformComponent::setScale(const glm::vec3& scale)
     _scale = scale;
 }
 
-glm::vec3 TransformComponent::rotateVector(glm::vec3& vector)
+glm::vec3 TransformComponent::rotateVector(const glm::vec3& vector)
 {
     glm::vec3 newVector;
     newVector = glm::rotate(vector, _rotation.x, glm::vec3(1.0f, 0.0f, 0.0f));

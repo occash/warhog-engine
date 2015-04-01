@@ -196,28 +196,30 @@ void RenderSystem::update(EntityManager& entities, EventManager& events, double 
 
     /// camera is turning around the point (0,0) ////////////////////////////
     float start = 2; // radius
-    x = start * cos(i);
-    z = start * sin(i);
-    i += 0.01;
-
-    glm::vec3 camPos(x, 0, z);
-
+    //x = start*cos(i);
+    //z = start*sin(i);
+    // i += 0.01;
+    x = 2;
+    //glm::vec3 camPos(x, 0, z);
+    glm::vec3 camPos = camTransform->position();
     glm::vec3 camRot = camTransform->rotation();
 
-    glm::vec3 viewDir = glm::vec3(0.0f, 0.0f, -0.0f);
+    glm::vec3 viewDir = glm::vec3(0.0f, 0.0f, -1.0f);
     glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
-
+	viewDir = camTransform->rotateVector(viewDir);
+	cameraUp = camTransform->rotateVector(cameraUp);
     //yaw
-    viewDir = glm::rotate(viewDir, camRot.x, glm::vec3(0.0f, 1.0f, 0.0f));
+    //viewDir = glm::rotate(viewDir, camRot.x, glm::vec3(1.0f, 0.0f, 0.0f));
     //pitch
-    viewDir = glm::rotate(viewDir, camRot.y, glm::vec3(1.0f, 0.0f, 0.0f));
+    //viewDir = glm::rotate(viewDir, camRot.y, glm::vec3(0.0f, 1.0f, 0.0f));
     //roll
+    //viewDir = glm::rotate(viewDir, camRot.z, glm::vec3(0.0f, 0.0f, 1.0f));
     /*  cameraUp = glm::normalize(glm::cross(glm::vec3(1.0f, 0.0f, 0.0f), viewDir));
         cameraUp = glm::rotate(cameraUp, camRot.z, glm::vec3(0.0f, 0.0f, 1.0f));*/
 
     glm::mat4 view = glm::lookAt(
                          camPos,
-                         glm::vec3(0, 0, 0),
+                         camPos  + viewDir,
                          cameraUp
                      );
 

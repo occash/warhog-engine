@@ -38,7 +38,7 @@ private:
     double _elapsed;
     std::clock_t _timer;
     bool _running = false;
-
+	entityx::Entity _cameraNode;
 };
 
 #endif

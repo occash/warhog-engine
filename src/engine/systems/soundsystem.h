@@ -3,7 +3,6 @@
 #include <entityx/System.h>
 #include  <fmod/fmod.hpp>
 #include <map>
-#include "../soundlog.h"
 #include "../components/soundcomponent.h"
 #include "../components/listenercomponent.h"
 #include "../components/transformcomponent.h"
@@ -21,8 +20,9 @@ private:
 public:
     SoundSystem();
     ~SoundSystem();
+
     FMOD_RESULT result;//for error_code
-    void createSound(SoundSource *sound_source);
+    void createSound(SoundSource *soundSource);
     void configure(entityx::EventManager& events) override;
     void update(entityx::EntityManager& entities,
                 entityx::EventManager& events, double dt) override;

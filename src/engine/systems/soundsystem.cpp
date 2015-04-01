@@ -17,38 +17,39 @@ SoundSystem::SoundSystem()
 SoundSystem::~SoundSystem()
 {
     result = _system->close();
-    ERRCHECK(result);
+    
     result = _system->release();
-    ERRCHECK(result);
+    
 }
 
 
-void  SoundSystem::createSound(SoundSource *sound_source)
+void  SoundSystem::createSound(SoundSource *soundSource)
 {
     FMOD::Sound *sound;
-    result = _system->createSound("SecretGarden.mp3", FMOD_3D, 0, &sound);
-    result = sound->set3DMinMaxDistance(sound_source->getMinDistance(), 0.0f);
-    ERRCHECK(result);
+	char* fileName = soundSource->getFileName();
+    result = _system->createSound(fileName, FMOD_3D, 0, &sound);
+    result = sound->set3DMinMaxDistance(soundSource->getMinDistance(), 0.0f);
+    
     result = sound->setMode(FMOD_3D_INVERSEROLLOFF);
-    ERRCHECK(result);
-    sound_source->setSound(sound);
+    
+    soundSource->setSound(sound);
 }
 void SoundSystem::configure(EventManager& events)
 {
     //fmod initiallisation:
     result = System_Create(&_system);      // Create the main system object.
-    ERRCHECK(result);
+    
     result = _system->getVersion(&version);
-    ERRCHECK(result);
+    
     if (version < FMOD_VERSION)
         printf("FMOD lib version %08x doesn't match header version %08x", version, FMOD_VERSION);
-    ERRCHECK(result);
+    
     result = _system->init(512, FMOD_INIT_3D_RIGHTHANDED | FMOD_INIT_VOL0_BECOMES_VIRTUAL, 0);    // Initialize FMOD.
     //TODO:first argument is count of max channel. To write algorithm of detect channel  count
-    ERRCHECK(result);
+    
     result = _system->set3DSettings(0.0, 1.0f, 1.0f);
     //TODO:Enable dopler effect. For it we must have velocity object. Now it disable - first argument
-    ERRCHECK(result);
+    
 }
 
 void SoundSystem::update(EntityManager& entities, EventManager& events, double dt)
@@ -84,11 +85,11 @@ void SoundSystem::update(EntityManager& entities, EventManager& events, double d
         result = _system->playSound(sound, 0, true, &channel);
     FMOD_VECTOR soundPos = convertToFMODVector(soundCom->getPos());
     result = channel->set3DAttributes(&soundPos, 0);//second argument velocity is null. Need to Dopler
-    ERRCHECK(result);
+    
     result = channel->setPaused(false);
-    ERRCHECK(result);
+    
     soundCom->getSoundSource()->setChannel(channel);
-    ERRCHECK(result);
+    
     FMOD_VECTOR listenerPos = convertToFMODVector(listenerCom->getPos());
     glm::vec3 glmListenerForward = listenerCom->getForward();
     glm::vec3 glmListenerUp = listenerCom->getUp();
@@ -99,7 +100,7 @@ void SoundSystem::update(EntityManager& entities, EventManager& events, double d
     FMOD_VECTOR listenerUp = convertToFMODVector(glmListenerUp);
     result = _system->set3DListenerAttributes(0, &listenerPos, 0, &listenerForward, &listenerUp);
     //TODO:velocity,forward,up for listener
-    ERRCHECK(result);
+    
     result = _system->update();//Update FMOD system
-    ERRCHECK(result);
+    
 }

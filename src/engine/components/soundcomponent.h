@@ -17,9 +17,10 @@ public:
     SoundComponent();
     ~SoundComponent();
     SoundSource *getSoundSource();
-    void setSoundSource(SoundSource *soundSource, float distanceFactor = 1.0f);
+    void setSoundSource(SoundSource *soundSource);
     void setPos(float x, float y, float z);
     void setPos(const glm::vec3& pos);
+
     glm::vec3 getPos();
 };
 #endif
