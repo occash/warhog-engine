@@ -24,7 +24,8 @@ solution 'warhog'
 		links
 		{
 			'entityx',
-			'lua'
+			'lua',
+			'fmod'
 		}
 		
 		files
@@ -77,8 +78,7 @@ solution 'warhog'
 		includedirs { 'src/engine', dep..'/include' }
 		links 
 		{
-				'engine',
-				'entityx'
+				'engine'
 		}
 		files { 'src/launcher/**' }
 		
