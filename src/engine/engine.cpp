@@ -178,7 +178,7 @@ void Engine::initialize()
     //sound:
 
     SoundSource *soundSource = new SoundSource();
-    soundSource->setFileName("SecretGarden.mp3");
+    soundSource->setFileName("resources/sounds/SecretGarden.mp3");
     systems.system<SoundSystem>()->createSound(soundSource);
     soundCom->setSoundSource(soundSource);
     soundCom->changeLoopMode(true);
