@@ -41,7 +41,11 @@ struct PointLight
     float power;
 };
 
-uniform PointLight pLight[64];
+layout(std140)
+uniform PointLightBlock
+{
+	PointLight pLight[64];
+};
 
 layout(std140)
 uniform SpotLight
@@ -144,8 +148,9 @@ void main()
 	vec3 s;
 	float dist;
 
-	for (int i = 0; i < 64; ++i)
+	for (int i = 0; i < 2; ++i)
 	{
+	//int i = 1;
         s = normalize(vec3(pLight[i].position) - DataIn.position);
         halfVec = normalize(s + view);
         NdotL = dot(normal, s);
@@ -158,8 +163,9 @@ void main()
 						geometry(normal, halfVec, view, s, mat.roughness) *
 						distribution(normal, halfVec, mat.roughness) /
 						(4.0 * NdotL_clamped * NdotV_clamped);
+
         color_spec += pLight[i].power * NdotL_clamped * 
-						brdf_spec * 
+						max(brdf_spec, 0) * 
 						pLight[i].color /
 						dist;
         color_diff += pLight[i].power * NdotL_clamped * 
@@ -205,10 +211,13 @@ void main()
 
 	//fragColor = vec4(ads(), 1.0);
 
+	//vec3 mColor = pLight[0].color;
+	//fragColor = vec4(normal, 1.0);
     fragColor = vec4(color_diff + color_spec
 					, 
 					1.0);
-    //fragColor = vec4(normal, 1.0);
+
+    //fragColor = vec4(mColor, 1.0);
 	//fragColor = vec4(s, 1.0);
 	//fragColor = vec4(NdotL_clamped, 0.0, 0.0, 1.0);
 }
