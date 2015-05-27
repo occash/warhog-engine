@@ -1,4 +1,10 @@
 <RCC>
+    <qresource prefix="/editors">
+        <file alias="BoolEditor.qml">qml/editors/BoolEditor.qml</file>
+        <file alias="ListEditor.qml">qml/editors/ListEditor.qml</file>
+        <file alias="NumberEditor.qml">qml/editors/NumberEditor.qml</file>
+        <file alias="StringEditor.qml">qml/editors/StringEditor.qml</file>
+    </qresource>
     <qresource prefix="/style">
         <file alias="qmldir">qml/style/qmldir</file>
         <file alias="WHBarButtonStyle.qml">qml/style/WHBarButtonStyle.qml</file>
@@ -36,6 +42,7 @@
         <file alias="ResourcePane.qml">qml/ResourcePane.qml</file>
         <file alias="ScenePane.qml">qml/ScenePane.qml</file>
         <file alias="warhog.qmlproject">qml/warhog.qmlproject</file>
+        <file alias="warhog.qmlproject.user">qml/warhog.qmlproject.user</file>
         <file alias="WHDockArea.qml">qml/WHDockArea.qml</file>
         <file alias="WHDockAreas.js">qml/WHDockAreas.js</file>
         <file alias="WHDockPane.qml">qml/WHDockPane.qml</file>
