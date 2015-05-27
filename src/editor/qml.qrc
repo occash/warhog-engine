@@ -1,0 +1,50 @@
+<RCC>
+    <qresource prefix="/style">
+        <file alias="qmldir">qml/style/qmldir</file>
+        <file alias="WHBarButtonStyle.qml">qml/style/WHBarButtonStyle.qml</file>
+        <file alias="WHButtonStyle.qml">qml/style/WHButtonStyle.qml</file>
+        <file alias="WHCheckBoxStyle.qml">qml/style/WHCheckBoxStyle.qml</file>
+        <file alias="WHComboBoxStyle.qml">qml/style/WHComboBoxStyle.qml</file>
+        <file alias="WHDarkTheme.qml">qml/style/WHDarkTheme.qml</file>
+        <file alias="WHLightTheme.qml">qml/style/WHLightTheme.qml</file>
+        <file alias="WHMenuBarStyle.qml">qml/style/WHMenuBarStyle.qml</file>
+        <file alias="WHMenuStyle.qml">qml/style/WHMenuStyle.qml</file>
+        <file alias="WHRadioButtonStyle.qml">qml/style/WHRadioButtonStyle.qml</file>
+        <file alias="WHSpinBoxStyle.qml">qml/style/WHSpinBoxStyle.qml</file>
+        <file alias="WHStyle.qml">qml/style/WHStyle.qml</file>
+        <file alias="WHTextFieldStyle.qml">qml/style/WHTextFieldStyle.qml</file>
+        <file alias="WHTheme.qml">qml/style/WHTheme.qml</file>
+        <file alias="WHWindowStyle.qml">qml/style/WHWindowStyle.qml</file>
+    </qresource>
+    <qresource prefix="/images">
+        <file alias="arrow_down.png">qml/images/arrow_down.png</file>
+        <file alias="arrow_up.png">qml/images/arrow_up.png</file>
+        <file alias="close.png">qml/images/close.png</file>
+        <file alias="folder.png">qml/images/folder.png</file>
+        <file alias="icon.png">qml/images/icon.png</file>
+        <file alias="maximize.png">qml/images/maximize.png</file>
+        <file alias="minimize.png">qml/images/minimize.png</file>
+        <file alias="restore.png">qml/images/restore.png</file>
+        <file alias="search.png">qml/images/search.png</file>
+    </qresource>
+    <qresource prefix="/">
+        <file alias="InspectorPane.qml">qml/InspectorPane.qml</file>
+        <file alias="main.qml">qml/main.qml</file>
+        <file alias="MainMenu.qml">qml/MainMenu.qml</file>
+        <file alias="MainWindow.qml">qml/MainWindow.qml</file>
+        <file alias="ResourceDelegate.qml">qml/ResourceDelegate.qml</file>
+        <file alias="ResourcePane.qml">qml/ResourcePane.qml</file>
+        <file alias="ScenePane.qml">qml/ScenePane.qml</file>
+        <file alias="warhog.qmlproject">qml/warhog.qmlproject</file>
+        <file alias="WHDockArea.qml">qml/WHDockArea.qml</file>
+        <file alias="WHDockAreas.js">qml/WHDockAreas.js</file>
+        <file alias="WHDockPane.qml">qml/WHDockPane.qml</file>
+        <file alias="WHMainWindow.qml">qml/WHMainWindow.qml</file>
+        <file alias="WHPane.qml">qml/WHPane.qml</file>
+        <file alias="WHRoundImage.qml">qml/WHRoundImage.qml</file>
+        <file alias="WHSizeGrip.qml">qml/WHSizeGrip.qml</file>
+        <file alias="WHSplash.qml">qml/WHSplash.qml</file>
+        <file alias="WHTextEdit.qml">qml/WHTextEdit.qml</file>
+        <file alias="WHTitleBar.qml">qml/WHTitleBar.qml</file>
+    </qresource>
+</RCC>
