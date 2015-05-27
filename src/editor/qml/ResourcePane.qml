@@ -52,9 +52,7 @@ WHPane {
         }
     }
 
-    GridView {
-        id: view
-
+    Item {
         anchors {
             left: parent.left
             top: pathBar.bottom
@@ -62,36 +60,38 @@ WHPane {
             bottom: parent.bottom
         }
 
-        clip: true
-        boundsBehavior: Flickable.StopAtBounds
-        highlightRangeMode: GridView.ApplyRange
-        highlightFollowsCurrentItem: true
-        highlightMoveDuration: 0
+        GridView {
+            id: view
 
-        cellWidth: 70
-        cellHeight: 70
+            anchors.fill: parent
 
-        model: folderModel
-        delegate: ResourceDelegate {
-            width: view.cellWidth
-            height: view.cellHeight
-            name: fileBaseName
-            group: fileIsDir
+            clip: true
+            boundsBehavior: Flickable.StopAtBounds
+            highlightRangeMode: GridView.ApplyRange
+            highlightFollowsCurrentItem: true
+            highlightMoveDuration: 0
 
-            onClicked: {
-                var newPath = path + fileBaseName + "/"
-                pane.path = newPath
+            cellWidth: 70
+            cellHeight: 70
+
+            model: folderModel
+            delegate: ResourceDelegate {
+                width: view.cellWidth
+                height: view.cellHeight
+                name: fileBaseName
+                group: fileIsDir
+
+                onClicked: {
+                    var newPath = path + fileBaseName + "/"
+                    pane.path = newPath
+                }
             }
+
+            visible: !dropArea.containsDrag
         }
 
-        visible: !dropArea.containsDrag
-    }
-
-    Item {
-        anchors.fill: parent
-
         GaussianBlur {
-            anchors.fill: parent
+            anchors.fill: view
             source: view
             radius: 8
             samples: 16
@@ -118,11 +118,11 @@ WHPane {
             font.family: "Segoe UI"
             font.pixelSize: 20
         }
-    }
 
-    DropArea {
-        id: dropArea
-        anchors.fill: parent
+        DropArea {
+            id: dropArea
+            anchors.fill: parent
+        }
     }
 }
 
