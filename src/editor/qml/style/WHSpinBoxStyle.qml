@@ -5,27 +5,24 @@ import QtQuick.Controls.Styles 1.2
 import "."
 
 SpinBoxStyle {
-    property bool dark: true
-    property WHTheme palette: dark ? Style.dark : Style.light
-
-    textColor: palette.text
-    selectedTextColor: palette.text
-    selectionColor: palette.highlight
+    textColor: Style.text
+    selectedTextColor: Style.text
+    selectionColor: Style.highlight
     background: Rectangle {
         id: input
 
         implicitWidth: 20 * Screen.pixelDensity
         implicitHeight: 5 * Screen.pixelDensity
 
-        color: palette.alternateBase
+        color: Style.alternateBase
         border.width: 1
-        border.color: palette.alternateBase
+        border.color: Style.alternateBase
 
         states: [
             State {
                 name: "active"
                 when: control.hovered || control.activeFocus
-                PropertyChanges { target: input.border; color: palette.highlight }
+                PropertyChanges { target: input.border; color: Style.highlight }
             }
         ]
 
@@ -43,7 +40,7 @@ SpinBoxStyle {
     incrementControl: Item {
         implicitWidth: padding.right
         Image {
-            source: "qrc:/images/icons/arrow_up.png"
+            source: "../images/arrow_up.png"
             anchors.centerIn: parent
             anchors.verticalCenterOffset: 1
             //opacity: control.enabled ? (styleData.upPressed ? 1 : 0.6) : 0.5
@@ -54,7 +51,7 @@ SpinBoxStyle {
     decrementControl: Item {
         implicitWidth: padding.right
         Image {
-            source: "qrc:/images/icons/arrow_down.png"
+            source: "../images/arrow_down.png"
             anchors.centerIn: parent
             anchors.verticalCenterOffset: -2
             //opacity: control.enabled ? (styleData.downPressed ? 1 : 0.6) : 0.5
