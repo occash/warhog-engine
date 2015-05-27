@@ -4,11 +4,11 @@ import "style"
 
 Item {
     id: resource
-    width: 70
-    height: 70
 
     property alias name: name.text
     property bool group: false
+
+    signal clicked(string name)
 
     Image {
         id: icon
@@ -33,7 +33,6 @@ Item {
         anchors.margins: 10
 
         color: Style.text
-        text: "File"
         font.family: "Segoe UI"
         //wrapMode: Text.WrapAnywhere
         elide: Text.ElideMiddle
@@ -41,6 +40,12 @@ Item {
         verticalAlignment: Text.AlignVCenter
         font.pixelSize: 10
         renderType: Text.NativeRendering
+    }
+
+    MouseArea {
+        anchors.fill: parent
+        enabled: group
+        onClicked: resource.clicked(resource.name)
     }
 }
 
