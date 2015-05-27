@@ -24,6 +24,10 @@ premake.extensions.qt = {
 			name = "Qml",
 			include = "QtQml"
 		},
+		quick = {
+			name = "Quick",
+			include = "QtQuick"
+		},
 		widgets = {
 			name = "Widgets",
 			include = "QtWidgets"
