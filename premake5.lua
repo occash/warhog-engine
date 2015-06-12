@@ -24,7 +24,8 @@ solution 'warhog'
 		links
 		{
 			'entityx',
-			'lua'
+			'lua',
+			'fmod'
 		}
 		
 		files

@@ -7,6 +7,7 @@
 #include <entityx/Entity.h>
 #include <glm/glm.hpp>
 
+
 class ENGINE_EXPORT TransformComponent :
     public entityx::Component<TransformComponent>,
     public Object
@@ -30,6 +31,8 @@ public:
 
     glm::vec3 scale() const;
     void setScale(const glm::vec3& scale);
+
+    glm::vec3 rotateVector(const glm::vec3& vector);//return rotated vector
 
 private:
     glm::vec3 _position;
