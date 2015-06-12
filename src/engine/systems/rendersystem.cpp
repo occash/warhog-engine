@@ -319,16 +319,25 @@ void RenderSystem::update(EntityManager& entities, EventManager& events, double 
 
     auto sLightTransform = (*sLightObject).component<TransformComponent>();
     auto sLightComponent = (*sLightObject).component<LightComponent>();
-    glm::vec4 sLightPosition(0.0f, 0.0f, 0.50f, 1.0f);
+    glm::vec4 sLightPosition(-5.0f, 0.0f, 0.0f, 1.0f);
     glm::vec4 sLightDirection(0.0f, 1.0f, -1.0f, 0.0f);
 
     SpotLight m_sLight;
     m_sLight.color = glm::vec3(1.0f, 1.0f, 1.0f);
     m_sLight.position = m.view * sLightPosition;
     m_sLight.direction = glm::normalize(m.view * sLightDirection);
-    m_sLight.power = 50;
-    m_sLight.cosA = 0.8f;
-    m_sLight.shadowPower = 2;
+    m_sLight.power = 150;
+    m_sLight.cosA = 0.7f;
+    m_sLight.shadowPower = 99;
+
+
+	SpotLight m_sLight2;
+	m_sLight2.color = glm::vec3(1.0f, 1.0f, 1.0f);
+	m_sLight2.position = m.view * glm::vec4(5.0f, 0.0f, 0.0f, 1.0f);
+	m_sLight2.direction = glm::normalize(m.view * sLightDirection);
+	m_sLight2.power = 150;
+	m_sLight2.cosA = 0.7f;
+	m_sLight2.shadowPower = 99;
 
     ///////////////////////////////
 
@@ -362,8 +371,13 @@ void RenderSystem::update(EntityManager& entities, EventManager& events, double 
         ShaderBlock *pointLight = shader->block("PointLight");
         pointLight->set(&m_pLight, sizeof(PointLight));
 
-        ShaderBlock *spotLight = shader->block("SpotLight");
+		std::string s = "SpotLight[0]";
+        ShaderBlock *spotLight = shader->block(s.c_str());
         spotLight->set(&m_sLight, sizeof(SpotLight));
+
+		s = "SpotLight[1]";
+		spotLight = shader->block(s.c_str());
+		spotLight->set(&m_sLight2, sizeof(SpotLight));
 
         meshFilter->mesh()->draw();
         shader->unbind();
