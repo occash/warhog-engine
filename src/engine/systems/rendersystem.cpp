@@ -151,6 +151,8 @@ struct SkyboxBlock
     float _padding0;
 };
 
+static PointLight pointLight[64];
+
 void applyTransform(glm::mat4& block, glm::vec3 move, glm::vec3 rotate, glm::vec3 scale)
 {
     block = glm::translate(block, move);
@@ -304,12 +306,12 @@ void RenderSystem::update(EntityManager& entities, EventManager& events, double 
 
     auto pLightTransform = (*pLightObject).component<TransformComponent>();
     auto pLightComponent = (*pLightObject).component<LightComponent>();
-    glm::vec4 pLightPos(0.0f, 0.0f, 3.0f, 1.0f);
+    glm::vec4 pLightPos(5.0f, 5.0f, 5.0f, 1.0f);
 
     PointLight m_pLight;
     m_pLight.color = glm::vec3(1.0f, 1.0f, 1.0f);
     m_pLight.position = m.view * pLightPos;
-    m_pLight.power = 50;
+    m_pLight.power = 1000;
 
     //////////////////////////////
     //////spot light//////////////
@@ -319,25 +321,16 @@ void RenderSystem::update(EntityManager& entities, EventManager& events, double 
 
     auto sLightTransform = (*sLightObject).component<TransformComponent>();
     auto sLightComponent = (*sLightObject).component<LightComponent>();
-    glm::vec4 sLightPosition(-5.0f, 0.0f, 0.0f, 1.0f);
-    glm::vec4 sLightDirection(0.0f, 1.0f, -1.0f, 0.0f);
+    glm::vec4 sLightPosition(0.0f, 0.0f, 5.0f, 1.0f);
+    glm::vec4 sLightDirection(0.0f, 0.0f, -1.0f, 0.0f);
 
     SpotLight m_sLight;
     m_sLight.color = glm::vec3(1.0f, 1.0f, 1.0f);
     m_sLight.position = m.view * sLightPosition;
     m_sLight.direction = glm::normalize(m.view * sLightDirection);
-    m_sLight.power = 150;
+    m_sLight.power = 50;
     m_sLight.cosA = 0.7f;
-    m_sLight.shadowPower = 99;
-
-
-	SpotLight m_sLight2;
-	m_sLight2.color = glm::vec3(1.0f, 1.0f, 1.0f);
-	m_sLight2.position = m.view * glm::vec4(5.0f, 0.0f, 0.0f, 1.0f);
-	m_sLight2.direction = glm::normalize(m.view * sLightDirection);
-	m_sLight2.power = 150;
-	m_sLight2.cosA = 0.7f;
-	m_sLight2.shadowPower = 99;
+    m_sLight.shadowPower = 1;
 
     ///////////////////////////////
 
@@ -362,22 +355,47 @@ void RenderSystem::update(EntityManager& entities, EventManager& events, double 
         applyTransform(model, pos, rot, scl);
         m.model = model;
         m.view = view;
+
         ShaderBlock *matricies = shader->block("MatrixBlock");
         matricies->set(&m, sizeof(MatrixBlock));
 
         ShaderBlock *directlight = shader->block("DirectLight");
         directlight->set(&dlight, sizeof(DirectLight));
 
-        ShaderBlock *pointLight = shader->block("PointLight");
-        pointLight->set(&m_pLight, sizeof(PointLight));
+        /*ShaderBlock *pointLight = shader->block("PointLight");
+        pointLight->set(&m_pLight, sizeof(PointLight));*/
 
-		std::string s = "SpotLight[0]";
-        ShaderBlock *spotLight = shader->block(s.c_str());
-        spotLight->set(&m_sLight, sizeof(SpotLight));
 
-		s = "SpotLight[1]";
-		spotLight = shader->block(s.c_str());
-		spotLight->set(&m_sLight2, sizeof(SpotLight));
+
+        /*ShaderBlock *spotLight = shader->block("SpotLight");
+        spotLight->set(&m_sLight, sizeof(SpotLight));*/
+
+		//for (int i = 0; i < 64; +i)
+		//{
+
+		unsigned int _prog = shader->getProgram();
+
+		pointLight[0] = m_pLight;
+
+		m_pLight.color = glm::vec3(1.0f, 0.0f, 1.0f);
+		m_pLight.position = m.view * glm::vec4(-5, 0, -5.0f, 1.0f);
+		m_pLight.power = 100;
+
+		pointLight[1] = m_pLight;
+		ShaderBlock *pLightBlock = shader->block("PointLightBlock");
+		pLightBlock->set(pointLight);
+		
+		/*ShaderVariable *pLightVar;
+		pLightVar = shader->variable("pLight[0].power");
+		pLightVar->set((glm::float_t)100);
+		pLightVar = shader->variable("pLight[0].position");
+		glm::vec4 pLightPos = m.view * glm::vec4(0.0f, 0.0f, -1.0f, 1.0f);
+		pLightVar->set(pLightPos);
+		pLightVar = shader->variable("pLight[0].color");
+		pLightVar->set(glm::vec3(1.0f, 1.0f, 1.0f));*/
+		
+		//}
+
 
         meshFilter->mesh()->draw();
         shader->unbind();
