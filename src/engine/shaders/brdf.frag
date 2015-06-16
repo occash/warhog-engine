@@ -36,9 +36,11 @@ uniform PointLight
 
 struct PointLight
 {
-    vec4 position;
-    vec3 color;
-    float power;
+	vec4 color;
+
+	vec4 position;
+
+	float intensity;
 };
 
 layout(std140)
@@ -148,7 +150,7 @@ void main()
 	vec3 s;
 	float dist;
 
-	for (int i = 0; i < 2; ++i)
+	for (int i = 0; i < 64; ++i)
 	{
 	//int i = 1;
         s = normalize(vec3(pLight[i].position) - DataIn.position);
@@ -166,11 +168,11 @@ void main()
 
         color_spec += pLight[i].power * NdotL_clamped * 
 						max(brdf_spec, 0) * 
-						pLight[i].color /
+						vec3(pLight[i].color) /
 						dist;
         color_diff += pLight[i].power * NdotL_clamped * 
 					diffuseEnergyRatio(mat.fresnel0, normal, s) * 
-					mat.color * pLight[i].color / dist;
+					mat.color * vec3(pLight[i].color) / dist;
     }
 
 	//////////////////////////////////////////////

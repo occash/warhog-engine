@@ -3,6 +3,8 @@
 //Systems
 #include "systems/rendersystem.h"
 #include "systems/scriptsystem.h"
+#include "systems/soundsystem.h"
+
 
 //Components
 #include "components/infocomponent.h"
@@ -11,6 +13,7 @@
 #include "components/meshfiltercomponent.h"
 #include "components/materialcomponent.h"
 #include "components/lightcomponent.h"
+#include "components/soundcomponent.h"
 
 //Engine objects
 #include "mesh.h"
@@ -99,6 +102,10 @@ void Engine::configure()
     systems.add<RenderSystem>();
     systems.system<RenderSystem>()->chooseBackend("OpenGL"); //TODO: read from config
     _window = systems.system<RenderSystem>()->window();
+
+	systems.add<SoundSystem>();
+	systems.configure();
+
 }
 
 void Engine::initialize()
@@ -123,7 +130,7 @@ void Engine::initialize()
     _lightNode = lightId;
     auto lightPos = lightId.assign<TransformComponent>();
     auto light = lightId.assign<LightComponent>();
-    light->setType(LightComponent::Directional);
+    //light->setType(LightComponent::Directional);
     light->setColor(glm::vec4(1.0f, 1.0f, 1.0f, 0.0f));
     light->setIntensity(0.1f);
     //lightPos->setPosition(glm::vec3(0.0f, 0.0f, -5.0f));
@@ -135,6 +142,9 @@ void Engine::initialize()
     auto transform = modelId.assign<TransformComponent>();
     auto meshFilter = modelId.assign<MeshFilterComponent>();
     auto material = modelId.assign<MaterialComponent>();
+	auto sound = modelId.assign<SoundComponent>();
+
+
 
     transform->setPosition({ 0, 0, 0 });
 
@@ -176,6 +186,19 @@ void Engine::initialize()
     fresnel0 = fresnel0 * fresnel0;
     mat->setProperty("fresnel0", fresnel0);
     mat->setProperty("roughness", 0.25f);
+
+
+	Entity pukaLight = entities.create();
+	LightComponent* lightComp = systems.system<RenderSystem>()->createLightComponent(LightType::Point);
+	auto pukaLightHandle = pukaLight.assign<LightComponent>(*lightComp);
+	pukaLightHandle->setColor(glm::vec4{ 1, 1, 1, 1 });
+	pukaLightHandle->setIntensity(50);
+
+	auto pukaLightTransform = pukaLight.assign<TransformComponent>();
+	pukaLightTransform->setPosition(glm::vec3{ 0, 0, -5 });
+
+	//pukaLight.assign<systems.system<RenderSystem>()->createLightComponent(LightType::Point)>();
+
 
     //Entity scriptId = entity_manager->create();
     //auto scriptSystem = systems.system<ScriptSystem>();
