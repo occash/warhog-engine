@@ -318,32 +318,26 @@ void RenderSystem::update(EntityManager& entities, EventManager& events, double 
     //////////////////////////////
     //////spot light//////////////
 
-    auto sLight = entities.entities_with_components<TransformComponent, LightComponent>();
-    auto sLightObject = sLight.begin();
 
-    //auto sLightTransform = (*sLightObject).component<TransformComponent>();
-    //auto sLightComponent = (*sLightObject).component<LightComponent>();
-    //glm::vec4 sLightPosition(0.0f, 0.0f, 5.0f, 1.0f);
-    //glm::vec4 sLightDirection(0.0f, 0.0f, -1.0f, 0.0f);
-
-    SpotLight m_sLight;
-    //m_sLight.color = glm::vec3(1.0f, 1.0f, 1.0f);
-    //m_sLight.position = m.view * sLightPosition;
-    //m_sLight.direction = glm::normalize(m.view * sLightDirection);
-    //m_sLight.intensity = 10;
-    //m_sLight.cosA = 0.7f;
-    //m_sLight.shadowPower = 1;
 
     ///////////////////////////////
 
-	auto lightCollection = entities.entities_with_components<TransformComponent, LightComponent>();
+	auto lightCollection = entities.entities_with_components<LightComponent>();
 
 	for (auto singleLight : lightCollection)
 	{
 		auto lightComp = singleLight.component<LightComponent>();
-		auto transformComp = singleLight.component<TransformComponent>();
 
-		lightComp->setPosition((m.view * glm::vec4{ transformComp->position(), 1.0 } ));
+		//if (lightComp->type() != Directional)
+		//{
+			auto transformComp = singleLight.component<TransformComponent>();
+			lightComp->setPosition((m.view * glm::vec4{ transformComp->position(), 1.0 }));
+		//}
+
+		if (lightComp->type() != Point)
+		{
+			//TODO: move direction to TransformComponent
+		}
 	}
 
     auto gameObjects = entities.entities_with_components<TransformComponent, MeshFilterComponent, MaterialComponent>();
@@ -368,9 +362,6 @@ void RenderSystem::update(EntityManager& entities, EventManager& events, double 
 
         ShaderBlock *matricies = shader->block("MatrixBlock");
         matricies->set(&m, sizeof(MatrixBlock));
-
-        ShaderBlock *directlight = shader->block("DirectLight");
-        directlight->set(&dlight, sizeof(DirectLight));
 
         /*ShaderBlock *pointLight = shader->block("PointLight");
         pointLight->set(&m_pLight, sizeof(PointLight));*/
@@ -399,6 +390,11 @@ void RenderSystem::update(EntityManager& entities, EventManager& events, double 
 		ShaderBlock *pLightBlock = shader->block("PointLightBlock");
 		pLightBlock->set(pointLightBlock);
 		
+		//ShaderBlock *dLightBlock = shader->block("DirectLightBlock");
+		//pLightBlock->set(directLightBlock);
+
+		//ShaderBlock *sLightBlock = shader->block("SpotLightBlock");
+		//pLightBlock->set(spotLightBlock);
 		/*ShaderVariable *pLightVar;
 		pLightVar = shader->variable("pLight[0].power");
 		pLightVar->set((glm::float_t)100);

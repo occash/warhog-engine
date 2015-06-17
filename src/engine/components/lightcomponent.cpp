@@ -24,6 +24,7 @@ void LightComponent::setLightInterface(LightInterface *lightInterface)
 
 void LightComponent::setType(LightType type)
 {
+	_type = type;
 	_lightInterface->setType(type);
 }
 
