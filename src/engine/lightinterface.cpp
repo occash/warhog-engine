@@ -1,23 +1,19 @@
 #include "lightinterface.h"
+#include "systems/rendersystem.h"
 
-LightInterface::LightInterface()
+#define asPointLight(x) reinterpret_cast<PointLight*>(x)
+#define asDirectLight(x) reinterpret_cast<DirectLight*>(x)
+#define asSpotLight(x) reinterpret_cast<SpotLight*>(x)
+
+LightInterface::LightInterface(RenderSystem *renderSystem) : _renderSys(renderSystem)
 {
 
 }
 
-LightInterface::LightInterface(DirectLight *directLight) : _directLight(directLight), _type(LightType::Directional)
+void LightInterface::setType(LightType type)
 {
-	
-}
-
-LightInterface::LightInterface(PointLight *pointLight) : _pointLight(pointLight), _type(LightType::Point)
-{
-
-}
-
-LightInterface::LightInterface(SpotLight *spotLight) : _spotLight(spotLight), _type(LightType::Spot)
-{
-
+	_light = _renderSys->getStucture(type);
+	_type = type;
 }
 
 glm::vec4 LightInterface::getPosition() const
@@ -25,9 +21,9 @@ glm::vec4 LightInterface::getPosition() const
 	switch (_type)
 	{
 	case Point:
-		return _pointLight->position;
+		return asPointLight(_light)->position;
 	case Spot:
-		return _spotLight->position;
+		return asSpotLight(_light)->position;
 	default:
 		return glm::vec4{0, 0, 0, 0 }; // think about default value
 	}
@@ -38,11 +34,11 @@ glm::vec4 LightInterface::getColor() const
 	switch (_type)
 	{
 	case Directional:
-		return _directLight->color;
+		return asSpotLight(_light)->color;
 	case Point:
-		return _pointLight->color;
+		return asPointLight(_light)->color;
 	case Spot:
-		return _spotLight->color;
+		return asSpotLight(_light)->color;
 	default:
 		return glm::vec4{ 0, 0, 0, 0 }; // think about default value
 	}
@@ -53,9 +49,9 @@ glm::vec4 LightInterface::getDirection() const
 	switch (_type)
 	{
 	case Directional:
-		return _directLight->direction;
+		return asSpotLight(_light)->direction;
 	case Spot:
-		return _spotLight->direction;
+		return asSpotLight(_light)->direction;
 	default:
 		return glm::vec4{0, 0, 0, 0}; // think about default value
 	}
@@ -64,7 +60,7 @@ glm::vec4 LightInterface::getDirection() const
 glm::float_t LightInterface::getAngle() const
 {
 	if (_type == LightType::Spot)
-		return _spotLight->angle;
+		return asSpotLight(_light)->angle;
 
 	return 0; // think about default value
 }
@@ -72,7 +68,7 @@ glm::float_t LightInterface::getAngle() const
 glm::float_t LightInterface::getShadowPower() const
 {
 	if (_type == LightType::Spot)
-		return _spotLight->shadowPower;
+		return asSpotLight(_light)->shadowPower;
 
 	return 0; // think about default value
 }
@@ -82,46 +78,29 @@ glm::float_t LightInterface::getIntensity() const
 	switch (_type)
 	{
 	case Directional:
-		return _directLight->intensity;
+		return asSpotLight(_light)->intensity;
 	case Point:
-		return _pointLight->intensity;
+		return asPointLight(_light)->intensity;
 	case Spot:
-		return _spotLight->intensity;
+		return asSpotLight(_light)->intensity;
 	default:
 		return 0; // think about default value
 	}
 }
 
-void LightInterface::setLightStruct(DirectLight *directLight)
-{
-	_type = Directional;
-	_directLight = directLight;
-}
-
-void LightInterface::setLightStruct(PointLight *pointLight)
-{
-	_type = Point;
-	_pointLight = pointLight;
-}
-
-void LightInterface::setLightStruct(SpotLight *spotLight)
-{
-	_type = Spot;
-	_spotLight = spotLight;
-}
 
 void LightInterface::setColor(glm::vec4 color)
 {
 	switch (_type)
 	{
 	case Directional:
-		_directLight->color = color;
+		asSpotLight(_light)->color = color;
 		break;
 	case Point:
-		_pointLight->color = color;
+		asPointLight(_light)->color = color;
 		break;
 	case Spot:
-		_spotLight->color = color;
+		asSpotLight(_light)->color = color;
 		break;
 	default: //may should write log ?
 		break;
@@ -133,10 +112,10 @@ void LightInterface::setDirection(glm::vec4 direction)
 	switch (_type)
 	{
 	case Directional:
-		_directLight->direction = direction;
+		asSpotLight(_light)->direction = direction;
 		break;
 	case Spot:
-		_spotLight->direction = direction;
+		asSpotLight(_light)->direction = direction;
 		break;
 	default: //may should write log ?
 		break;
@@ -146,13 +125,13 @@ void LightInterface::setDirection(glm::vec4 direction)
 void LightInterface::setAngle(glm::float_t angle)
 {
 	if (_type == Spot)
-		_spotLight->angle = angle;
+		asSpotLight(_light)->angle = angle;
 }
 
 void LightInterface::setShadowPower(glm::float_t shadowPower)
 {
 	if (_type == Spot)
-		_spotLight->shadowPower = shadowPower;
+		asSpotLight(_light)->shadowPower = shadowPower;
 
 }
 
@@ -161,13 +140,13 @@ void LightInterface::setIntensity(glm::float_t intensity)
 	switch (_type)
 	{
 	case Directional:
-		_directLight->intensity = intensity;
+		asSpotLight(_light)->intensity = intensity;
 		break;
 	case Point:
-		_pointLight->intensity = intensity;
+		asPointLight(_light)->intensity = intensity;
 		break;
 	case Spot:
-		_spotLight->intensity = intensity;
+		asSpotLight(_light)->intensity = intensity;
 		break;
 	default: //may should write log ?
 		break;
@@ -179,10 +158,10 @@ void LightInterface::setPosition(glm::vec4 pos)
 	switch (_type)
 	{
 	case Point:
-		_pointLight->position = pos;
+		asPointLight(_light)->position = pos;
 		break;
 	case Spot:
-		_spotLight->position = pos;
+		asSpotLight(_light)->position = pos;
 		break;
 	default: //may should write log ?
 		break;

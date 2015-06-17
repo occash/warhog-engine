@@ -22,6 +22,10 @@ LightType LightComponent::type() const
 //    _type = t;
 //}
 
+void LightComponent::setType(LightType type)
+{
+	_lightInterface.setType(type);
+}
 
 glm::vec4 LightComponent::position() const
 {
@@ -71,20 +75,4 @@ glm::float_t LightComponent::shadowPower() const
 void LightComponent::setShadowPower(glm::float_t shadowPower)
 {
 	_lightInterface.setShadowPower(shadowPower);
-}
-
-
-void LightComponent::setLightStructure(DirectLight *directLight)
-{
-	_lightInterface.setLightStruct(directLight);
-}
-
-void LightComponent::setLightStructure(PointLight *pointLight)
-{
-	_lightInterface.setLightStruct(pointLight);
-}
-
-void LightComponent::setLightStructure(SpotLight *spotLight)
-{
-	_lightInterface.setLightStruct(spotLight);
 }

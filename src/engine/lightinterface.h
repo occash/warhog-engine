@@ -46,10 +46,14 @@ struct SpotLight
 	glm::float_t __padding1;
 };
 
+class RenderSystem;
+
 class LightInterface
 {
 public:
-	LightInterface();
+	LightInterface(RenderSystem *s);
+
+	void setType(LightType t);
 	
 	LightInterface(DirectLight *directLight);
 	LightInterface(PointLight *pointLight);
@@ -75,10 +79,9 @@ public:
 
 private:
 	LightType _type;
+	RenderSystem *_renderSys;
 
-	DirectLight *_directLight;
-	PointLight *_pointLight;
-	SpotLight *_spotLight;
+	void* _light;
 };
 
 #endif // !LIGH_INTERFACE

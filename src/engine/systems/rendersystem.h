@@ -11,10 +11,6 @@
 #include <entityx/System.h>
 #include <map>
 
-static DirectLight directLightBlock[64];
-static PointLight pointLightBlock[64];
-static SpotLight spotLightBlock[64];
-
 struct RenderInfo;
 class Shader;
 class Mesh;
@@ -39,7 +35,10 @@ public:
     void receive(const entityx::ComponentAddedEvent<MeshFilterComponent>& event);
     void receive(const entityx::ComponentRemovedEvent<MeshFilterComponent>& event);
 
-	LightComponent *createLightComponent(LightType lightType);
+
+	void changeLightType(){ ; }
+
+	void* getStucture(LightType lightType);
 
 private:
     void renderSkyBox();
@@ -55,6 +54,10 @@ private:
     Mesh *_boxMesh;
     Mesh *_skyMesh;
     Texture *_skyTexture;
+
+	DirectLight directLightBlock[64];
+	PointLight pointLightBlock[64];
+	SpotLight spotLightBlock[64];
 
 	int pointLightInd = 0;
 	int spotLightInd = 0;

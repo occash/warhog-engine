@@ -37,9 +37,6 @@ public:
 	glm::float_t shadowPower() const;
 	void setShadowPower(glm::float_t shadowPower);
 
-	void setLightStructure(DirectLight *directLight);
-	void setLightStructure(PointLight *pointLight);
-	void setLightStructure(SpotLight *spotLight);
 
 private:
     LightType _type;

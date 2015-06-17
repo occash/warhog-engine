@@ -189,8 +189,8 @@ void Engine::initialize()
 
 
 	Entity pukaLight = entities.create();
-	LightComponent* lightComp = systems.system<RenderSystem>()->createLightComponent(LightType::Point);
-	auto pukaLightHandle = pukaLight.assign<LightComponent>(*lightComp);
+	auto pukaLightHandle = pukaLight.assign<LightComponent>();
+	pukaLightHandle->setType(LightType::Point);
 	pukaLightHandle->setColor(glm::vec4{ 1, 1, 1, 1 });
 	pukaLightHandle->setIntensity(50);
 

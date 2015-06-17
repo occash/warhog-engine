@@ -172,30 +172,30 @@ void RenderSystem::configure(EventManager& events)
     glClear(GL_DEPTH_BUFFER_BIT);
 }
 
-LightComponent* RenderSystem::createLightComponent(LightType lightType)
+
+void* RenderSystem::getStucture(LightType lightType)
 {
-	LightComponent *newLight = new LightComponent();
 	switch (lightType)
 	{
 	case Undefined:
 		break;
 	case Directional:
-		newLight->setLightStructure(&directLightBlock[directLightInd]);
+		return (void*)(&directLightBlock[directLightInd]);
 		++directLightInd;
 		break;
 	case Point:
-		newLight->setLightStructure(&pointLightBlock[pointLightInd]);
+		return (void*)(&pointLightBlock[pointLightInd]);
 		++pointLightInd;
 		break;
 	case Spot:
-		newLight->setLightStructure(&spotLightBlock[spotLightInd]);
+		return (void*)(&spotLightBlock[spotLightInd]);
 		++spotLightInd;
 		break;
 	default:
 		break;
 	}
-
-	return newLight;
+	
+	return (void*)nullptr;
 }
 
 void RenderSystem::update(EntityManager& entities, EventManager& events, double dt)
