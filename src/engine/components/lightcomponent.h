@@ -37,10 +37,10 @@ public:
 	glm::float_t shadowPower() const;
 	void setShadowPower(glm::float_t shadowPower);
 
-
+	void setLightInterface(LightInterface *lightInterface);
 private:
     LightType _type;
-	LightInterface _lightInterface;
+	LightInterface *_lightInterface;
 
 };
 

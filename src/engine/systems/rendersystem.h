@@ -39,6 +39,7 @@ public:
 	void changeLightType(){ ; }
 
 	void* getStucture(LightType lightType);
+	LightInterface* getNewInterface(LightType lightType = Directional);
 
 private:
     void renderSkyBox();

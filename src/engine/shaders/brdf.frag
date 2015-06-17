@@ -30,7 +30,7 @@ uniform PointLight
 {
     vec4 position;
     vec3 color;
-    float power;
+    float intensity;
 } pLight[64];
 */
 
@@ -54,7 +54,7 @@ uniform SpotLight
 {
     vec4 position;
     vec3 color;
-    float power;
+    float intensity;
     vec4 direction;
     float cosA;
     float shadowPower;
@@ -166,11 +166,11 @@ void main()
 						distribution(normal, halfVec, mat.roughness) /
 						(4.0 * NdotL_clamped * NdotV_clamped);
 
-        color_spec += pLight[i].power * NdotL_clamped * 
+        color_spec += pLight[i].intensity * NdotL_clamped * 
 						max(brdf_spec, 0) * 
 						vec3(pLight[i].color) /
 						dist;
-        color_diff += pLight[i].power * NdotL_clamped * 
+        color_diff += pLight[i].intensity * NdotL_clamped * 
 					diffuseEnergyRatio(mat.fresnel0, normal, s) * 
 					mat.color * vec3(pLight[i].color) / dist;
     }
@@ -197,12 +197,12 @@ void main()
 						distribution(normal, halfVec, mat.roughness) /
 						(4.0 * NdotL_clamped * NdotV_clamped);
         
-		color_spec += spotFactor * sLight.power * NdotL_clamped * 
+		color_spec += spotFactor * sLight.intensity * NdotL_clamped * 
 						brdf_spec * 
 						sLight.color /
 						dist;
         
-		color_diff += spotFactor * sLight.power * NdotL_clamped * 
+		color_diff += spotFactor * sLight.intensity * NdotL_clamped * 
 					diffuseEnergyRatio(mat.fresnel0, normal, s) * 
 					mat.color * sLight.color / dist;
     }
@@ -219,7 +219,7 @@ void main()
 					, 
 					1.0);
 
-    //fragColor = vec4(mColor, 1.0);
+    //fragColor = vec4(pLight[0].position);
 	//fragColor = vec4(s, 1.0);
-	//fragColor = vec4(NdotL_clamped, 0.0, 0.0, 1.0);
+	//fragColor = vec4(pLight[0].color);
 }

@@ -180,22 +180,27 @@ void* RenderSystem::getStucture(LightType lightType)
 	case Undefined:
 		break;
 	case Directional:
-		return (void*)(&directLightBlock[directLightInd]);
-		++directLightInd;
+		return (void*)(&directLightBlock[directLightInd++]);
 		break;
 	case Point:
-		return (void*)(&pointLightBlock[pointLightInd]);
-		++pointLightInd;
+		return (void*)(&pointLightBlock[pointLightInd++]);
 		break;
 	case Spot:
-		return (void*)(&spotLightBlock[spotLightInd]);
-		++spotLightInd;
+		return (void*)(&spotLightBlock[spotLightInd++]);
 		break;
 	default:
 		break;
 	}
 	
 	return (void*)nullptr;
+}
+
+LightInterface* RenderSystem::getNewInterface(LightType lightType)
+{
+	LightInterface* newLightInterface = new LightInterface(this);
+	//newLightInterface->setType(lightType);
+
+	return newLightInterface;
 }
 
 void RenderSystem::update(EntityManager& entities, EventManager& events, double dt)
@@ -338,7 +343,7 @@ void RenderSystem::update(EntityManager& entities, EventManager& events, double 
 		auto lightComp = singleLight.component<LightComponent>();
 		auto transformComp = singleLight.component<TransformComponent>();
 
-		lightComp->setPosition(m.view * glm::vec4{ transformComp->position(), 1.0 } );
+		lightComp->setPosition((m.view * glm::vec4{ transformComp->position(), 1.0 } ));
 	}
 
     auto gameObjects = entities.entities_with_components<TransformComponent, MeshFilterComponent, MaterialComponent>();
