@@ -170,6 +170,18 @@ void RenderSystem::configure(EventManager& events)
     glFrontFace(GL_CCW);
 
     glClear(GL_DEPTH_BUFFER_BIT);
+
+	for (int i = 0; i < 64; ++i)
+	{
+		pointLightBlock[i].intensity = 0;
+		spotLightBlock[i].intensity = 0;
+		directLightBlock[i].intensity = 0;
+
+		pointLightBlock[i].color = glm::vec4{ 0, 0, 0, 0 };
+		spotLightBlock[i].color = glm::vec4{ 0, 0, 0, 0 };
+		directLightBlock[i].color = glm::vec4{ 0, 0, 0, 0 };
+
+	}
 }
 
 
@@ -390,11 +402,12 @@ void RenderSystem::update(EntityManager& entities, EventManager& events, double 
 		ShaderBlock *pLightBlock = shader->block("PointLightBlock");
 		pLightBlock->set(pointLightBlock);
 		
-		//ShaderBlock *dLightBlock = shader->block("DirectLightBlock");
-		//pLightBlock->set(directLightBlock);
+		ShaderBlock *dLightBlock = shader->block("DirectLightBlock");
+		dLightBlock->set(directLightBlock);
 
-		//ShaderBlock *sLightBlock = shader->block("SpotLightBlock");
-		//pLightBlock->set(spotLightBlock);
+		ShaderBlock *sLightBlock = shader->block("SpotLightBlock");
+		sLightBlock->set(spotLightBlock);
+
 		/*ShaderVariable *pLightVar;
 		pLightVar = shader->variable("pLight[0].power");
 		pLightVar->set((glm::float_t)100);
