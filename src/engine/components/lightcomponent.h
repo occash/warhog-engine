@@ -19,17 +19,11 @@ public:
 	LightType type() const;
 	void setType(LightType t);
 
-	glm::vec4 position() const;
-	void setPosition(const glm::vec4 &pos);
-
     glm::vec4 color() const;
     void setColor(const glm::vec4& c);
 
     float intensity() const;
     void setIntensity(float i);
-
-	glm::vec4 direction() const;
-	void setDirection(const glm::vec4 &dir);
 
 	glm::float_t angle() const;
 	void setAngle(glm::float_t angle);
@@ -37,6 +31,7 @@ public:
 	glm::float_t shadowPower() const;
 	void setShadowPower(glm::float_t shadowPower);
 
+	LightInterface* getLightInterface() { return _lightInterface; }
 	void setLightInterface(LightInterface *lightInterface);
 private:
     LightType _type;

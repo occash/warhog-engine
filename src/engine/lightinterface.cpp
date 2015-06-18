@@ -125,7 +125,7 @@ void LightInterface::setDirection(glm::vec4 direction)
 void LightInterface::setAngle(glm::float_t angle)
 {
 	if (_type == Spot)
-		asSpotLight(_light)->angle = angle;
+		asSpotLight(_light)->angle = cos(angle * 3.1415 / 180);
 }
 
 void LightInterface::setShadowPower(glm::float_t shadowPower)

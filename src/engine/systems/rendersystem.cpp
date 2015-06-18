@@ -181,6 +181,7 @@ void RenderSystem::configure(EventManager& events)
 		spotLightBlock[i].color = glm::vec4{ 0, 0, 0, 0 };
 		directLightBlock[i].color = glm::vec4{ 0, 0, 0, 0 };
 
+		spotLightBlock[i].shadowPower = 0;
 	}
 }
 
@@ -296,43 +297,8 @@ void RenderSystem::update(EntityManager& entities, EventManager& events, double 
     //glClear(GL_DEPTH_BUFFER_BIT);
 
 
-    //Setup lights
-    auto lights = entities.entities_with_components<TransformComponent, LightComponent>();
-    auto lightObject = lights.begin(); // зачем?
-
-    auto lightTransform = (*lightObject).component<TransformComponent>();
-    auto light = (*lightObject).component<LightComponent>();
-
-    glm::vec4 lightDir(0.0f, 0.0f, 1.0f, 0.0f);
-    //glm::vec3 lightRot = lightTransform->rotation();
-    /*  lightDir = glm::rotate(lightDir, lightRot.x, glm::vec3(0.0f, 1.0f, 0.0f));
-        lightDir = glm::rotate(lightDir, lightRot.y, glm::vec3(1.0f, 0.0f, 0.0f));
-        lightDir = glm::rotate(lightDir, lightRot.z, glm::vec3(0.0f, 0.0f, 1.0f));*/
-    lightDir = glm::normalize(lightDir);
-
-    DirectLight dlight;
-    //dlight.color = glm::vec3(light->color()) * glm::pi<float>();
-    //glm::vec4 lightDir4 = glm::vec4(lightDir);
-    //dlight.direction = glm::vec3(m.view * lightDir4);
-    //dlight.intensity = { 0.5, 0.5, 1 };
-
-    /////point light ////////////
-
-    auto pLight = entities.entities_with_components<TransformComponent, LightComponent>();
-    auto pLightObject = pLight.begin();
-
-    auto pLightTransform = (*pLightObject).component<TransformComponent>();
-    auto pLightComponent = (*pLightObject).component<LightComponent>();
-    glm::vec4 pLightPos(5.0f, 5.0f, 5.0f, 1.0f);
-
-    PointLight m_pLight;
-
-    //////////////////////////////
-    //////spot light//////////////
 
 
-
-    ///////////////////////////////
 
 	auto lightCollection = entities.entities_with_components<LightComponent>();
 
@@ -340,15 +306,24 @@ void RenderSystem::update(EntityManager& entities, EventManager& events, double 
 	{
 		auto lightComp = singleLight.component<LightComponent>();
 
-		//if (lightComp->type() != Directional)
-		//{
+		if (lightComp->type() != Directional)
+		{
 			auto transformComp = singleLight.component<TransformComponent>();
-			lightComp->setPosition((m.view * glm::vec4{ transformComp->position(), 1.0 }));
-		//}
+			lightComp->getLightInterface()->setPosition((m.view * glm::vec4{ transformComp->position(), 1.0 }));
+		}
 
 		if (lightComp->type() != Point)
 		{
 			//TODO: move direction to TransformComponent
+			auto transformComp = singleLight.component<TransformComponent>();
+			glm::vec3 lightDir(0.0f, 0.0f, -1.0f);
+			glm::vec3 lightRot = transformComp->rotation();
+			lightDir = glm::rotate(lightDir, lightRot.x, glm::vec3(1.0f, 0.0f, 0.0f));
+			lightDir = glm::rotate(lightDir, lightRot.y, glm::vec3(0.0f, 1.0f, 0.0f));
+			lightDir = glm::rotate(lightDir, lightRot.z, glm::vec3(0.0f, 0.0f, 1.0f));
+			lightDir = glm::normalize(lightDir);
+
+			lightComp->getLightInterface()->setDirection(m.view * glm::vec4{ lightDir, 0.0 });
 		}
 	}
 
