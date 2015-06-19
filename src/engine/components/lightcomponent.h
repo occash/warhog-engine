@@ -12,12 +12,12 @@ class ENGINE_EXPORT LightComponent :
     public entityx::Component<LightComponent>
 {
 public:
-	LightComponent();
+    LightComponent();
 
     ~LightComponent();
 
-	LightType type() const;
-	void setType(LightType t);
+    LightType type() const;
+    void setType(LightType t);
 
     glm::vec4 color() const;
     void setColor(const glm::vec4& c);
@@ -25,17 +25,17 @@ public:
     float intensity() const;
     void setIntensity(float i);
 
-	glm::float_t angle() const;
-	void setAngle(glm::float_t angle);
+    glm::float_t angle() const;
+    void setAngle(glm::float_t angle);
 
-	glm::float_t shadowPower() const;
-	void setShadowPower(glm::float_t shadowPower);
+    glm::float_t shadowPower() const;
+    void setShadowPower(glm::float_t shadowPower);
 
-	LightInterface* getLightInterface() { return _lightInterface; }
-	void setLightInterface(LightInterface *lightInterface);
+    LightInterface *getLightInterface() { return _lightInterface; }
+    void setLightInterface(LightInterface *lightInterface);
 private:
     LightType _type;
-	LightInterface *_lightInterface;
+    LightInterface *_lightInterface;
 
 };
 

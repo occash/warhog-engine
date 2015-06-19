@@ -23,17 +23,17 @@ public:
     virtual void get(void *, int);
     virtual void set(void *, int);
 
-	template<typename T>
-	void set(const T& t)
-	{
-		set((void *)&t, sizeof(T));
-	}
+    template<typename T>
+    void set(const T& t)
+    {
+        set((void *)&t, sizeof(T));
+    }
 
-	template<typename T, unsigned int N>
-	void set(const T (&t)[N])
-	{
-		set((void *)t, sizeof(T) * N);
-	}
+    template<typename T, unsigned int N>
+    void set(const T (&t)[N])
+    {
+        set((void *)t, sizeof(T) * N);
+    }
 };
 
 class Shader
@@ -44,7 +44,6 @@ public:
 
     virtual void load();
     virtual void unload();
-	virtual unsigned int getProgram() { return 0; }
 
     virtual ShaderVariable *variable(const char *) const;
     virtual ShaderBlock *block(const char *) const;

@@ -34,6 +34,8 @@ public:
 
     glm::vec3 rotateVector(const glm::vec3& vector);//return rotated vector
 
+    glm::vec3 direction();
+
 private:
     glm::vec3 _position;
     glm::vec3 _rotation;

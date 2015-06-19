@@ -3,7 +3,7 @@
 
 LightComponent::LightComponent()
 {
-
+    _type = LightType::Undefined;
 }
 
 
@@ -19,51 +19,51 @@ LightType LightComponent::type() const
 
 void LightComponent::setLightInterface(LightInterface *lightInterface)
 {
-	_lightInterface = lightInterface;
+    _lightInterface = lightInterface;
 }
 
 void LightComponent::setType(LightType type)
 {
-	_type = type;
-	_lightInterface->setType(type);
+    _type = type;
+    _lightInterface->setType(type);
 }
 
 glm::vec4 LightComponent::color() const
 {
-	return _lightInterface->getColor();
+    return _lightInterface->getColor();
 }
 
 void LightComponent::setColor(const glm::vec4& c)
 {
-	_lightInterface->setColor(c);
+    _lightInterface->setColor(c);
 }
 
 float LightComponent::intensity() const
 {
-	return _lightInterface->getIntensity();
+    return _lightInterface->getIntensity();
 }
 
 void LightComponent::setIntensity(float i)
 {
-	_lightInterface->setIntensity(i);
+    _lightInterface->setIntensity(i);
 }
 
 glm::float_t LightComponent::shadowPower() const
 {
-	return _lightInterface->getShadowPower();
+    return _lightInterface->getShadowPower();
 }
 
 void LightComponent::setShadowPower(glm::float_t shadowPower)
 {
-	_lightInterface->setShadowPower(shadowPower);
+    _lightInterface->setShadowPower(shadowPower);
 }
 
 glm::float_t LightComponent::angle() const
 {
-	return _lightInterface->getAngle();
+    return _lightInterface->getAngle();
 }
 
 void LightComponent::setAngle(glm::float_t angle)
 {
-	_lightInterface->setAngle(angle);
+    _lightInterface->setAngle(angle);
 }

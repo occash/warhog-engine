@@ -103,8 +103,8 @@ void Engine::configure()
     systems.system<RenderSystem>()->chooseBackend("OpenGL"); //TODO: read from config
     _window = systems.system<RenderSystem>()->window();
 
-	systems.add<SoundSystem>();
-	systems.configure();
+    systems.add<SoundSystem>();
+    systems.configure();
 
 }
 
@@ -121,10 +121,8 @@ void Engine::initialize()
     camera->setFarPlane(100.0f);
     camera->setFieldOfView(60.0f);
 
-    cameraPos->setPosition(glm::vec3(0.0f, 0.0f, 5.0f));
+    cameraPos->setPosition(glm::vec3(0.0f, 0.0f, 10.0f));
     cameraPos->setRotation(glm::vec3(0.0f, 0.0f, 0.0f));
-
-    //Create light
 
     //Create model
     Entity modelId = entities.create();
@@ -132,7 +130,7 @@ void Engine::initialize()
     auto transform = modelId.assign<TransformComponent>();
     auto meshFilter = modelId.assign<MeshFilterComponent>();
     auto material = modelId.assign<MaterialComponent>();
-	auto sound = modelId.assign<SoundComponent>();
+    auto sound = modelId.assign<SoundComponent>();
 
 
 
@@ -178,40 +176,40 @@ void Engine::initialize()
     mat->setProperty("roughness", 0.25f);
 
 
-	Entity pukaLight = entities.create();
-	auto pukaLightHandle = pukaLight.assign<LightComponent>();
-	pukaLightHandle->setLightInterface(systems.system<RenderSystem>()->getNewInterface());
-	pukaLightHandle->setType(LightType::Point);
-	pukaLightHandle->setColor(glm::vec4{ 0, 1, 0, 1 });
-	pukaLightHandle->setIntensity(50);
+    Entity pukaLight = entities.create();
+    auto pukaLightHandle = pukaLight.assign<LightComponent>();
+    pukaLightHandle->setLightInterface(systems.system<RenderSystem>()->getNewInterface());
+    pukaLightHandle->setType(LightType::Point);
+    pukaLightHandle->setColor(glm::vec4{ 0, 1, 0, 1 });
+    pukaLightHandle->setIntensity(50);
 
-	auto pukaLightTransform = pukaLight.assign<TransformComponent>();
-	pukaLightTransform->setPosition(glm::vec3{ 3, 0, 5 });
+    auto pukaLightTransform = pukaLight.assign<TransformComponent>();
+    pukaLightTransform->setPosition(glm::vec3{ 3, 0, 5 });
 
-	Entity pukaLight2 = entities.create();
-	auto pukaLightHandle2 = pukaLight2.assign<LightComponent>();
-	pukaLightHandle2->setLightInterface(systems.system<RenderSystem>()->getNewInterface());
-	pukaLightHandle2->setType(LightType::Point);
-	pukaLightHandle2->setColor(glm::vec4{ 0, 0, 1, 1 });
-	pukaLightHandle2->setIntensity(50);
+    Entity pukaLight2 = entities.create();
+    auto pukaLightHandle2 = pukaLight2.assign<LightComponent>();
+    pukaLightHandle2->setLightInterface(systems.system<RenderSystem>()->getNewInterface());
+    pukaLightHandle2->setType(LightType::Point);
+    pukaLightHandle2->setColor(glm::vec4{ 0, 0, 1, 1 });
+    pukaLightHandle2->setIntensity(50);
 
-	auto pukaLightTransform2 = pukaLight2.assign<TransformComponent>();
-	pukaLightTransform2->setPosition(glm::vec3{ -3, 0, 5 });
+    auto pukaLightTransform2 = pukaLight2.assign<TransformComponent>();
+    pukaLightTransform2->setPosition(glm::vec3{ -3, 0, 5 });
 
-	Entity pukaSpot = entities.create();
-	auto pukaSpotLightHandle = pukaSpot.assign<LightComponent>();
-	pukaSpotLightHandle->setLightInterface(systems.system<RenderSystem>()->getNewInterface());
-	pukaSpotLightHandle->setType(LightType::Spot);
-	pukaSpotLightHandle->setColor(glm::vec4{ 1, 1, 1, 1 });
-	pukaSpotLightHandle->setAngle(30.0f);
-	pukaSpotLightHandle->setIntensity(50);
-	pukaSpotLightHandle->setShadowPower(5.0f);
+    Entity pukaSpot = entities.create();
+    auto pukaSpotLightHandle = pukaSpot.assign<LightComponent>();
+    pukaSpotLightHandle->setLightInterface(systems.system<RenderSystem>()->getNewInterface());
+    pukaSpotLightHandle->setType(LightType::Spot);
+    pukaSpotLightHandle->setColor(glm::vec4{ 1, 1, 1, 1 });
+    pukaSpotLightHandle->setAngle(30.0f);
+    pukaSpotLightHandle->setIntensity(50);
+    pukaSpotLightHandle->setShadowPower(5.0f);
 
 
-	auto pukaSpotLightTransform = pukaSpot.assign <TransformComponent>();
-	pukaSpotLightTransform->setPosition(glm::vec3{ 0, -3, 3 });
-	pukaSpotLightTransform->setRotation(glm::vec3{ 50, 0, 0 });
-	//pukaLight.assign<systems.system<RenderSystem>()->createLightComponent(LightType::Point)>();
+    auto pukaSpotLightTransform = pukaSpot.assign <TransformComponent>();
+    pukaSpotLightTransform->setPosition(glm::vec3{ 0, -3, 3 });
+    pukaSpotLightTransform->setRotation(glm::vec3{ 50, 0, 0 });
+    //pukaLight.assign<systems.system<RenderSystem>()->createLightComponent(LightType::Point)>();
 
 
     //Entity scriptId = entity_manager->create();
@@ -248,10 +246,6 @@ void Engine::update(double dt)
         }*/
     //systems.update<InputSystem>(dt);
     //systems.update<ScriptSystem>(dt);
-    //auto lightPos = _lightNode.component<TransformComponent>();
-    //glm::vec3 rot = lightPos->rotation();
-    //rot.y = rot.y + 1;
-    //lightPos->setRotation(rot);
 
     _elapsed += dt;
     if (_elapsed >= 4)
@@ -266,13 +260,6 @@ void Engine::update(double dt)
 
         _elapsed = 0.0;
     }
-
-    /*  auto lightPos = _lightNode.component<TransformComponent>();
-        glm::vec3 rot = lightPos->rotation();
-        rot.y = rot.y + 1;
-        if (rot.y == 360)
-        rot.y = 0;
-        lightPos->setRotation(rot);*/
 
     systems.update<RenderSystem>(dt);
     systems.update<ScriptSystem>(dt);
