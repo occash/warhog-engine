@@ -1,6 +1,9 @@
 #include "transformcomponent.h"
 #include <glm/gtx/rotate_vector.hpp>
 
+//TODO: make such function as move, rotate, scale
+// remove rotate vector to math
+
 TransformComponent::TransformComponent()
     : _scale(1.0f, 1.0f, 1.0f)
 {
@@ -48,4 +51,9 @@ glm::vec3 TransformComponent::rotateVector(const glm::vec3& vector)
     newVector = glm::rotate(newVector, _rotation.y, glm::vec3(0.0f, 1.0f, 0.0f));
     newVector = glm::rotate(newVector, _rotation.z, glm::vec3(0.0f, 0.0f, 1.0f));
     return newVector;
+}
+
+glm::vec3 TransformComponent::direction()
+{
+    return rotateVector(glm::vec3(0, 0, -1)); // the object looks forward (as you)
 }

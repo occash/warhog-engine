@@ -5,6 +5,7 @@
 #include "systems/scriptsystem.h"
 #include "systems/soundsystem.h"
 
+
 //Components
 #include "components/infocomponent.h"
 #include "components/transformcomponent.h"
@@ -13,14 +14,11 @@
 #include "components/materialcomponent.h"
 #include "components/lightcomponent.h"
 #include "components/soundcomponent.h"
-#include "components/listenercomponent.h"
-
 
 //Engine objects
 #include "mesh.h"
 #include "shader.h"
 #include "material.h"
-#include "soundsource.h"
 
 //Resources
 #include "resourcemanager.h"
@@ -104,45 +102,47 @@ void Engine::configure()
     systems.add<RenderSystem>();
     systems.system<RenderSystem>()->chooseBackend("OpenGL"); //TODO: read from config
     _window = systems.system<RenderSystem>()->window();
+
     systems.add<SoundSystem>();
+    systems.configure();
+
 }
 
 void Engine::initialize()
 {
     //Create camera
-    _cameraNode = entities.create();
-    auto cameraInfo = _cameraNode.assign<InfoComponent>("Main camera");
-    auto cameraTransform = _cameraNode.assign<TransformComponent>();
-    auto camera = _cameraNode.assign<CameraComponent>();
-    auto listenerCom = _cameraNode.assign<ListenerComponent>();
-    SoundListener *soundListener = new SoundListener();
-    listenerCom->setSoundListener(soundListener);
+    Entity cameraId = entities.create();
+    auto cameraInfo = cameraId.assign<InfoComponent>("Main camera");
+    auto cameraPos = cameraId.assign<TransformComponent>();
+    auto camera = cameraId.assign<CameraComponent>();
 
-    camera->setClearColor(glm::vec3(0.0f, 0.0f, 0.0f));
+    camera->setClearColor(glm::vec3(0.3f, 0.6f, 0.3f));
     camera->setNearPlane(0.1f);
     camera->setFarPlane(100.0f);
     camera->setFieldOfView(60.0f);
 
-    cameraTransform->setPosition(glm::vec3(0.0f, 0.0f, 2.0f));
-    cameraTransform->setRotation(glm::vec3(0.0f, 0.0f, 0.0f));
-
-    //Create light
-    Entity lightId = entities.create();
-    lightId.assign<InfoComponent>("Light");
-    _lightNode = lightId;
-    auto lightPos = lightId.assign<TransformComponent>();
-    auto light = lightId.assign<LightComponent>();
-    light->setType(LightComponent::Directional);
-    light->setColor(glm::vec4(1.0f, 1.0f, 1.0f, 0.0f));
-    light->setIntensity(0.1f);
+    cameraPos->setPosition(glm::vec3(0.0f, 0.0f, 10.0f));
+    cameraPos->setRotation(glm::vec3(0.0f, 0.0f, 0.0f));
 
     //Create model
-    _modelNode = entities.create();
-    _modelNode.assign<InfoComponent>("Dragon");
-    auto modelTransform = _modelNode.assign<TransformComponent>();
-    auto meshFilter = _modelNode.assign<MeshFilterComponent>();
-    auto material = _modelNode.assign<MaterialComponent>();
-    auto soundCom = _modelNode.assign<SoundComponent>();
+    Entity modelId = entities.create();
+    modelId.assign<InfoComponent>("Dragon");
+    auto transform = modelId.assign<TransformComponent>();
+    auto meshFilter = modelId.assign<MeshFilterComponent>();
+    auto material = modelId.assign<MaterialComponent>();
+    auto sound = modelId.assign<SoundComponent>();
+
+
+
+    transform->setPosition({ 0, 0, 0 });
+
+    Entity model2 = entities.create();
+    auto transform2 = model2.assign<TransformComponent>();
+    auto meshFilter2 = model2.assign<MeshFilterComponent>();
+    auto material2 = model2.assign<MaterialComponent>();
+
+    transform2->setPosition({ 0, 0, 0 });
+
     //ResourceManager manager;
     //manager.add<MeshResource>();
     //manager.add<ScriptResource>();
@@ -151,20 +151,23 @@ void Engine::initialize()
     std::ifstream meshIn("resources/dragon", std::ios::binary | std::ios::in);
     Object *meshObject = nullptr;
     meshResource.load(meshIn, meshObject);
-    Mesh *cube = static_cast<Mesh *>(meshObject);
+
+    //Mesh *cube = static_cast<Mesh *>(meshObject);
     Geometry m_geometry(renderer);
-    //Mesh *cube = m_geometry.cube(1, 1, 1);
+    Mesh *cube = m_geometry.plane(10, 10);
     cube->load();
     meshFilter->setMesh(cube);
+    meshFilter2->setMesh(cube);
 
     Shader *shader = renderer->createShader();
-    shader->vertexSource = readFile("resources/shaders/brdf.vert");
-    shader->pixelSource = readFile("resources/shaders/brdf.frag");
+    shader->vertexSource = readFile("../src/engine/shaders/brdf.vert");
+    shader->pixelSource = readFile("../src/engine/shaders/brdf.frag");
     shader->load();
 
     mat = new Material;
     mat->setShader(shader);
     material->setMaterial(mat);
+    material2->setMaterial(mat);
     mat->setProperty("color", glm::vec3(0.6f, 0.84f, 0.91f) / 3.14f);
     float refractiveIndex = 16.0f;
     float fresnel0 = ((1.0f - refractiveIndex) / (1.0f + refractiveIndex));
@@ -172,20 +175,46 @@ void Engine::initialize()
     mat->setProperty("fresnel0", fresnel0);
     mat->setProperty("roughness", 0.25f);
 
+
+    Entity pukaLight = entities.create();
+    auto pukaLightHandle = pukaLight.assign<LightComponent>();
+    pukaLightHandle->setLightInterface(systems.system<RenderSystem>()->getNewInterface());
+    pukaLightHandle->setType(LightType::Point);
+    pukaLightHandle->setColor(glm::vec4{ 0, 1, 0, 1 });
+    pukaLightHandle->setIntensity(50);
+
+    auto pukaLightTransform = pukaLight.assign<TransformComponent>();
+    pukaLightTransform->setPosition(glm::vec3{ 3, 0, 5 });
+
+    Entity pukaLight2 = entities.create();
+    auto pukaLightHandle2 = pukaLight2.assign<LightComponent>();
+    pukaLightHandle2->setLightInterface(systems.system<RenderSystem>()->getNewInterface());
+    pukaLightHandle2->setType(LightType::Point);
+    pukaLightHandle2->setColor(glm::vec4{ 0, 0, 1, 1 });
+    pukaLightHandle2->setIntensity(50);
+
+    auto pukaLightTransform2 = pukaLight2.assign<TransformComponent>();
+    pukaLightTransform2->setPosition(glm::vec3{ -3, 0, 5 });
+
+    Entity pukaSpot = entities.create();
+    auto pukaSpotLightHandle = pukaSpot.assign<LightComponent>();
+    pukaSpotLightHandle->setLightInterface(systems.system<RenderSystem>()->getNewInterface());
+    pukaSpotLightHandle->setType(LightType::Spot);
+    pukaSpotLightHandle->setColor(glm::vec4{ 1, 1, 1, 1 });
+    pukaSpotLightHandle->setAngle(30.0f);
+    pukaSpotLightHandle->setIntensity(50);
+    pukaSpotLightHandle->setShadowPower(5.0f);
+
+
+    auto pukaSpotLightTransform = pukaSpot.assign <TransformComponent>();
+    pukaSpotLightTransform->setPosition(glm::vec3{ 0, -3, 3 });
+    pukaSpotLightTransform->setRotation(glm::vec3{ 50, 0, 0 });
+    //pukaLight.assign<systems.system<RenderSystem>()->createLightComponent(LightType::Point)>();
+
+
     //Entity scriptId = entity_manager->create();
     //auto scriptSystem = systems.system<ScriptSystem>();
     //scriptSystem->assign(cameraId, script);
-    //sound:
-
-    SoundSource *soundSource = new SoundSource();
-    soundSource->setFileName("resources/sounds/SecretGarden.mp3");
-    systems.system<SoundSystem>()->createSound(soundSource);
-    soundCom->setSoundSource(soundSource);
-    soundCom->changeLoopMode(true);
-    soundCom->play();
-    modelTransform->setPosition(glm::vec3(0.0f, 0.0f, 0.0f));
-    //modelTransform->setRotation(glm::vec3(0.3f, 0.3f, 0.3f));
-
 }
 
 void Engine::update(double dt)
@@ -217,11 +246,7 @@ void Engine::update(double dt)
         }*/
     //systems.update<InputSystem>(dt);
     //systems.update<ScriptSystem>(dt);
-    //auto lightPos = _lightNode.component<TransformComponent>();
-    //glm::vec3 rot = lightPos->rotation();
-    //rot.y = rot.y + 1;
-    //lightPos->setRotation(rot);
-    auto soundCom = _modelNode.component<SoundComponent>();
+
     _elapsed += dt;
     if (_elapsed >= 4)
     {
@@ -229,25 +254,15 @@ void Engine::update(double dt)
         float roughness = 0.1f * (std::rand() % 10) + 0.01;
         float fresnel0 = ((1.0f - refractiveIndex) / (1.0f + refractiveIndex));
         fresnel0 = fresnel0 * fresnel0;
+
         mat->setProperty("fresnel0", fresnel0);
         mat->setProperty("roughness", roughness);
+
         _elapsed = 0.0;
     }
-    auto cameraPos = _cameraNode.component<TransformComponent>();
-    glm::vec3 rot = cameraPos->rotation();
-    rot.y = (float)(rot.y + 0.1);
-    if (rot.y >= 360)
-        rot.y = 0.0f;
-    float angle = 3.14f * rot.y / 180.0f;
-    cameraPos->setRotation(rot);
-    glm::vec3 pos = cameraPos->position();;
-    pos.z = (float)cos(angle);
-    pos.x = (float)sin(angle);
-    cameraPos->setPosition(pos);
 
     systems.update<RenderSystem>(dt);
     systems.update<ScriptSystem>(dt);
-    systems.update<SoundSystem>(dt);
 }
 
 Window *Engine::window() const
@@ -274,8 +289,4 @@ void Engine::addComponent(entityx::Entity id, const std::string& name)
         id.assign<MeshFilterComponent>();
     if (name == "Script")
         id.assign<ScriptComponent>();
-    if (name == "Sound")
-        id.assign<SoundComponent>();
-    if (name == "Listener")
-        id.assign<ListenerComponent>();
 }

@@ -99,26 +99,12 @@ struct RenderQuad
 
 RenderQuad renderQuad;
 
-struct MatrixBlock
-{
-    glm::mat4 modelView;
-    glm::mat4 projection;
-};
-
 struct MaterialBlock
 {
     glm::vec3 color;
     glm::float_t fresnel0;
     glm::float_t roughness;
     glm::float_t __padding1[3];
-};
-
-struct DirectLight
-{
-    glm::vec3 color;
-    glm::float_t __padding0;
-    glm::vec3 direction;
-    glm::float_t __padding1;
 };
 
 struct SkyboxBlock
@@ -173,6 +159,72 @@ void RenderSystem::configure(EventManager& events)
     glFrontFace(GL_CCW);
 
     glClear(GL_DEPTH_BUFFER_BIT);
+
+    for (int i = 0; i < 64; ++i)
+    {
+        pointLightBlock[i].intensity = 0;
+        spotLightBlock[i].intensity = 0;
+        directLightBlock[i].intensity = 0;
+
+        pointLightBlock[i].color = glm::vec4{ 0, 0, 0, 0 };
+        spotLightBlock[i].color = glm::vec4{ 0, 0, 0, 0 };
+        directLightBlock[i].color = glm::vec4{ 0, 0, 0, 0 };
+
+        spotLightBlock[i].shadowPower = 0;
+    }
+}
+
+
+void *RenderSystem::getStucture(LightType lightType)
+{
+    switch (lightType)
+    {
+    case Directional:
+        return (void *)(&directLightBlock[directLightInd++]);
+        break;
+    case Point:
+        return (void *)(&pointLightBlock[pointLightInd++]);
+        break;
+    case Spot:
+        return (void *)(&spotLightBlock[spotLightInd++]);
+        break;
+    default:
+        break;
+    }
+
+    return nullptr;
+}
+
+LightInterface *RenderSystem::getNewInterface(LightType lightType)
+{
+    LightInterface *newLightInterface = new LightInterface(this);
+    //newLightInterface->setType(lightType);
+
+    return newLightInterface;
+}
+
+void RenderSystem::updateLight(entityx::EntityManager& entities, const MatrixBlock& m)
+{
+    auto lightCollection = entities.entities_with_components<LightComponent>();
+
+    for (auto singleLight : lightCollection)
+    {
+        auto lightComp = singleLight.component<LightComponent>();
+
+        if (lightComp->type() != Directional)
+        {
+            auto transformComp = singleLight.component<TransformComponent>();
+            lightComp->getLightInterface()->setPosition((m.view * glm::vec4{ transformComp->position(), 1.0 }));
+        }
+
+        if (lightComp->type() != Point)
+        {
+            auto transformComp = singleLight.component<TransformComponent>();
+            glm::vec3 lightDir = transformComp->direction();
+
+            lightComp->getLightInterface()->setDirection(m.view * glm::vec4{ lightDir, 0.0 });
+        }
+    }
 }
 
 void RenderSystem::update(EntityManager& entities, EventManager& events, double dt)
@@ -188,45 +240,32 @@ void RenderSystem::update(EntityManager& entities, EventManager& events, double 
 
     MatrixBlock m;
 
-    //glm::vec3 camPos = camTransform->position();
-    static float x = 0;
-    static float z = 0;
-    static float i = 0;
-
-
-    /// camera is turning around the point (0,0) ////////////////////////////
-    float start = 2; // radius
-    //x = start*cos(i);
-    //z = start*sin(i);
-    // i += 0.01;
-    x = 2;
-    //glm::vec3 camPos(x, 0, z);
     glm::vec3 camPos = camTransform->position();
+
     glm::vec3 camRot = camTransform->rotation();
 
-    glm::vec3 viewDir = glm::vec3(0.0f, 0.0f, -1.0f);
+    glm::vec3 viewDir = glm::vec3(0.0f, 0.0f, -0.0f);
     glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
-    viewDir = camTransform->rotateVector(viewDir);
-    cameraUp = camTransform->rotateVector(cameraUp);
+
     //yaw
-    //viewDir = glm::rotate(viewDir, camRot.x, glm::vec3(1.0f, 0.0f, 0.0f));
+    viewDir = glm::rotate(viewDir, camRot.x, glm::vec3(0.0f, 1.0f, 0.0f));
     //pitch
-    //viewDir = glm::rotate(viewDir, camRot.y, glm::vec3(0.0f, 1.0f, 0.0f));
+    viewDir = glm::rotate(viewDir, camRot.y, glm::vec3(1.0f, 0.0f, 0.0f));
     //roll
-    //viewDir = glm::rotate(viewDir, camRot.z, glm::vec3(0.0f, 0.0f, 1.0f));
     /*  cameraUp = glm::normalize(glm::cross(glm::vec3(1.0f, 0.0f, 0.0f), viewDir));
         cameraUp = glm::rotate(cameraUp, camRot.z, glm::vec3(0.0f, 0.0f, 1.0f));*/
 
     glm::mat4 view = glm::lookAt(
                          camPos,
-                         camPos  + viewDir,
+                         glm::vec3(0, 0, 0),
                          cameraUp
                      );
 
     camera->setAspect(float(_window->width()) / float(_window->height()));
 
     glm::mat4 model = glm::mat4(1.0f);
-    m.modelView = view * model;
+    m.model = model;
+    m.view = view;
     m.projection = glm::perspective(
                        camera->fieldOfView(),
                        camera->aspect(),
@@ -256,25 +295,7 @@ void RenderSystem::update(EntityManager& entities, EventManager& events, double 
     */
     //glClear(GL_DEPTH_BUFFER_BIT);
 
-
-    //Setup lights
-    auto lights = entities.entities_with_components<TransformComponent, LightComponent>();
-    auto lightObject = lights.begin();
-
-    auto lightTransform = (*lightObject).component<TransformComponent>();
-    auto light = (*lightObject).component<LightComponent>();
-
-    glm::vec3 lightDir(0.0f, 0.0f, 1.0f);
-    glm::vec3 lightRot = lightTransform->rotation();
-    lightDir = glm::rotate(lightDir, lightRot.x, glm::vec3(0.0f, 1.0f, 0.0f));
-    lightDir = glm::rotate(lightDir, lightRot.y, glm::vec3(1.0f, 0.0f, 0.0f));
-    lightDir = glm::rotate(lightDir, lightRot.z, glm::vec3(0.0f, 0.0f, 1.0f));
-    lightDir = glm::normalize(lightDir);
-
-    DirectLight dlight;
-    dlight.color = glm::vec3(light->color()) * glm::pi<float>();
-    glm::vec4 lightDir4 = glm::vec4(lightDir, 1.0f);
-    dlight.direction = glm::vec3(lightDir4 * m.modelView);
+    updateLight(entities, m);
 
     auto gameObjects = entities.entities_with_components<TransformComponent, MeshFilterComponent, MaterialComponent>();
 
@@ -293,12 +314,22 @@ void RenderSystem::update(EntityManager& entities, EventManager& events, double 
         glm::vec3 scl = transform->scale();
         glm::mat4 model = glm::mat4(1.0f);
         applyTransform(model, pos, rot, scl);
-        m.modelView = view * model;
+        m.model = model;
+        m.view = view;
+
+        //For code review: shader updates from one gameObject to another,
+        //so, should it be in cycle and should we pass (set) light block in cycle to gpu?
         ShaderBlock *matricies = shader->block("MatrixBlock");
         matricies->set(&m, sizeof(MatrixBlock));
 
-        ShaderBlock *directlight = shader->block("DirectLight");
-        directlight->set(&dlight, sizeof(DirectLight));
+        ShaderBlock *pLightBlock = shader->block("PointLightBlock");
+        pLightBlock->set(pointLightBlock);
+
+        ShaderBlock *dLightBlock = shader->block("DirectLightBlock");
+        dLightBlock->set(directLightBlock);
+
+        ShaderBlock *sLightBlock = shader->block("SpotLightBlock");
+        sLightBlock->set(spotLightBlock);
 
         meshFilter->mesh()->draw();
         shader->unbind();
@@ -434,8 +465,8 @@ void RenderSystem::chooseBackend(const std::string& name)
         _boxShader->load();*/
 
     _skyShader = _renderer->createShader();
-    _skyShader->vertexSource = readFile("resources/shaders/skybox.vert");
-    _skyShader->pixelSource = readFile("resources/shaders/skybox.frag");
+    _skyShader->vertexSource = readFile("../src/engine/shaders/skybox.vert");
+    _skyShader->pixelSource = readFile("../src/engine/shaders/skybox.frag");
     _skyShader->load();
 
     TextureResource texResource(_renderer);

@@ -1,5 +1,13 @@
 #version 430
 
+in Data 
+{
+    vec3 position; // camera space
+	vec3 normal;   // camera space
+} DataIn;
+
+out vec4 fragColor;
+
 layout(std140)
 uniform Material
 {
@@ -8,25 +16,59 @@ uniform Material
     float roughness;
 } mat;
 
+struct DirectLight
+{
+    vec4 color;
+    vec4 direction;
+    float intensity;
+};
+
 layout(std140)
-uniform DirectLight
+uniform DirectLightBlock
 {
-    vec3 color;
-    vec3 direction;
-} light;
+	DirectLight dLight[64];
+};
 
-in Data 
+struct PointLight
 {
-	vec3 position;
-	vec3 normal;
-} DataIn;
+	vec4 color;
+	vec4 position;
+	float intensity;
+};
 
-out vec4 fragColor;
+layout(std140)
+uniform PointLightBlock
+{
+	PointLight pLight[64];
+};
+
+struct SpotLight
+{
+    vec4 position;
+    vec4 color;
+    vec4 direction;
+    float angle;
+    float shadowPower;
+	float intensity;
+};
+
+layout(std140)
+uniform SpotLightBlock
+{
+	SpotLight sLight[64];
+};
+
+uniform MatrixBlock
+{
+    mat4 model;
+    mat4 view;
+    mat4 projection;
+} mvp;
 
 //Schlick approximation
-float fresnel(float f0, vec3 n, vec3 l)
+float fresnel(float f0, vec3 h, vec3 l)
 {
-    return f0 + (1.0 - f0) * pow(1.0 - dot(n, l), 5.0);
+    return f0 + (1.0 - f0) * pow(1.0 - dot(h, l), 5.0);
 }
 
 //Beckmann
@@ -35,7 +77,8 @@ float distribution(vec3 n, vec3 h, float roughness)
     float m_Sq = roughness * roughness;
     float NdotH_Sq = max(dot(n, h), 0.0);
     NdotH_Sq = NdotH_Sq * NdotH_Sq;
-    return exp((NdotH_Sq - 1.0) / (m_Sq * NdotH_Sq)) / (3.14159265 * m_Sq * NdotH_Sq * NdotH_Sq);
+    return exp((NdotH_Sq - 1.0) / (m_Sq * NdotH_Sq)) / 
+			(3.14159265 * m_Sq * NdotH_Sq * NdotH_Sq);
 }
 
 //Cook-Torrance
@@ -50,29 +93,150 @@ float geometry(vec3 n, vec3 h, vec3 v, vec3 l, float roughness)
     return min(min(2.0 * NdotH * NdotV_clamped / VdotH, 2.0 * NdotH * NdotL_clamped / VdotH), 1.0);
 }
 
+
 //(1 - f0)
 float diffuseEnergyRatio(float f0, vec3 n, vec3 l)
 {
-    return 1.0 - f0;
+    return 1.0 - f0; //(1.0 - (f0  + (1 - f0) * pow(dot(n, l), 5)));
 }
+
+/*vec3 ads()
+{
+    vec3 n = normalize(DataIn.normal);
+    vec3 s = normalize(vec3(pLight.position) - DataIn.position);
+    vec3 v = normalize(-DataIn.position);
+    vec3 h = normalize(v + s);
+    return pLight.color *
+			(0.03 +
+			0.1 * max(dot(s, DataIn.normal), 0.0) +
+			0.5 * pow(max(dot(h,n), 0.0), 3));
+}*/
+
+
 
 void main()
 {
-	vec3 normal = normalize(DataIn.normal);
-	vec3 view = -normalize(DataIn.position);
-	vec3 halfVec = normalize(light.direction + view);
-	float NdotL = dot(normal, light.direction);
-	float NdotV = dot(normal, view);
-	float NdotL_clamped = max(NdotL, 0.0);
-	float NdotV_clamped = max(NdotV, 0.0);
+    fragColor = vec4(0.0, 0.0, 0.0, 1.0);
 
-	float brdf_spec = fresnel(mat.fresnel0, halfVec, light.direction) *
-						geometry(normal, halfVec, view, light.direction, mat.roughness) *
+    vec3 normal = normalize(DataIn.normal);;
+    vec3 view = -normalize(DataIn.position);;
+    vec3 halfVec;
+    float NdotL;
+    float NdotV;
+    float NdotL_clamped;
+    float NdotV_clamped;
+    float brdf_spec = 0;
+
+	vec3 color_spec = vec3(0.0f, 0.0f, 0.0f);
+	vec3 color_diff = vec3(0.0f, 0.0f, 0.0f);
+
+	for (int i = 0; i < 64; ++i)
+	{
+		if (dLight[i].intensity == 0) continue;
+
+		halfVec = normalize(vec3(dLight[i].direction) + view);
+		NdotL = dot(normal, vec3(dLight[i].direction));
+		NdotV = dot(normal, view);
+		NdotL_clamped = max(NdotL, 0.0);
+		NdotV_clamped = max(NdotV, 0.0);
+
+		if ((NdotL_clamped * NdotV_clamped) == 0) continue;
+
+		brdf_spec = fresnel(mat.fresnel0, halfVec, vec3(dLight[i].direction)) 
+						 * geometry(normal, halfVec, view, vec3(dLight[i].direction), mat.roughness) 
+						 * distribution(normal, halfVec, mat.roughness) 
+						 / (4.0 * NdotL_clamped * NdotV_clamped)
+						;
+		
+		color_spec += NdotL_clamped * 
+						brdf_spec * 
+						vec3(dLight[i].color)  * 
+						dLight[i].intensity;
+
+		color_diff += NdotL_clamped * 
+					diffuseEnergyRatio(mat.fresnel0, normal, vec3(dLight[i].direction)) * 
+					mat.color * 
+					vec3(dLight[i].color);
+	}
+
+    /////fragment with point light ///////
+	vec3 s;
+	float dist;
+
+	for (int i = 0; i < 64; ++i)
+	{
+        s = normalize(vec3(pLight[i].position) - DataIn.position);
+        halfVec = normalize(s + view);
+        NdotL = dot(normal, s);
+        NdotV = dot(normal, view);
+        NdotL_clamped = max(NdotL, 0.0);
+        NdotV_clamped = max(NdotV, 0.0);
+        dist = length(vec3(pLight[i].position) - DataIn.position);
+        dist = dist * dist;
+
+		if ((NdotL_clamped * NdotV_clamped) == 0) continue;
+
+        brdf_spec = fresnel(mat.fresnel0, halfVec, s) *
+						geometry(normal, halfVec, view, s, mat.roughness) *
 						distribution(normal, halfVec, mat.roughness) /
 						(4.0 * NdotL_clamped * NdotV_clamped);
-	vec3 color_spec = NdotL_clamped * brdf_spec * light.color;
-	vec3 color_diff = NdotL_clamped * diffuseEnergyRatio(mat.fresnel0, normal, light.direction) * mat.color * light.color;
 
-	fragColor = vec4(color_diff + color_spec, 1.0);
-	//fragColor = vec4(1.0, 0.0, 0.0, 1.0);
+        color_spec += pLight[i].intensity * NdotL_clamped * 
+						max(brdf_spec, 0) * 
+						vec3(pLight[i].color) /
+						dist;
+        color_diff += pLight[i].intensity * NdotL_clamped * 
+					diffuseEnergyRatio(mat.fresnel0, normal, s) * 
+					mat.color * vec3(pLight[i].color) / dist;
+    }
+
+	//////////////////////////////////////////////
+
+	/////////////// spot Light ///////////////////
+
+	for (int i = 0; i < 64; ++i)
+	{
+		if (sLight[i].intensity == 0) continue;
+				
+		s = normalize(vec3(sLight[i].position) - DataIn.position);
+		float angleCos = dot(-s, vec3(sLight[i].direction));
+
+		if (angleCos > sLight[i].angle)
+		{
+			halfVec = normalize(s + view);
+			NdotL = dot(normal, s);
+			NdotV = dot(normal, view);
+			NdotL_clamped = max(NdotL, 0.0);
+			NdotV_clamped = max(NdotV, 0.0);
+			dist = length(vec3(sLight[i].position) - DataIn.position);
+			dist = dist * dist;
+
+			if ((NdotL_clamped * NdotV_clamped) == 0) continue;
+
+			float spotFactor = pow(angleCos, sLight[i].shadowPower);
+
+			brdf_spec = fresnel(mat.fresnel0, halfVec, s) 
+							 * geometry(normal, halfVec, view, s, mat.roughness)
+							 * distribution(normal, halfVec, mat.roughness)
+							 / (4.0 * NdotL_clamped * NdotV_clamped)
+							;
+        
+			color_spec +=
+						spotFactor 
+						* sLight[i].intensity 
+						* NdotL_clamped 
+						* brdf_spec 
+						* vec3(sLight[i].color) 
+						/ dist
+						;
+        
+			color_diff += spotFactor * sLight[i].intensity * NdotL_clamped * 
+						diffuseEnergyRatio(mat.fresnel0, normal, s) * 
+						mat.color * vec3(sLight[i].color) / dist
+			;
+		}
+	}
+
+	//////////////////////////////////////////////
+    fragColor = vec4(color_diff + color_spec, 1.0);
 }
