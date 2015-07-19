@@ -5,6 +5,7 @@
 #include <QApplication>
 #include <QSplashScreen>
 #include <QFile>
+#include <QQmlApplicationEngine>
 
 int main(int argc, char *argv[])
 {
@@ -17,8 +18,11 @@ int main(int argc, char *argv[])
 
     QApplication a(argc, argv);
 
+    QQmlApplicationEngine qmlEngine;
+    qmlEngine.load(QUrl(QStringLiteral("qrc:/main.qml")));
+
     //Load style
-    QFile styleFile(":/styles/dark");
+    /*QFile styleFile(":/styles/dark");
     styleFile.open(QIODevice::ReadOnly);
     a.setStyleSheet(styleFile.readAll());
 
@@ -32,7 +36,7 @@ int main(int argc, char *argv[])
     MainWindow w;
     splash.finish(&w);
     w.show();
-    w.installThumbnail();
+    w.installThumbnail();*/
 
     /*  ScriptEditor editor;
 

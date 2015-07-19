@@ -41,8 +41,6 @@
         <file alias="ResourceDelegate.qml">qml/ResourceDelegate.qml</file>
         <file alias="ResourcePane.qml">qml/ResourcePane.qml</file>
         <file alias="ScenePane.qml">qml/ScenePane.qml</file>
-        <file alias="warhog.qmlproject">qml/warhog.qmlproject</file>
-        <file alias="warhog.qmlproject.user">qml/warhog.qmlproject.user</file>
         <file alias="WHDockArea.qml">qml/WHDockArea.qml</file>
         <file alias="WHDockAreas.js">qml/WHDockAreas.js</file>
         <file alias="WHDockPane.qml">qml/WHDockPane.qml</file>
