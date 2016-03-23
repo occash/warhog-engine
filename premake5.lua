@@ -78,7 +78,7 @@ solution 'warhog'
 		includedirs { 'src/engine', dep..'/include' }
 		links 
 		{
-				'engine'
+			'engine'
 		}
 		files { 'src/launcher/**' }
 		
@@ -130,7 +130,7 @@ solution 'warhog'
 		local qtDir = os.getenv('QT_ROOT')
 		qt.enable()
 		qtpath(qtDir)
-		qtmodules { 'core', 'gui', 'widgets', 'opengl', 'concurrent' }
+		qtmodules { 'core', 'gui', 'widgets', 'opengl', 'concurrent', 'qml', 'quick' }
 		qtprefix 'Qt5'
 		
 		filter { 'platforms:x32', 'Debug' }

@@ -1,0 +1,13 @@
+singleton Style 1.0 WHStyle.qml
+WHButtonStyle 1.0 WHButtonStyle.qml
+WHTextFieldStyle 1.0 WHTextFieldStyle.qml
+WHCheckBoxStyle 1.0 WHCheckBoxStyle.qml
+WHSpinBoxStyle 1.0 WHSpinBoxStyle.qml
+WHRadioButtonStyle 1.0 WHRadioButtonStyle.qml
+WHComboBoxStyle 1.0 WHComboBoxStyle.qml
+WHTheme 1.0 WHTheme.qml
+WHDarkTheme 1.0 WHDarkTheme.qml
+WHLightTheme 1.0 WHLightTheme.qml
+WHBarButtonStyle 1.0 WHBarButtonStyle.qml
+WHMenuStyle 1.0 WHMenuStyle.qml
+WHMenuBarStyle 1.0 WHMenuBarStyle.qml
